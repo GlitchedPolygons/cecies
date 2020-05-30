@@ -1,0 +1,18 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: debian:stretch
+
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: 'apt-get update && apt-get install -y sudo git gcc g++ build-essential cmake bash curl && rm -rf /var/lib/apt/lists/*'
+      - run:
+          name: Build and run tests with code coverage enabled
+          command: 'bash test.sh cov'
+      - run:
+          name: Upload coverage reports
+          when: on_success
+          command: cd build/CMakeFiles/cecies.dir/src && bash <(curl -s https://codecov.io/bash)
