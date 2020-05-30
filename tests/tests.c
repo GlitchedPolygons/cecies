@@ -13,3 +13,28 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+
+#include <stdio.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <stddef.h>
+#include <stdbool.h>
+#include <setjmp.h>
+#include <cmocka.h>
+
+/* A test case that does nothing and succeeds. */
+static void null_test_success(void** state)
+{
+    (void)state;
+}
+
+// --------------------------------------------------------------------------------------------------------------
+
+int main(void)
+{
+    const struct CMUnitTest tests[] = {
+            cmocka_unit_test(null_test_success),
+    };
+
+    return cmocka_run_group_tests(tests, NULL, NULL);
+}
