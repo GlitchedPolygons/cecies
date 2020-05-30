@@ -3,4 +3,4 @@ project(cecies C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_library(cecies library.c library.h)
+add_library(${PROJECT_NAME} library.c library.h)
