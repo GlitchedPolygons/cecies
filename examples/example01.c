@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <cecies/encrypt.h>
 #include <cecies/decrypt.h>
+#include <stdint.h>
 
 int main(void)
 {
