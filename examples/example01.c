@@ -54,7 +54,7 @@ int main(void)
 
     cecies_encrypt((unsigned char*)TEST_STRING, strlen(TEST_STRING), (unsigned char*)TEST_PUBKEY, strlen(TEST_PUBKEY), output, sizeof(output), &output_length);
 
-    printf("Encrypted string: %s", output);
+    printf("Encrypted string: %s \n\n", output);
 
     size_t decrypted_string_length;
     char decrypted_string[256];
@@ -62,5 +62,5 @@ int main(void)
 
     cecies_decrypt(output, output_length, (unsigned char*)TEST_PRVKEY, strlen(TEST_PRVKEY), NULL, 0, (unsigned char*)decrypted_string, sizeof(decrypted_string), &decrypted_string_length);
 
-    printf("Decrypted string: %s", decrypted_string);
+    printf("Decrypted string: %s \n\n", decrypted_string);
 }
