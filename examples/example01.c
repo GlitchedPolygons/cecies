@@ -34,13 +34,13 @@ static const char TEST_STRING[] = "Lorem ipsum dolor sick fuck amend something s
  */
 
 static const char TEST_PUBKEY[] = "-----BEGIN PUBLIC KEY-----\n"
-                                  "MEIwBQYDK2VvAzkAPzwjOQbnir+CBZaHGFmu87nhvFG157EqSbIr9abKzJ03rYvO\n"
-                                  "hSMqsFjfzdoi+ux231bLRghXC2Y=\n"
+                                  "MEIwBQYDK2VvAzkAukPjp5oIylbwvhGwb3YFO2e60sRzkNbG49i1Bi1J5bKInD7O\n"
+                                  "tDj+OpJzIPHtdNLIGAgPQ/dje8c=\n"
                                   "-----END PUBLIC KEY-----";
 
 static const char TEST_PRVKEY[] = "-----BEGIN PRIVATE KEY-----\n"
-                                  "MEYCAQAwBQYDK2VvBDoEOHTlbVSR8S8cY+/2e02dUZ0zwUVsgsEMcj2JcUpYkfGS\n"
-                                  "1og1X8lRZ5K4BytAdhW/MEHP+xKDI7vp\n"
+                                  "MEYCAQAwBQYDK2VvBDoEOIwgnBK8yqb5Ka+wG69cZEBpu4Tsqd73gyEz6PLRrbN5\n"
+                                  "IyGqcboW8RXj7vjcpgpEvLgf7FK5Cbes\n"
                                   "-----END PRIVATE KEY-----";
 
 int main(void)
