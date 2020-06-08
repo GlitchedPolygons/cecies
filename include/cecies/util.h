@@ -26,6 +26,10 @@ extern "C" {
 #include <stdlib.h>
 #include <stdint.h>
 
+/**
+ * Gets a random 12 digit integer (only limited randomness due to usage of <c>rand()</c>).
+ * @return Random number [100000000000; 999999999999]
+ */
 static inline unsigned long long int cecies_get_random_12digit_integer()
 {
     srand(time(NULL) * time(NULL));
@@ -34,14 +38,28 @@ static inline unsigned long long int cecies_get_random_12digit_integer()
     return min + rand() / (RAND_MAX / (max - min + 1) + 1);
 }
 
+/**
+ * Calculates the length of an AES-CBC ciphertext given a specific plaintext data length (in bytes).
+ * @param plaintext_length The amount of bytes to encrypt.
+ * @return The ciphertext length (a multiple of the blocksize).
+ */
 static inline size_t cecies_calc_aes_cbc_ciphertext_length(const size_t plaintext_length)
 {
     return plaintext_length + 16 - (plaintext_length % 16);
 }
 
+/**
+ * Gets the minimum amount of needed buffer size for a given encryption with a given plaintext data length.
+ * @param plaintext_length The amount of bytes to encrypt.
+ * @return The min. buffer size for encrypting \p plaintext_length bytes of data.
+ */
 static inline size_t cecies_calc_output_buffer_needed_size(const size_t plaintext_length)
 {
-    return cecies_calc_aes_cbc_ciphertext_length(plaintext_length) + 256;
+    // R length: 113
+    // IV length: 32
+    // Salt length: 16
+
+    return cecies_calc_aes_cbc_ciphertext_length(plaintext_length) + 113 + 32 + 16;
 }
 
 #ifdef __cplusplus
