@@ -18,6 +18,7 @@
 #include <mbedtls/aes.h>
 #include <mbedtls/ecdh.h>
 #include <mbedtls/pkcs5.h>
+#include <mbedtls/base64.h>
 #include <mbedtls/entropy.h>
 #include <mbedtls/platform.h>
 #include <mbedtls/ctr_drbg.h>
@@ -38,7 +39,7 @@ static const unsigned char empty32[32] = {
     0x00, 0x00, 0x00, 0x00, //
 };
 
-int cecies_encrypt(const unsigned char* data, const size_t data_length, const unsigned char* public_key, const size_t public_key_length, unsigned char* output, const size_t output_bufsize, size_t* output_length)
+int cecies_encrypt(const unsigned char* data, const size_t data_length, const unsigned char* public_key, const size_t public_key_length, const bool public_key_base64, unsigned char* output, const size_t output_bufsize, size_t* output_length)
 {
     int r = 1;
 
@@ -119,6 +120,36 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
         goto exit;
     }
 
+    size_t public_key_bytes_length;
+    unsigned char public_key_bytes[64];
+    if (public_key_base64)
+    {
+        r = mbedtls_base64_decode(public_key_bytes, sizeof(public_key_bytes), &public_key_bytes_length, public_key, public_key_length);
+        if (r != 0)
+        {
+            fprintf(stderr, "Parsing recipient's public key failed! mbedtls_base64_decode returned %d\n", r);
+            goto exit;
+        }
+    }
+    else
+    {
+        memcpy(public_key_bytes, public_key, public_key_bytes_length = public_key_length);
+    }
+
+    r = mbedtls_ecp_point_read_binary(&ecp_group, &public_key_ecp, public_key_bytes, public_key_bytes_length);
+    if (r != 0)
+    {
+        fprintf(stderr, "Parsing recipient's public key failed! mbedtls_ecp_point_read_binary returned %d\n", r);
+        goto exit;
+    }
+
+    r = mbedtls_ecp_check_pubkey(&ecp_group, &public_key_ecp);
+    if (r != 0)
+    {
+        fprintf(stderr, "Recipient public key invalid! mbedtls_ecp_check_pubkey returned %d\n", r);
+        goto exit;
+    }
+
     r = mbedtls_ecp_mul(&ecp_group, &aes_key_ecp, &ephemeral_key_private, &public_key_ecp, mbedtls_ctr_drbg_random, &ctr_drbg);
     if (r != 0)
     {
@@ -184,6 +215,9 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
         fprintf(stderr, "AES-CBC encryption failed! mbedtls_aes_crypt_cbc returned %d\n", r);
         goto exit;
     }
+
+    // TODO: write ephemeral_key_public_bytes into output ciphertext
+    // TODO: check if ephemeral_key_public_bytes_length is always the same
 
 exit:
 

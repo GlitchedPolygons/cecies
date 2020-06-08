@@ -33,10 +33,7 @@ static const char TEST_STRING[] = "Lorem ipsum dolor sick fuck amend something s
  *
  */
 
-static const char TEST_PUBKEY[] = "-----BEGIN PUBLIC KEY-----\n"
-                                  "MEIwBQYDK2VvAzkAukPjp5oIylbwvhGwb3YFO2e60sRzkNbG49i1Bi1J5bKInD7O\n"
-                                  "tDj+OpJzIPHtdNLIGAgPQ/dje8c=\n"
-                                  "-----END PUBLIC KEY-----";
+static const char TEST_PUBKEY[] = "An4rEK8sO9/JkJbI52FrOQsrDmRd1OIemJ4/Z+kjpd3VkSQVQBoOarhY5zzcl6xQVqP40LsidK1y";
 
 static const char TEST_PRVKEY[] = "-----BEGIN PRIVATE KEY-----\n"
                                   "MEYCAQAwBQYDK2VvBDoEOIwgnBK8yqb5Ka+wG69cZEBpu4Tsqd73gyEz6PLRrbN5\n"
@@ -49,10 +46,10 @@ int main(void)
     printf("Encrypting the following string: \n\n %s \n\n", TEST_STRING);
 
     size_t output_length;
-    unsigned char output[256];
+    unsigned char output[1024];
     memset(output, 0x00, sizeof(output));
 
-    cecies_encrypt((unsigned char*)TEST_STRING, strlen(TEST_STRING), (unsigned char*)TEST_PUBKEY, strlen(TEST_PUBKEY), output, sizeof(output), &output_length);
+    cecies_encrypt((unsigned char*)TEST_STRING, strlen(TEST_STRING), (unsigned char*)TEST_PUBKEY, strlen(TEST_PUBKEY), true, output, sizeof(output), &output_length);
 
     printf("Encrypted string: %s \n\n", output);
 
