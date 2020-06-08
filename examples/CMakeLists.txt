@@ -18,3 +18,6 @@ project(cecies_examples C)
 
 add_executable(cecies_example_01 ${CMAKE_CURRENT_LIST_DIR}/example01.c)
 target_link_libraries(cecies_example_01 PRIVATE cecies)
+
+add_executable(cecies_example_02 ${CMAKE_CURRENT_LIST_DIR}/example02.c)
+target_link_libraries(cecies_example_02 PRIVATE cecies)

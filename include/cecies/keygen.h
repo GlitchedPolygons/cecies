@@ -40,9 +40,9 @@ extern "C" {
  * @param output_public_key_buffer Public key output buffer into which to write the public key.
  * @param output_public_key_buffer_size Public key output buffer size. Make sure to allocate enough space!
  * @param output_public_key_buffer_length How many bytes were written into the \p output_public_key_buffer output buffer.
- * @return <c>0</c> if key generation succeeded; error codes as defined inside the header file otherwise.
+ * @return <c>0</c> if key generation succeeded; error codes as defined inside the header file or MbedTLS otherwise.
  */
-int cecies_generate_curve448_keypair(bool base64, unsigned char* output_private_key_buffer, size_t output_private_key_buffer_size, size_t* output_private_key_buffer_length, unsigned char* output_public_key_buffer, size_t output_public_key_buffer_size, size_t output_public_key_buffer_length);
+int cecies_generate_curve448_keypair(bool base64, unsigned char* output_private_key_buffer, size_t output_private_key_buffer_size, size_t* output_private_key_buffer_length, unsigned char* output_public_key_buffer, size_t output_public_key_buffer_size, size_t* output_public_key_buffer_length, unsigned char* additional_entropy, size_t additional_entropy_length);
 
 #ifdef __cplusplus
 } // extern "C"
