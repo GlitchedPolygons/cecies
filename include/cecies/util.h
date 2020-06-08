@@ -62,6 +62,16 @@ static inline size_t cecies_calc_output_buffer_needed_size(const size_t plaintex
     return cecies_calc_aes_cbc_ciphertext_length(plaintext_length) + 113 + 32 + 16;
 }
 
+/**
+ * Calculates the output length in bytes after base64-encoding \p data_length bytes.
+ * @param data_length The number of bytes you'd base64-encode.
+ * @return <c>(4 * data_length / 3 + 3) & ~3</c>
+ */
+static inline size_t cecies_calc_base64_length(const size_t data_length)
+{
+    return (4 * data_length / 3 + 3) & ~(unsigned)3;
+}
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

@@ -23,11 +23,6 @@
 #include "cecies/util.h"
 #include "cecies/keygen.h"
 
-static inline size_t calc_base64_length(const size_t data_length)
-{
-    return (4 * data_length / 3 + 3) & ~3;
-}
-
 int cecies_generate_curve448_keypair(const bool base64, unsigned char* output_private_key_buffer, const size_t output_private_key_buffer_size, size_t* output_private_key_buffer_length, unsigned char* output_public_key_buffer, const size_t output_public_key_buffer_size, size_t* output_public_key_buffer_length, unsigned char* additional_entropy, const size_t additional_entropy_length)
 {
     if (output_private_key_buffer == NULL //
@@ -106,7 +101,7 @@ int cecies_generate_curve448_keypair(const bool base64, unsigned char* output_pr
 
     // Check private key output buffer size.
 
-    if (output_private_key_buffer_size < (base64 ? calc_base64_length(prvkeybuflen) : prvkeybuflen))
+    if (output_private_key_buffer_size < (base64 ? cecies_calc_base64_length(prvkeybuflen) : prvkeybuflen))
     {
         ret = CECIES_KEYGEN_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE;
         fprintf(stderr, "Writing generated private key into output buffer failed because the buffer is too small! \n");
@@ -124,7 +119,7 @@ int cecies_generate_curve448_keypair(const bool base64, unsigned char* output_pr
 
     // Check public key output buffer size.
 
-    if (output_public_key_buffer_size < (base64 ? calc_base64_length(pubkeybuflen) : pubkeybuflen))
+    if (output_public_key_buffer_size < (base64 ? cecies_calc_base64_length(pubkeybuflen) : pubkeybuflen))
     {
         ret = CECIES_KEYGEN_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE;
         fprintf(stderr, "Writing generated public key into output buffer failed because the buffer is too small! \n");
