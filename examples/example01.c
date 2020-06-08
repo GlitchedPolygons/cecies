@@ -32,7 +32,7 @@ static const char TEST_PRIVATE_KEY[] = "8FNsJbVMlSwr41fb8ktgWjG8WyyAup1j0icaspui
 int main(void)
 {
     printf("\n---- CECIES ----\n-- Example 01 --\n\n");
-    printf("Encrypting the following string: \n\n %s \n\n", TEST_STRING);
+    printf("Encrypting the following string:\n%s\n\n", TEST_STRING);
 
     size_t output_length;
     unsigned char output[1024];
@@ -40,7 +40,7 @@ int main(void)
 
     cecies_encrypt((unsigned char*)TEST_STRING, strlen(TEST_STRING), (unsigned char*)TEST_PUBLIC_KEY, strlen(TEST_PUBLIC_KEY), true, output, sizeof(output), &output_length);
 
-    printf("Encrypted string: %s \n\n", output);
+    printf("Encrypted string:\n%s\n\n", output);
 
     size_t decrypted_string_length;
     char decrypted_string[256];

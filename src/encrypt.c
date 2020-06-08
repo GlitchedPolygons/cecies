@@ -27,18 +27,6 @@
 #include "cecies/util.h"
 #include "cecies/encrypt.h"
 
-static const unsigned char empty32[32] = {
-    //
-    0x00, 0x00, 0x00, 0x00, //
-    0x00, 0x00, 0x00, 0x00, //
-    0x00, 0x00, 0x00, 0x00, //
-    0x00, 0x00, 0x00, 0x00, //
-    0x00, 0x00, 0x00, 0x00, //
-    0x00, 0x00, 0x00, 0x00, //
-    0x00, 0x00, 0x00, 0x00, //
-    0x00, 0x00, 0x00, 0x00, //
-};
-
 int cecies_encrypt(const unsigned char* data, const size_t data_length, const unsigned char* public_key, const size_t public_key_length, const bool public_key_base64, unsigned char* output, const size_t output_bufsize, size_t* output_length)
 {
     if (data == NULL //
@@ -62,7 +50,7 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
 
     if (output_bufsize < total_output_length)
     {
-        fprintf(stderr, "CECIES encryption failed: output buffer too small!\n");
+        fprintf(stderr, "ECIES encryption failed: output buffer too small!\n");
         return CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE;
     }
 
