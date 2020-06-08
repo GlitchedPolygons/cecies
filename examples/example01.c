@@ -33,7 +33,7 @@ static const char TEST_STRING[] = "Lorem ipsum dolor sick fuck amend something s
  *
  */
 
-static const char TEST_PUBKEY[] = "An4rEK8sO9/JkJbI52FrOQsrDmRd1OIemJ4/Z+kjpd3VkSQVQBoOarhY5zzcl6xQVqP40LsidK1y";
+static const char TEST_PUBKEY[] = "BKq8EdAQ9UFQylD+VeJ8EfjbsMYm0eVprZANBTnqDRx4j/HWjYFyuo8IZ+vfz0rH/GT4SBQrqhWSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
 
 static const char TEST_PRVKEY[] = "-----BEGIN PRIVATE KEY-----\n"
                                   "MEYCAQAwBQYDK2VvBDoEOIwgnBK8yqb5Ka+wG69cZEBpu4Tsqd73gyEz6PLRrbN5\n"

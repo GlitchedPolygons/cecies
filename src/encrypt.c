@@ -121,7 +121,7 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
     }
 
     size_t public_key_bytes_length;
-    unsigned char public_key_bytes[64];
+    unsigned char public_key_bytes[128];
     if (public_key_base64)
     {
         r = mbedtls_base64_decode(public_key_bytes, sizeof(public_key_bytes), &public_key_bytes_length, public_key, public_key_length);
@@ -157,14 +157,14 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
         goto exit;
     }
 
-    r = mbedtls_ecp_point_write_binary(&ecp_group, &aes_key_ecp, MBEDTLS_ECP_PF_COMPRESSED, &aes_key_base_length, aes_key_base, sizeof(aes_key_base));
+    r = mbedtls_ecp_point_write_binary(&ecp_group, &aes_key_ecp, MBEDTLS_ECP_PF_UNCOMPRESSED, &aes_key_base_length, aes_key_base, sizeof(aes_key_base));
     if (r != 0)
     {
         fprintf(stderr, "ECIES encryption failed! mbedtls_ecp_point_write_binary returned %d\n", r);
         goto exit;
     }
 
-    r = mbedtls_ecp_point_write_binary(&ecp_group, &ephemeral_key_public, MBEDTLS_ECP_PF_COMPRESSED, &ephemeral_key_public_bytes_length, ephemeral_key_public_bytes, sizeof(ephemeral_key_public_bytes));
+    r = mbedtls_ecp_point_write_binary(&ecp_group, &ephemeral_key_public, MBEDTLS_ECP_PF_UNCOMPRESSED, &ephemeral_key_public_bytes_length, ephemeral_key_public_bytes, sizeof(ephemeral_key_public_bytes));
     if (r != 0)
     {
         fprintf(stderr, "ECIES encryption failed! mbedtls_ecp_point_write_binary returned %d\n", r);
@@ -185,14 +185,14 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
         goto exit;
     }
 
-    r = mbedtls_md_setup(&md_context, mbedtls_md_info_from_type(MBEDTLS_MD_SHA512), 0);
+    r = mbedtls_md_setup(&md_context, mbedtls_md_info_from_type(MBEDTLS_MD_SHA512), 1);
     if (r != 0)
     {
         fprintf(stderr, "MbedTLS MD context (SHA512) setup failed! mbedtls_md_setup returned %d\n", r);
         goto exit;
     }
 
-    r = mbedtls_pkcs5_pbkdf2_hmac(&md_context, aes_key_base, sizeof(aes_key_base), salt, 32, 16384, 32, aes_key);
+    r = mbedtls_pkcs5_pbkdf2_hmac(&md_context, aes_key_base, aes_key_base_length, salt, 32, 16384, 32, aes_key);
     if (r != 0 || memcmp(aes_key, empty32, 32) == 0)
     {
         fprintf(stderr, "PBKDF2 failed! mbedtls_pkcs5_pbkdf2_hmac returned %d\n", r);
