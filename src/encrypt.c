@@ -43,9 +43,9 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
 {
     int ret = 1;
 
-    const size_t output_len = cecies_calc_output_buffer_needed_size(data_length);
+    const size_t total_output_length = cecies_calc_output_buffer_needed_size(data_length);
 
-    if (output_bufsize < output_len)
+    if (output_bufsize < total_output_length)
     {
         fprintf(stderr, "CECIES encryption failed: output buffer too small!\n");
         return CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE;
@@ -213,18 +213,18 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
 
     const size_t ctlen = cecies_calc_aes_cbc_ciphertext_length(data_length);
 
-    ret = mbedtls_aes_crypt_cbc(&aes_ctx, MBEDTLS_AES_ENCRYPT, ctlen, iv, data, output);
+    ret = mbedtls_aes_crypt_cbc(&aes_ctx, MBEDTLS_AES_ENCRYPT, ctlen, iv, data, output + (total_output_length - ctlen));
     if (ret != 0)
     {
         fprintf(stderr, "AES-CBC encryption failed! mbedtls_aes_crypt_cbc returned %d\n", ret);
         goto exit;
     }
 
-    memcpy(output + ctlen, iv, 16);
-    memcpy(output + ctlen + 16, salt, 32);
-    memcpy(output + ctlen + 16 + 32, R_bytes, R_bytes_length);
+    memcpy(output, iv, 16);
+    memcpy(output + 16, salt, 32);
+    memcpy(output + 16 + 32, R_bytes, R_bytes_length); // Uncompressed ECP point takes up 113 bytes.
 
-    *output_length = output_len;
+    *output_length = total_output_length;
 
 exit:
 

@@ -14,9 +14,12 @@
    limitations under the License.
 */
 
+#include <stdbool.h>
 #include "cecies/decrypt.h"
 
-int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_data_length, const unsigned char* private_key, const size_t private_key_length, const unsigned char* private_key_passphrase, const size_t private_key_passphrase_length, unsigned char* output, const size_t output_bufsize, size_t* output_length)
+int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_data_length, const unsigned char* private_key, const size_t private_key_length, const bool private_key_base64, unsigned char* output, const size_t output_bufsize, size_t* output_length)
 {
+    int ret = 1;
+
     // TODO: implement ASAP
 }

@@ -33,7 +33,7 @@ extern "C" {
  * Asymmetrically encrypts the given data using ECIES over Curve448.
  * @param data The data to encrypt.
  * @param data_length The length of the data array.
- * @param public_key The public key to encrypt the data with (PEM-formatted).
+ * @param public_key The public key to encrypt the data with.
  * @param public_key_length Length of the public_key string.
  * @param public_key_base64 Is the \p public_key base64-formatted? If this is false, the key will be directly fed into mbedtls_ecp_point_read_binary()!
  * @param output Where to write the encrypted output into (please pre-allocate this big enough).
