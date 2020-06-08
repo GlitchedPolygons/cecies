@@ -75,9 +75,9 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
     unsigned char ephemeral_key_public_bytes[256];
     size_t ephemeral_key_public_bytes_length = 0, aes_key_base_length = 0;
 
-    memset(iv, 0x00, sizeof(iv));
-    memset(salt, 0x00, sizeof(salt));
-    memset(aes_key, 0x00, sizeof(aes_key));
+    memset(iv, 0x00, 16);
+    memset(salt, 0x00, 32);
+    memset(aes_key, 0x00, 32);
     memset(aes_key_base, 0x00, sizeof(aes_key_base));
     memset(ephemeral_key_public_bytes, 0x00, sizeof(ephemeral_key_public_bytes));
 
@@ -105,6 +105,20 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
         goto exit;
     }
 
+    r = mbedtls_ecp_check_privkey(&ecp_group, &ephemeral_key_private);
+    if (r != 0)
+    {
+        fprintf(stderr, "Ephemeral private key invalid! mbedtls_ecp_check_privkey returned %d\n", r);
+        goto exit;
+    }
+
+    r = mbedtls_ecp_check_pubkey(&ecp_group, &ephemeral_key_public);
+    if (r != 0)
+    {
+        fprintf(stderr, "Ephemeral public key invalid! mbedtls_ecp_check_pubkey returned %d\n", r);
+        goto exit;
+    }
+
     r = mbedtls_ecp_mul(&ecp_group, &aes_key_ecp, &ephemeral_key_private, &public_key_ecp, mbedtls_ctr_drbg_random, &ctr_drbg);
     if (r != 0)
     {
@@ -112,28 +126,28 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
         goto exit;
     }
 
-    r = mbedtls_ecp_point_write_binary(&ecp_group, &aes_key_ecp, MBEDTLS_ECP_PF_UNCOMPRESSED, &aes_key_base_length, aes_key_base, sizeof(aes_key_base));
+    r = mbedtls_ecp_point_write_binary(&ecp_group, &aes_key_ecp, MBEDTLS_ECP_PF_COMPRESSED, &aes_key_base_length, aes_key_base, sizeof(aes_key_base));
     if (r != 0)
     {
         fprintf(stderr, "ECIES encryption failed! mbedtls_ecp_point_write_binary returned %d\n", r);
         goto exit;
     }
 
-    r = mbedtls_ecp_point_write_binary(&ecp_group, &aes_key_ecp, MBEDTLS_ECP_PF_UNCOMPRESSED, &ephemeral_key_public_bytes_length, ephemeral_key_public_bytes, sizeof(ephemeral_key_public_bytes));
+    r = mbedtls_ecp_point_write_binary(&ecp_group, &ephemeral_key_public, MBEDTLS_ECP_PF_COMPRESSED, &ephemeral_key_public_bytes_length, ephemeral_key_public_bytes, sizeof(ephemeral_key_public_bytes));
     if (r != 0)
     {
         fprintf(stderr, "ECIES encryption failed! mbedtls_ecp_point_write_binary returned %d\n", r);
         goto exit;
     }
 
-    r = mbedtls_ctr_drbg_random(&ctr_drbg, salt, sizeof(salt));
+    r = mbedtls_ctr_drbg_random(&ctr_drbg, salt, 32);
     if (r != 0 || memcmp(salt, empty32, 32) == 0)
     {
         fprintf(stderr, "Salt generation failed! mbedtls_ctr_drbg_random returned %d\n", r);
         goto exit;
     }
 
-    r = mbedtls_ctr_drbg_random(&ctr_drbg, iv, sizeof(iv));
+    r = mbedtls_ctr_drbg_random(&ctr_drbg, iv, 16);
     if (r != 0 || memcmp(iv, empty32, 16) == 0)
     {
         fprintf(stderr, "IV generation failed! mbedtls_ctr_drbg_random returned %d\n", r);
@@ -147,7 +161,7 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
         goto exit;
     }
 
-    r = mbedtls_pkcs5_pbkdf2_hmac(&md_context, aes_key_base, sizeof(aes_key_base), salt, sizeof(salt), 16384, 32, aes_key);
+    r = mbedtls_pkcs5_pbkdf2_hmac(&md_context, aes_key_base, sizeof(aes_key_base), salt, 32, 16384, 32, aes_key);
     if (r != 0 || memcmp(aes_key, empty32, 32) == 0)
     {
         fprintf(stderr, "PBKDF2 failed! mbedtls_pkcs5_pbkdf2_hmac returned %d\n", r);
@@ -161,10 +175,10 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
         goto exit;
     }
 
-    memcpy(output, iv, sizeof(iv));
-    memcpy(output + sizeof(iv), salt, sizeof(salt));
+    memcpy(output, iv, 16);
+    memcpy(output + 16, salt, 32);
 
-    r = mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_ENCRYPT, cecies_calc_aes_cbc_ciphertext_length(data_length), iv, data, output);
+    r = mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_ENCRYPT, cecies_calc_aes_cbc_ciphertext_length(data_length), iv, data, output + (sizeof(unsigned char) * 48));
     if (r != 0)
     {
         fprintf(stderr, "AES-CBC encryption failed! mbedtls_aes_crypt_cbc returned %d\n", r);
