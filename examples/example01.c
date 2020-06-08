@@ -25,9 +25,9 @@
  */
 static const char TEST_STRING[] = "Lorem ipsum dolor sick fuck amend something something ...";
 
-static const char TEST_PUBKEY[] = "BMAocEd2hsZvNRynFSu8YeCfOu2wkXMALnDkr2hALy5cfiECpi2b21j9lXpoijwBkULMy234iR69AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+static const char TEST_PUBLIC_KEY[] = "BMAocEd2hsZvNRynFSu8YeCfOu2wkXMALnDkr2hALy5cfiECpi2b21j9lXpoijwBkULMy234iR69AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
 
-static const char TEST_PRVKEY[] = "8FNsJbVMlSwr41fb8ktgWjG8WyyAup1j0icaspuiTtCxt7C//m84283s/VK8NDvstvxho2PR5qA=";
+static const char TEST_PRIVATE_KEY[] = "8FNsJbVMlSwr41fb8ktgWjG8WyyAup1j0icaspuiTtCxt7C//m84283s/VK8NDvstvxho2PR5qA=";
 
 int main(void)
 {
@@ -38,7 +38,7 @@ int main(void)
     unsigned char output[1024];
     memset(output, 0x00, sizeof(output));
 
-    cecies_encrypt((unsigned char*)TEST_STRING, strlen(TEST_STRING), (unsigned char*)TEST_PUBKEY, strlen(TEST_PUBKEY), true, output, sizeof(output), &output_length);
+    cecies_encrypt((unsigned char*)TEST_STRING, strlen(TEST_STRING), (unsigned char*)TEST_PUBLIC_KEY, strlen(TEST_PUBLIC_KEY), true, output, sizeof(output), &output_length);
 
     printf("Encrypted string: %s \n\n", output);
 
@@ -46,7 +46,7 @@ int main(void)
     char decrypted_string[256];
     memset(decrypted_string, 0x00, sizeof(decrypted_string));
 
-    cecies_decrypt(output, output_length, (unsigned char*)TEST_PRVKEY, strlen(TEST_PRVKEY), true, (unsigned char*)decrypted_string, sizeof(decrypted_string), &decrypted_string_length);
+    cecies_decrypt(output, output_length, (unsigned char*)TEST_PRIVATE_KEY, strlen(TEST_PRIVATE_KEY), true, (unsigned char*)decrypted_string, sizeof(decrypted_string), &decrypted_string_length);
 
     printf("Decrypted string: %s \n\n", decrypted_string);
 }

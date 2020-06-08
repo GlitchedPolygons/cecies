@@ -29,8 +29,8 @@ extern "C" {
 #define CECIES_ENCRYPT_ERROR_CODE_INVALID_ARG 1001
 #define CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE 1002
 
-/***
- * Asymmetrically encrypts the given data using ECIES over Curve448.
+/**
+ * Encrypts the given data using ECIES over Curve448 and AES256-CBC.
  * @param data The data to encrypt.
  * @param data_length The length of the data array.
  * @param public_key The public key to encrypt the data with.

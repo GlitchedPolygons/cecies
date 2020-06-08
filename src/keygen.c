@@ -34,6 +34,13 @@ int cecies_generate_curve448_keypair(const bool base64, unsigned char* output_pr
         return CECIES_KEYGEN_ERROR_CODE_NULL_ARG;
     }
 
+    if (output_private_key_buffer_size == 0 //
+            || output_public_key_buffer_size == 0 //
+            || (additional_entropy && additional_entropy_length == 0))
+    {
+        return CECIES_KEYGEN_ERROR_CODE_INVALID_ARG;
+    }
+
     int ret = 1;
 
     mbedtls_ecp_group ecp_group;

@@ -41,6 +41,21 @@ static const unsigned char empty32[32] = {
 
 int cecies_encrypt(const unsigned char* data, const size_t data_length, const unsigned char* public_key, const size_t public_key_length, const bool public_key_base64, unsigned char* output, const size_t output_bufsize, size_t* output_length)
 {
+    if (data == NULL //
+            || public_key == NULL //
+            || output == NULL //
+            || output_length == NULL)
+    {
+        return CECIES_ENCRYPT_ERROR_CODE_NULL_ARG;
+    }
+
+    if (data_length == 0 //
+            || public_key_length == 0 //
+            || output_bufsize == 0)
+    {
+        return CECIES_ENCRYPT_ERROR_CODE_INVALID_ARG;
+    }
+
     int ret = 1;
 
     const size_t total_output_length = cecies_calc_output_buffer_needed_size(data_length);

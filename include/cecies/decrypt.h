@@ -24,8 +24,12 @@ extern "C" {
 #include <stddef.h>
 #include <stdint.h>
 
+#define CECIES_DECRYPT_ERROR_CODE_NULL_ARG 2000
+#define CECIES_DECRYPT_ERROR_CODE_INVALID_ARG 2001
+#define CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE 2002
+
 /**
- * Asymmetrically decrypts the given data using ECIES over Curve448.
+ * Decrypts the given data using ECIES, Curve448 and AES256-CBC.
  * @param encrypted_data The data to decrypt.
  * @param encrypted_data_length The length of the data array.
  * @param private_key The private key to decrypt the data with.
