@@ -186,14 +186,12 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
         goto exit;
     }
 
-    ret = mbedtls_aes_setkey_enc(&aes_ctx, aes_key, 256);
+    ret = mbedtls_aes_setkey_dec(&aes_ctx, aes_key, 256);
     if (ret != 0)
     {
         fprintf(stderr, "AES key setup failed! mbedtls_aes_setkey_enc returned %d\n", ret);
         goto exit;
     }
-
-    unsigned char kk[64];
 
     ret = mbedtls_aes_crypt_cbc(&aes_ctx, MBEDTLS_AES_DECRYPT, ciphertext_length, iv, ciphertext, output);
     if (ret != 0)
