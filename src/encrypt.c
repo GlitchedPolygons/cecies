@@ -46,6 +46,7 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
 
     int ret = 1;
 
+    const size_t ctlen = cecies_calc_aes_cbc_ciphertext_length(data_length);
     const size_t total_output_length = cecies_calc_output_buffer_needed_size(data_length);
 
     if (output_bufsize < total_output_length)
@@ -81,6 +82,7 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
     unsigned char aes_key[32];
     unsigned char S_bytes[256];
     unsigned char R_bytes[256];
+
     size_t R_bytes_length = 0, S_bytes_length = 0;
 
     memset(iv, 0x00, 16);
@@ -91,6 +93,16 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
 
     unsigned char pers[32];
     snprintf((char*)pers, sizeof(pers), "cecies_PERS_#!$\\+@23%llu", cecies_get_random_12digit_integer());
+
+    unsigned char* databuf = calloc(ctlen, sizeof(unsigned char));
+    if (databuf == NULL)
+    {
+        fprintf(stderr, "ECIES encryption failed: out of memory!");
+        ret = CECIES_ENCRYPT_ERROR_CODE_OUT_OF_MEMORY;
+        goto exit;
+    }
+
+    memcpy(databuf, data, data_length);
 
     ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, sizeof(pers));
     if (ret != 0)
@@ -214,18 +226,17 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
         goto exit;
     }
 
-    const size_t ctlen = cecies_calc_aes_cbc_ciphertext_length(data_length);
-
-    ret = mbedtls_aes_crypt_cbc(&aes_ctx, MBEDTLS_AES_ENCRYPT, ctlen, iv, data, output + (total_output_length - ctlen));
+    ret = mbedtls_aes_crypt_cbc(&aes_ctx, MBEDTLS_AES_ENCRYPT, ctlen, iv, databuf, output + (total_output_length - ctlen));
     if (ret != 0)
     {
         fprintf(stderr, "AES-CBC encryption failed! mbedtls_aes_crypt_cbc returned %d\n", ret);
         goto exit;
     }
 
-    memcpy(output, iv, 16);
-    memcpy(output + 16, salt, 32);
-    memcpy(output + 16 + 32, R_bytes, R_bytes_length); // Uncompressed ECP point takes up 113 bytes.
+    memcpy(output, &data_length, 8);
+    memcpy(output + 8, iv, 16);
+    memcpy(output + 8 + 16, salt, 32);
+    memcpy(output + 8 + 16 + 32, R_bytes, R_bytes_length); // Uncompressed ECP point takes up 113 bytes.
 
     *output_length = total_output_length;
 
@@ -248,5 +259,6 @@ exit:
     memset(S_bytes, 0x00, sizeof(S_bytes));
     memset(R_bytes, 0x00, sizeof(R_bytes));
 
+    free(databuf);
     return (ret);
 }

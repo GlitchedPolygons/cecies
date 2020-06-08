@@ -65,6 +65,7 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
     unsigned char private_key_bytes[256];
     const size_t R_bytes_length = 113;
     size_t private_key_bytes_length, S_bytes_length;
+    uint64_t olen;
 
     memset(iv, 0x00, 16);
     memset(salt, 0x00, 32);
@@ -110,12 +111,13 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
         goto exit;
     }
 
-    memcpy(iv, encrypted_data, 16);
-    memcpy(salt, encrypted_data + 16, 32);
-    memcpy(R_bytes, encrypted_data + 16 + 32, R_bytes_length);
+    memcpy(&olen, encrypted_data, 8);
+    memcpy(iv, encrypted_data + 8, 16);
+    memcpy(salt, encrypted_data + 8 + 16, 32);
+    memcpy(R_bytes, encrypted_data + 8 + 16 + 32, R_bytes_length);
 
-    const unsigned char* ciphertext = encrypted_data + 16 + 32 + R_bytes_length;
-    const size_t ciphertext_length = encrypted_data_length - 16 - 32 - R_bytes_length;
+    const unsigned char* ciphertext = encrypted_data + 8 + 16 + 32 + R_bytes_length;
+    const size_t ciphertext_length = encrypted_data_length - 8 - 16 - 32 - R_bytes_length;
 
     if (ciphertext_length % 16)
     {
@@ -189,7 +191,7 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
     ret = mbedtls_aes_setkey_dec(&aes_ctx, aes_key, 256);
     if (ret != 0)
     {
-        fprintf(stderr, "AES key setup failed! mbedtls_aes_setkey_enc returned %d\n", ret);
+        fprintf(stderr, "AES key setup failed! mbedtls_aes_setkey_dec returned %d\n", ret);
         goto exit;
     }
 
@@ -199,6 +201,8 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
         fprintf(stderr, "ECIES decryption failed! mbedtls_aes_crypt_cbc returned %d\n", ret);
         goto exit;
     }
+
+    *output_length = (size_t)olen;
 
 exit:
 

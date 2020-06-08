@@ -31,22 +31,24 @@ static const char TEST_PRIVATE_KEY[] = "8FNsJbVMlSwr41fb8ktgWjG8WyyAup1j0icaspui
 
 int main(void)
 {
+    int s = 1;
+
     printf("\n---- CECIES ----\n-- Example 01 --\n\n");
     printf("Encrypting the following string:\n%s\n\n", TEST_STRING);
 
-    size_t output_length;
-    unsigned char output[1024];
-    memset(output, 0x00, sizeof(output));
+    size_t encrypted_string_length;
+    unsigned char encrypted_string[1024];
+    memset(encrypted_string, 0x00, sizeof(encrypted_string));
 
-    cecies_encrypt((unsigned char*)TEST_STRING, strlen(TEST_STRING), (unsigned char*)TEST_PUBLIC_KEY, strlen(TEST_PUBLIC_KEY), true, output, sizeof(output), &output_length);
+    s = cecies_encrypt((unsigned char*)TEST_STRING, sizeof(TEST_STRING), (unsigned char*)TEST_PUBLIC_KEY, strlen(TEST_PUBLIC_KEY), true, encrypted_string, sizeof(encrypted_string), &encrypted_string_length);
 
-    printf("Encrypted string:\n%s\n\n", output);
+    printf("Encrypted string:\n%s\n\n", encrypted_string);
 
     size_t decrypted_string_length;
     char decrypted_string[256];
     memset(decrypted_string, 0x00, sizeof(decrypted_string));
 
-    cecies_decrypt(output, output_length, (unsigned char*)TEST_PRIVATE_KEY, strlen(TEST_PRIVATE_KEY), true, (unsigned char*)decrypted_string, sizeof(decrypted_string), &decrypted_string_length);
+    s = cecies_decrypt(encrypted_string, encrypted_string_length, (unsigned char*)TEST_PRIVATE_KEY, strlen(TEST_PRIVATE_KEY), true, (unsigned char*)decrypted_string, sizeof(decrypted_string), &decrypted_string_length);
 
     printf("Decrypted string: %s \n\n", decrypted_string);
 }

@@ -55,11 +55,12 @@ static inline size_t cecies_calc_aes_cbc_ciphertext_length(const size_t plaintex
  */
 static inline size_t cecies_calc_output_buffer_needed_size(const size_t plaintext_length)
 {
+    // Data length: 8
+    // IV length: 16
+    // Salt length: 32
     // R length: 113
-    // IV length: 32
-    // Salt length: 16
 
-    return 16 + 32 + 113 + cecies_calc_aes_cbc_ciphertext_length(plaintext_length);
+    return 8 + 16 + 32 + 113 + cecies_calc_aes_cbc_ciphertext_length(plaintext_length);
 }
 
 /**
