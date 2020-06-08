@@ -24,6 +24,10 @@ extern "C" {
 #include <stddef.h>
 #include <stdint.h>
 
+#define CECIES_ENCRYPT_ERROR_CODE_NULL_ARG 1000
+#define CECIES_ENCRYPT_ERROR_CODE_INVALID_ARG 1001
+#define CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE 1002
+
 /***
  * Asymmetrically encrypts the given data using ECIES over Curve448.
  * @param data The data to encrypt.

@@ -14,104 +14,170 @@
    limitations under the License.
 */
 
-#include <mbedtls/pk.h>
+#include <string.h>
+#include <mbedtls/aes.h>
 #include <mbedtls/ecdh.h>
+#include <mbedtls/pkcs5.h>
 #include <mbedtls/entropy.h>
 #include <mbedtls/platform.h>
 #include <mbedtls/ctr_drbg.h>
+#include <mbedtls/md_internal.h>
+
+#include "cecies/util.h"
 #include "cecies/encrypt.h"
 
-static inline long long int get_random_pers_int()
-{
-    const long long int min = 100000000000;
-    const long long int max = 999999999999;
-    return min + rand() / (RAND_MAX / (max - min + 1) + 1);
-}
+static const unsigned char empty32[32] = {
+    //
+    0x00, 0x00, 0x00, 0x00, //
+    0x00, 0x00, 0x00, 0x00, //
+    0x00, 0x00, 0x00, 0x00, //
+    0x00, 0x00, 0x00, 0x00, //
+    0x00, 0x00, 0x00, 0x00, //
+    0x00, 0x00, 0x00, 0x00, //
+    0x00, 0x00, 0x00, 0x00, //
+    0x00, 0x00, 0x00, 0x00, //
+};
 
 int cecies_encrypt(const unsigned char* data, const size_t data_length, const unsigned char* public_key, const size_t public_key_length, unsigned char* output, const size_t output_bufsize, size_t* output_length)
 {
-    int ret = 1;
+    int r = 1;
 
-    mbedtls_pk_context pk;
-    mbedtls_ecdh_context ecdh;
+    if (output_bufsize < cecies_calc_output_buffer_needed_size(data_length))
+    {
+        fprintf(stderr, "CECIES encryption failed: output buffer too small!\n");
+        return CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE;
+    }
+
+    mbedtls_aes_context aes;
+    mbedtls_ecp_group ecp_group;
+    mbedtls_ecp_point aes_key_ecp;
+    mbedtls_ecp_point public_key_ecp;
+    mbedtls_ecp_point ephemeral_key_public;
+    mbedtls_mpi ephemeral_key_private;
     mbedtls_entropy_context entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
+    mbedtls_md_context_t md_context;
 
-    char pers[32];
-    unsigned char shared_secret[64];
-
-    srand(time(NULL) * time(NULL));
-    snprintf(pers, sizeof(pers), "cecies_PERS_#!$\\+@100%d", get_random_pers_int());
-
-    mbedtls_pk_init(&pk);
-    mbedtls_ecdh_init(&ecdh);
+    mbedtls_aes_init(&aes);
+    mbedtls_ecp_group_init(&ecp_group);
+    mbedtls_ecp_point_init(&aes_key_ecp);
+    mbedtls_ecp_point_init(&public_key_ecp);
+    mbedtls_ecp_point_init(&ephemeral_key_public);
+    mbedtls_mpi_init(&ephemeral_key_private);
     mbedtls_entropy_init(&entropy);
     mbedtls_ctr_drbg_init(&ctr_drbg);
+    mbedtls_md_init(&md_context);
 
-    ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char*)pers, sizeof pers);
-    if (ret != 0)
+    unsigned char iv[16];
+    unsigned char salt[32];
+    unsigned char aes_key[32];
+    unsigned char aes_key_base[57];
+
+    memset(iv, 0x00, sizeof(iv));
+    memset(salt, 0x00, sizeof(salt));
+    memset(aes_key, 0x00, sizeof(aes_key));
+    memset(aes_key_base, 0x00, sizeof(aes_key_base));
+
+    unsigned char pers[32];
+    snprintf((char*)pers, sizeof(pers), "cecies_PERS_#!$\\+@23%llu", cecies_get_random_12digit_integer());
+
+    r = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, sizeof(pers));
+    if (r != 0)
     {
-        mbedtls_printf(" failed\n  ! mbedtls_ctr_drbg_seed returned %d\n", ret);
+        fprintf(stderr, "MbedTLS PRNG seed failed! mbedtls_ctr_drbg_seed returned %d\n", r);
         goto exit;
     }
 
-    ret = mbedtls_pk_parse_public_key(&pk, public_key, public_key_length+1);
-
-    if (ret != 0)
+    r = mbedtls_ecp_group_load(&ecp_group, MBEDTLS_ECP_DP_CURVE448);
+    if (r != 0)
     {
-        mbedtls_printf(" failed\n  ! mbedtls_pk_parse_public_key returned %d\n", ret);
+        fprintf(stderr, "MbedTLS ECP group setup failed! mbedtls_ecp_group_load returned %d\n", r);
         goto exit;
     }
 
-    ret = mbedtls_ecp_group_load(&ecdh.grp, MBEDTLS_ECP_DP_CURVE448);
-    if (ret != 0)
+    r = mbedtls_ecp_gen_keypair(&ecp_group, &ephemeral_key_private, &ephemeral_key_public, mbedtls_ctr_drbg_random, &ctr_drbg);
+    if (r != 0)
     {
-        mbedtls_printf(" failed\n  ! mbedtls_ecp_group_load returned %d\n", ret);
+        fprintf(stderr, "Ephemeral keypair generation failed! mbedtls_ecp_gen_keypair returned %d\n", r);
         goto exit;
     }
 
-    ret = mbedtls_ecdh_gen_public(&ecdh.grp, &ecdh.d, &ecdh.Q, mbedtls_ctr_drbg_random, &ctr_drbg);
-    if (ret != 0)
+    r = mbedtls_ecp_mul(&ecp_group, &aes_key_ecp, &ephemeral_key_private, &public_key_ecp, mbedtls_ctr_drbg_random, &ctr_drbg);
+    if (r != 0)
     {
-        mbedtls_printf(" failed\n  ! mbedtls_ecdh_gen_public returned %d\n", ret);
+        fprintf(stderr, "ECP scalar multiplication failed! mbedtls_ecp_mul returned %d\n", r);
         goto exit;
     }
 
-    ret = mbedtls_mpi_lset(&ecdh.Qp.Z, 1);
-    if (ret != 0)
+    r = mbedtls_ecp_point_write_binary(&ecp_group, &aes_key_ecp, MBEDTLS_ECP_PF_COMPRESSED, NULL, aes_key_base, sizeof(aes_key_base));
+    if (r != 0)
     {
-        mbedtls_printf(" failed\n  ! mbedtls_mpi_lset returned %d\n", ret);
+        fprintf(stderr, "ECIES encryption failed! mbedtls_ecp_point_write_binary returned %d\n", r);
         goto exit;
     }
 
-    //ret = mbedtls_mpi_read_binary(&ecdh.Qp.X, srv_to_cli, sizeof(srv_to_cli));
-    if (ret != 0)
+    r = mbedtls_ctr_drbg_random(&ctr_drbg, salt, sizeof(salt));
+    if (r != 0 || memcmp(salt, empty32, 32) == 0)
     {
-        mbedtls_printf(" failed\n  ! mbedtls_mpi_read_binary returned %d\n", ret);
+        fprintf(stderr, "Salt generation failed! mbedtls_ctr_drbg_random returned %d\n", r);
         goto exit;
     }
 
-    ret = mbedtls_ecdh_compute_shared(&ecdh.grp, &ecdh.z, &ecdh.Qp, &ecdh.d, mbedtls_ctr_drbg_random, &ctr_drbg);
-    if (ret != 0)
+    r = mbedtls_ctr_drbg_random(&ctr_drbg, iv, sizeof(iv));
+    if (r != 0 || memcmp(iv, empty32, 16) == 0)
     {
-        mbedtls_printf(" failed\n  ! mbedtls_ecdh_compute_shared returned %d\n", ret);
+        fprintf(stderr, "IV generation failed! mbedtls_ctr_drbg_random returned %d\n", r);
         goto exit;
     }
 
-    ret = mbedtls_mpi_write_binary(&ecdh.z, shared_secret, sizeof(shared_secret));
-    if (ret != 0)
+    r = mbedtls_md_setup(&md_context, mbedtls_md_info_from_type(MBEDTLS_MD_SHA512), 0);
+    if (r != 0)
     {
-        mbedtls_printf(" failed\n  ! mbedtls_mpi_write_binary returned %d\n", ret);
+        fprintf(stderr, "MbedTLS MD context (SHA512) setup failed! mbedtls_md_setup returned %d\n", r);
         goto exit;
     }
 
-    ret = 0;
+    r = mbedtls_pkcs5_pbkdf2_hmac(&md_context, aes_key_base, sizeof(aes_key_base), salt, sizeof(salt), 16384, 32, aes_key);
+    if (r != 0 || memcmp(aes_key, empty32, 32) == 0)
+    {
+        fprintf(stderr, "PBKDF2 failed! mbedtls_pkcs5_pbkdf2_hmac returned %d\n", r);
+        goto exit;
+    }
+
+    r = mbedtls_aes_setkey_enc(&aes, aes_key, 256);
+    if (r != 0)
+    {
+        fprintf(stderr, "AES key setup failed! mbedtls_aes_setkey_enc returned %d\n", r);
+        goto exit;
+    }
+
+    memcpy(output, iv, sizeof(iv));
+    memcpy(output + sizeof(iv), salt, sizeof(salt));
+
+    r = mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_ENCRYPT, cecies_calc_aes_cbc_ciphertext_length(data_length), iv, data, output);
+    if (r != 0)
+    {
+        fprintf(stderr, "AES-CBC encryption failed! mbedtls_aes_crypt_cbc returned %d\n", r);
+        goto exit;
+    }
 
 exit:
 
-    mbedtls_ecdh_free(&ecdh);
-    mbedtls_ctr_drbg_free(&ctr_drbg);
+    mbedtls_aes_free(&aes);
+    mbedtls_ecp_group_free(&ecp_group);
+    mbedtls_ecp_point_free(&aes_key_ecp);
+    mbedtls_ecp_point_free(&public_key_ecp);
+    mbedtls_ecp_point_free(&ephemeral_key_public);
+    mbedtls_mpi_free(&ephemeral_key_private);
     mbedtls_entropy_free(&entropy);
+    mbedtls_ctr_drbg_free(&ctr_drbg);
+    mbedtls_md_free(&md_context);
 
-    return (ret);
+    memset(iv, 0x00, sizeof(iv));
+    memset(salt, 0x00, sizeof(salt));
+    memset(pers, 0x00, sizeof(pers));
+    memset(aes_key, 0x00, sizeof(aes_key));
+    memset(aes_key_base, 0x00, sizeof(aes_key_base));
+
+    return (r);
 }

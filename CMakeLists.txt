@@ -28,6 +28,7 @@ set(${PROJECT_NAME}_INCLUDE_DIR
         )
 
 set(${PROJECT_NAME}_HEADERS
+        ${CMAKE_CURRENT_LIST_DIR}/include/cecies/util.h
         ${CMAKE_CURRENT_LIST_DIR}/include/cecies/encrypt.h
         ${CMAKE_CURRENT_LIST_DIR}/include/cecies/decrypt.h
         )
