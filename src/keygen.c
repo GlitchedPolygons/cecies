@@ -15,17 +15,18 @@
 */
 
 #include <string.h>
-#include <mbedtls/aes.h>
 #include <mbedtls/ecdh.h>
-#include <mbedtls/pkcs5.h>
 #include <mbedtls/base64.h>
 #include <mbedtls/entropy.h>
-#include <mbedtls/platform.h>
 #include <mbedtls/ctr_drbg.h>
-#include <mbedtls/md_internal.h>
 
 #include "cecies/util.h"
 #include "cecies/keygen.h"
+
+static inline size_t calc_base64_length(const size_t data_length)
+{
+    return (4 * data_length / 3 + 3) & ~3;
+}
 
 int cecies_generate_curve448_keypair(const bool base64, unsigned char* output_private_key_buffer, const size_t output_private_key_buffer_size, size_t* output_private_key_buffer_length, unsigned char* output_public_key_buffer, const size_t output_public_key_buffer_size, size_t* output_public_key_buffer_length, unsigned char* additional_entropy, const size_t additional_entropy_length)
 {
@@ -83,6 +84,8 @@ int cecies_generate_curve448_keypair(const bool base64, unsigned char* output_pr
         goto exit;
     }
 
+    // Generate EC key-pair.
+
     ret = mbedtls_ecp_gen_keypair(&ecp_group, &r, &R, mbedtls_ctr_drbg_random, &ctr_drbg);
     if (ret != 0)
     {
@@ -90,34 +93,70 @@ int cecies_generate_curve448_keypair(const bool base64, unsigned char* output_pr
         goto exit;
     }
 
+    // Write private key into temporary buffer.
+
     ret = mbedtls_mpi_write_binary(&r, prvkeybuf, sizeof(prvkeybuf));
     if (ret != 0)
     {
-        fprintf(stderr, "Writing generated private key into output buffer failed! mbedtls_mpi_write_binary returned %d\n", ret);
+        fprintf(stderr, "Writing generated private key into temporary buffer failed! mbedtls_mpi_write_binary returned %d\n", ret);
         goto exit;
     }
 
     prvkeybuflen = mbedtls_mpi_size(&r);
 
-    if (output_private_key_buffer_size < prvkeybuflen)
+    // Check private key output buffer size.
+
+    if (output_private_key_buffer_size < (base64 ? calc_base64_length(prvkeybuflen) : prvkeybuflen))
     {
         ret = CECIES_KEYGEN_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE;
         fprintf(stderr, "Writing generated private key into output buffer failed because the buffer is too small! \n");
         goto exit;
     }
 
-    *output_private_key_buffer_length = prvkeybuflen;
-    memcpy(output_private_key_buffer, prvkeybuf + (sizeof(prvkeybuf) - prvkeybuflen), prvkeybuflen);
+    // Write public key into temporary buffer.
 
     ret = mbedtls_ecp_point_write_binary(&ecp_group, &R, MBEDTLS_ECP_PF_UNCOMPRESSED, &pubkeybuflen, pubkeybuf, sizeof(pubkeybuf));
     if (ret != 0)
     {
-        fprintf(stderr, "Writing generated public key into output buffer failed! mbedtls_ecp_point_write_binary returned %d\n", ret);
+        fprintf(stderr, "Writing generated public key into temporary buffer failed! mbedtls_ecp_point_write_binary returned %d\n", ret);
         goto exit;
     }
 
-    *output_public_key_buffer_length = pubkeybuflen;
-    memcpy(output_public_key_buffer, pubkeybuf, pubkeybuflen);
+    // Check public key output buffer size.
+
+    if (output_public_key_buffer_size < (base64 ? calc_base64_length(pubkeybuflen) : pubkeybuflen))
+    {
+        ret = CECIES_KEYGEN_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE;
+        fprintf(stderr, "Writing generated public key into output buffer failed because the buffer is too small! \n");
+        goto exit;
+    }
+
+    // Write keys out into their output buffer.
+
+    if (base64)
+    {
+        ret = mbedtls_base64_encode(output_private_key_buffer, output_private_key_buffer_size, output_private_key_buffer_length, prvkeybuf + (sizeof(prvkeybuf) - prvkeybuflen), prvkeybuflen);
+        if (ret != 0)
+        {
+            fprintf(stderr, "Writing generated public key into output buffer failed! mbedtls_ecp_point_write_binary returned %d\n", ret);
+            goto exit;
+        }
+
+        ret = mbedtls_base64_encode(output_public_key_buffer, output_public_key_buffer_size, output_public_key_buffer_length, pubkeybuf, pubkeybuflen);
+        if (ret != 0)
+        {
+            fprintf(stderr, "Writing generated public key into output buffer failed! mbedtls_ecp_point_write_binary returned %d\n", ret);
+            goto exit;
+        }
+    }
+    else
+    {
+        *output_private_key_buffer_length = prvkeybuflen;
+        memcpy(output_private_key_buffer, prvkeybuf + (sizeof(prvkeybuf) - prvkeybuflen), prvkeybuflen);
+
+        *output_public_key_buffer_length = pubkeybuflen;
+        memcpy(output_public_key_buffer, pubkeybuf, pubkeybuflen);
+    }
 
 exit:
 
@@ -126,6 +165,10 @@ exit:
     mbedtls_ctr_drbg_free(&ctr_drbg);
     mbedtls_mpi_free(&r);
     mbedtls_ecp_point_free(&R);
+
+    memset(pers, 0x00, sizeof(pers));
+    memset(prvkeybuf, 0x00, sizeof(prvkeybuf));
+    memset(pubkeybuf, 0x00, sizeof(pubkeybuf));
 
     return (ret);
 }
