@@ -25,14 +25,6 @@
  */
 static const char TEST_STRING[] = "Lorem ipsum dolor sick fuck amend something something ...";
 
-/*
- *     The following test keys were generated using OpenSSL 1.1.1:
- *
- *          openssl genpkey -algorithm X448 -out private.key.pem
- *          openssl pkey -in private.key.pem -pubout -out public.key.pem
- *
- */
-
 static const char TEST_PUBKEY[] = "BKq8EdAQ9UFQylD+VeJ8EfjbsMYm0eVprZANBTnqDRx4j/HWjYFyuo8IZ+vfz0rH/GT4SBQrqhWSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
 
 static const char TEST_PRVKEY[] = "-----BEGIN PRIVATE KEY-----\n"
