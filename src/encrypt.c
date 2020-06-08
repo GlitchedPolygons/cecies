@@ -71,12 +71,15 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
     unsigned char iv[16];
     unsigned char salt[32];
     unsigned char aes_key[32];
-    unsigned char aes_key_base[57];
+    unsigned char aes_key_base[256];
+    unsigned char ephemeral_key_public_bytes[256];
+    size_t ephemeral_key_public_bytes_length = 0, aes_key_base_length = 0;
 
     memset(iv, 0x00, sizeof(iv));
     memset(salt, 0x00, sizeof(salt));
     memset(aes_key, 0x00, sizeof(aes_key));
     memset(aes_key_base, 0x00, sizeof(aes_key_base));
+    memset(ephemeral_key_public_bytes, 0x00, sizeof(ephemeral_key_public_bytes));
 
     unsigned char pers[32];
     snprintf((char*)pers, sizeof(pers), "cecies_PERS_#!$\\+@23%llu", cecies_get_random_12digit_integer());
@@ -109,7 +112,14 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
         goto exit;
     }
 
-    r = mbedtls_ecp_point_write_binary(&ecp_group, &aes_key_ecp, MBEDTLS_ECP_PF_COMPRESSED, NULL, aes_key_base, sizeof(aes_key_base));
+    r = mbedtls_ecp_point_write_binary(&ecp_group, &aes_key_ecp, MBEDTLS_ECP_PF_UNCOMPRESSED, &aes_key_base_length, aes_key_base, sizeof(aes_key_base));
+    if (r != 0)
+    {
+        fprintf(stderr, "ECIES encryption failed! mbedtls_ecp_point_write_binary returned %d\n", r);
+        goto exit;
+    }
+
+    r = mbedtls_ecp_point_write_binary(&ecp_group, &aes_key_ecp, MBEDTLS_ECP_PF_UNCOMPRESSED, &ephemeral_key_public_bytes_length, ephemeral_key_public_bytes, sizeof(ephemeral_key_public_bytes));
     if (r != 0)
     {
         fprintf(stderr, "ECIES encryption failed! mbedtls_ecp_point_write_binary returned %d\n", r);
@@ -178,6 +188,7 @@ exit:
     memset(pers, 0x00, sizeof(pers));
     memset(aes_key, 0x00, sizeof(aes_key));
     memset(aes_key_base, 0x00, sizeof(aes_key_base));
+    memset(ephemeral_key_public_bytes, 0x00, sizeof(ephemeral_key_public_bytes));
 
     return (r);
 }
