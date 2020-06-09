@@ -65,11 +65,11 @@ int cecies_generate_curve448_keypair(const bool base64, unsigned char* output_pr
 
     if (additional_entropy != NULL && additional_entropy_length > 0)
     {
-        snprintf((char*)pers, sizeof(pers), "%llu%s", cecies_get_random_12digit_integer(), additional_entropy);
+        snprintf((char*)pers, sizeof(pers), "%llu%s", cecies_get_random_big_integer(), additional_entropy);
     }
     else
     {
-        snprintf((char*)pers, sizeof(pers), "cecies_PERS_#!$\\+@74%llu", cecies_get_random_12digit_integer());
+        snprintf((char*)pers, sizeof(pers), "cecies_PERS_#!$\\+@74%llu", cecies_get_random_big_integer());
     }
 
     ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, sizeof(pers));

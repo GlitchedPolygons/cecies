@@ -15,12 +15,11 @@
 */
 
 #include <string.h>
-#include <mbedtls/aes.h>
+#include <mbedtls/gcm.h>
 #include <mbedtls/ecdh.h>
 #include <mbedtls/pkcs5.h>
 #include <mbedtls/base64.h>
 #include <mbedtls/entropy.h>
-#include <mbedtls/platform.h>
 #include <mbedtls/ctr_drbg.h>
 #include <mbedtls/md_internal.h>
 
@@ -46,7 +45,6 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
 
     int ret = 1;
 
-    const size_t ctlen = cecies_calc_aes_cbc_ciphertext_length(data_length);
     const size_t total_output_length = cecies_calc_output_buffer_needed_size(data_length);
 
     if (output_bufsize < total_output_length)
@@ -55,7 +53,7 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
         return CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE;
     }
 
-    mbedtls_aes_context aes_ctx;
+    mbedtls_gcm_context aes_ctx;
     mbedtls_ecp_group ecp_group;
     mbedtls_md_context_t md_ctx;
     mbedtls_entropy_context entropy;
@@ -67,7 +65,7 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
     mbedtls_ecp_point S;
     mbedtls_ecp_point QA;
 
-    mbedtls_aes_init(&aes_ctx);
+    mbedtls_gcm_init(&aes_ctx);
     mbedtls_ecp_group_init(&ecp_group);
     mbedtls_md_init(&md_ctx);
     mbedtls_entropy_init(&entropy);
@@ -92,17 +90,7 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
     memset(R_bytes, 0x00, sizeof(R_bytes));
 
     unsigned char pers[32];
-    snprintf((char*)pers, sizeof(pers), "cecies_PERS_#!$\\+@23%llu", cecies_get_random_12digit_integer());
-
-    unsigned char* databuf = calloc(ctlen, sizeof(unsigned char));
-    if (databuf == NULL)
-    {
-        fprintf(stderr, "ECIES encryption failed: out of memory!");
-        ret = CECIES_ENCRYPT_ERROR_CODE_OUT_OF_MEMORY;
-        goto exit;
-    }
-
-    memcpy(databuf, data, data_length);
+    snprintf((char*)pers, sizeof(pers), "cecies_PERS_#!$\\+@23%llu", cecies_get_random_big_integer());
 
     ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, sizeof(pers));
     if (ret != 0)
@@ -219,22 +207,28 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
         goto exit;
     }
 
-    ret = mbedtls_aes_setkey_enc(&aes_ctx, aes_key, 256);
+    ret = mbedtls_gcm_setkey(&aes_ctx, MBEDTLS_CIPHER_ID_AES, aes_key, 256);
     if (ret != 0)
     {
-        fprintf(stderr, "AES key setup failed! mbedtls_aes_setkey_enc returned %d\n", ret);
+        fprintf(stderr, "AES key setup failed! mbedtls_gcm_setkey returned %d\n", ret);
         goto exit;
     }
 
-    memcpy(output, &data_length, 8);
-    memcpy(output + 8, iv, 16);
-    memcpy(output + 8 + 16, salt, 32);
-    memcpy(output + 8 + 16 + 32, R_bytes, R_bytes_length); // Uncompressed ECP point takes up 113 bytes.
+    unsigned char* o = output;
 
-    ret = mbedtls_aes_crypt_cbc(&aes_ctx, MBEDTLS_AES_ENCRYPT, ctlen, iv, databuf, output + (total_output_length - ctlen));
+    memcpy(o, iv, 16);
+    o += 16;
+
+    memcpy(o, salt, 32);
+    o += 32;
+
+    memcpy(o, R_bytes, R_bytes_length); // Uncompressed ECP point takes up 113 bytes.
+    o += R_bytes_length;
+
+    ret = mbedtls_gcm_crypt_and_tag(&aes_ctx, MBEDTLS_GCM_ENCRYPT, data_length, iv, 16, NULL, 0, data, o + 16, 16, o);
     if (ret != 0)
     {
-        fprintf(stderr, "AES-CBC encryption failed! mbedtls_aes_crypt_cbc returned %d\n", ret);
+        fprintf(stderr, "AES-GCM encryption failed! mbedtls_gcm_crypt_and_tag returned %d\n", ret);
         goto exit;
     }
 
@@ -242,7 +236,7 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
 
 exit:
 
-    mbedtls_aes_free(&aes_ctx);
+    mbedtls_gcm_free(&aes_ctx);
     mbedtls_ecp_group_free(&ecp_group);
     mbedtls_md_free(&md_ctx);
     mbedtls_entropy_free(&entropy);
@@ -259,6 +253,5 @@ exit:
     memset(S_bytes, 0x00, sizeof(S_bytes));
     memset(R_bytes, 0x00, sizeof(R_bytes));
 
-    free(databuf);
     return (ret);
 }

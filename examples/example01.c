@@ -33,6 +33,9 @@ int main(void)
 {
     int s = 1;
 
+    // sizeof(TEST_STRING) instead of strlen(TEST_STRING) because we also want to encrypt the NUL-terminator character along. Never forget the NUL-terminator in C-strings!
+    const size_t TEST_STRING_LENGTH = sizeof(TEST_STRING);
+
     printf("\n---- CECIES ----\n-- Example 01 --\n\n");
     printf("Encrypting the following string:\n%s\n\n", TEST_STRING);
 
@@ -40,16 +43,15 @@ int main(void)
     unsigned char encrypted_string[1024];
     memset(encrypted_string, 0x00, sizeof(encrypted_string));
 
-    // sizeof(TEST_STRING) instead of strlen(TEST_STRING) because we also want to encrypt the NUL-terminator character along. Never forget the NUL-terminator in C-strings!
-    s = cecies_encrypt((unsigned char*)TEST_STRING, sizeof(TEST_STRING), (unsigned char*)TEST_PUBLIC_KEY, strlen(TEST_PUBLIC_KEY), true, encrypted_string, sizeof(encrypted_string), &encrypted_string_length);
+    s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, (unsigned char*)TEST_PUBLIC_KEY, strlen(TEST_PUBLIC_KEY), true, encrypted_string, sizeof(encrypted_string), &encrypted_string_length);
 
     printf("Encrypted string:\n%s\n\n", encrypted_string);
 
     size_t decrypted_string_length;
-    char decrypted_string[256];
+    char decrypted_string[1024];
     memset(decrypted_string, 0x00, sizeof(decrypted_string));
 
     s = cecies_decrypt(encrypted_string, encrypted_string_length, (unsigned char*)TEST_PRIVATE_KEY, strlen(TEST_PRIVATE_KEY), true, (unsigned char*)decrypted_string, sizeof(decrypted_string), &decrypted_string_length);
 
-    printf("Decrypted string: %s \n\n", decrypted_string);
+    printf("Decrypted string:\n%s\n\n", decrypted_string);
 }

@@ -27,15 +27,13 @@ extern "C" {
 #include <stdint.h>
 
 /**
- * Gets a random 12 digit integer (only limited randomness due to usage of <c>rand()</c>).
- * @return Random number [100000000000; 999999999999]
+ * Gets a random big integer (only featuring limited randomness due to usage of <c>rand()</c>).
+ * @return Random big number
  */
-static inline unsigned long long int cecies_get_random_12digit_integer()
+static inline unsigned long long int cecies_get_random_big_integer()
 {
     srand(time(NULL) * time(NULL));
-    const unsigned long long int min = 100000000000;
-    const unsigned long long int max = 999999999999;
-    return min + rand() / (RAND_MAX / (max - min + 1) + 1);
+    return rand() * rand() * rand()* rand();
 }
 
 /**
@@ -55,12 +53,13 @@ static inline size_t cecies_calc_aes_cbc_ciphertext_length(const size_t plaintex
  */
 static inline size_t cecies_calc_output_buffer_needed_size(const size_t plaintext_length)
 {
-    // Data length: 8
-    // IV length: 16
-    // Salt length: 32
-    // R length: 113
+    //     1    2    3     4
+    return 16 + 32 + 113 + 16 + plaintext_length;
 
-    return 8 + 16 + 32 + 113 + cecies_calc_aes_cbc_ciphertext_length(plaintext_length);
+    // 1: IV
+    // 2: Salt
+    // 3: R
+    // 4: Tag
 }
 
 /**

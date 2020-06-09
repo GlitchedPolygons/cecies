@@ -18,7 +18,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include <mbedtls/aes.h>
+#include <mbedtls/gcm.h>
 #include <mbedtls/ecdh.h>
 #include <mbedtls/pkcs5.h>
 #include <mbedtls/base64.h>
@@ -41,7 +41,7 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
         return CECIES_DECRYPT_ERROR_CODE_NULL_ARG;
     }
 
-    if (encrypted_data_length < 162 //
+    if (encrypted_data_length < 178 //
             || private_key_length == 0 //
             || output_bufsize == 0)
     {
@@ -49,7 +49,9 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
         return CECIES_DECRYPT_ERROR_CODE_INVALID_ARG;
     }
 
-    if (output_bufsize < encrypted_data_length)
+    const size_t olen = encrypted_data_length - 16 - 32 - 113 - 16;
+
+    if (output_bufsize < olen)
     {
         fprintf(stderr, "ECIES decryption failed due to insufficient output buffer size. Please allocate at least as many bytes as the encrypted input buffer to be sure.");
         return CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE;
@@ -58,6 +60,7 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
     int ret = 1;
 
     unsigned char iv[16];
+    unsigned char tag[16];
     unsigned char salt[32];
     unsigned char aes_key[32];
     unsigned char R_bytes[256];
@@ -65,7 +68,6 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
     unsigned char private_key_bytes[256];
     const size_t R_bytes_length = 113;
     size_t private_key_bytes_length, S_bytes_length;
-    uint64_t olen;
 
     memset(iv, 0x00, 16);
     memset(salt, 0x00, 32);
@@ -75,7 +77,7 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
     memset(private_key_bytes, 0x00, sizeof(private_key_bytes));
 
     mbedtls_ecp_group ecp_group;
-    mbedtls_aes_context aes_ctx;
+    mbedtls_gcm_context aes_ctx;
     mbedtls_md_context_t md_ctx;
     mbedtls_entropy_context entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
@@ -86,7 +88,7 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
     mbedtls_ecp_point S;
 
     mbedtls_ecp_group_init(&ecp_group);
-    mbedtls_aes_init(&aes_ctx);
+    mbedtls_gcm_init(&aes_ctx);
     mbedtls_md_init(&md_ctx);
     mbedtls_entropy_init(&entropy);
     mbedtls_ctr_drbg_init(&ctr_drbg);
@@ -102,7 +104,7 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
     }
 
     unsigned char pers[32];
-    snprintf((char*)pers, sizeof(pers), "cecies_PERS_#^¨\\@+86%llu", cecies_get_random_12digit_integer());
+    snprintf((char*)pers, sizeof(pers), "cecies_PERS_#^¨\\@+86%llu", cecies_get_random_big_integer());
 
     ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, sizeof(pers));
     if (ret != 0)
@@ -111,19 +113,12 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
         goto exit;
     }
 
-    memcpy(&olen, encrypted_data, 8);
-    memcpy(iv, encrypted_data + 8, 16);
-    memcpy(salt, encrypted_data + 8 + 16, 32);
-    memcpy(R_bytes, encrypted_data + 8 + 16 + 32, R_bytes_length);
+    memcpy(iv, encrypted_data, 16);
+    memcpy(salt, encrypted_data + 16, 32);
+    memcpy(R_bytes, encrypted_data + 16 + 32, R_bytes_length);
+    memcpy(tag, encrypted_data + 16 + 32 + R_bytes_length, 16);
 
-    const unsigned char* ciphertext = encrypted_data + 8 + 16 + 32 + R_bytes_length;
-    const size_t ciphertext_length = encrypted_data_length - 8 - 16 - 32 - R_bytes_length;
-
-    if (ciphertext_length % 16)
-    {
-        fprintf(stderr, "ECIES decryption failed: invalid ciphertext (block size alignment).");
-        goto exit;
-    }
+    const unsigned char* ciphertext = encrypted_data + 16 + 32 + R_bytes_length + 16;
 
     if (private_key_base64)
     {
@@ -188,17 +183,17 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
         goto exit;
     }
 
-    ret = mbedtls_aes_setkey_dec(&aes_ctx, aes_key, 256);
+    ret = mbedtls_gcm_setkey(&aes_ctx, MBEDTLS_CIPHER_ID_AES, aes_key, 256);
     if (ret != 0)
     {
-        fprintf(stderr, "AES key setup failed! mbedtls_aes_setkey_dec returned %d\n", ret);
+        fprintf(stderr, "AES key setup failed! mbedtls_gcm_setkey returned %d\n", ret);
         goto exit;
     }
 
-    ret = mbedtls_aes_crypt_cbc(&aes_ctx, MBEDTLS_AES_DECRYPT, ciphertext_length, iv, ciphertext, output);
+    ret = mbedtls_gcm_auth_decrypt(&aes_ctx, olen, iv, 16, NULL, 0, tag, 16, ciphertext, output);
     if (ret != 0)
     {
-        fprintf(stderr, "ECIES decryption failed! mbedtls_aes_crypt_cbc returned %d\n", ret);
+        fprintf(stderr, "ECIES decryption failed! mbedtls_gcm_auth_decrypt returned %d\n", ret);
         goto exit;
     }
 
@@ -207,7 +202,7 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
 exit:
 
     mbedtls_ecp_group_free(&ecp_group);
-    mbedtls_aes_free(&aes_ctx);
+    mbedtls_gcm_free(&aes_ctx);
     mbedtls_md_free(&md_ctx);
     mbedtls_entropy_free(&entropy);
     mbedtls_ctr_drbg_free(&ctr_drbg);
