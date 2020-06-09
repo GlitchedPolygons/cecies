@@ -181,7 +181,7 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
         goto exit;
     }
 
-    ret = mbedtls_pkcs5_pbkdf2_hmac(&md_ctx, S_bytes, S_bytes_length, salt, 32, 16384, 32, aes_key);
+    ret = mbedtls_pkcs5_pbkdf2_hmac(&md_ctx, S_bytes, S_bytes_length, salt, 32, 1024 * 256, 32, aes_key);
     if (ret != 0 || memcmp(aes_key, empty32, 32) == 0)
     {
         fprintf(stderr, "PBKDF2 failed! mbedtls_pkcs5_pbkdf2_hmac returned %d\n", ret);
