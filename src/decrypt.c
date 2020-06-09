@@ -23,14 +23,13 @@
 #include <mbedtls/pkcs5.h>
 #include <mbedtls/base64.h>
 #include <mbedtls/entropy.h>
-#include <mbedtls/platform.h>
 #include <mbedtls/ctr_drbg.h>
 #include <mbedtls/md_internal.h>
 
 #include "cecies/util.h"
 #include "cecies/decrypt.h"
 
-int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_data_length, const unsigned char* private_key, const size_t private_key_length, const bool private_key_base64, unsigned char* output, const size_t output_bufsize, size_t* output_length)
+int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, const unsigned char* private_key, const size_t private_key_length, const bool private_key_base64, unsigned char* output, const size_t output_bufsize, size_t* output_length)
 {
     if (encrypted_data == NULL //
             || private_key == NULL //
@@ -49,15 +48,35 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
         return CECIES_DECRYPT_ERROR_CODE_INVALID_ARG;
     }
 
-    const size_t olen = encrypted_data_length - 16 - 32 - 113 - 16;
+    int ret = 1;
+    unsigned char* input = encrypted_data;
+    size_t input_length = encrypted_data_length;
+
+    if (encrypted_data_base64)
+    {
+        input = malloc(encrypted_data_length);
+        if (input == NULL)
+        {
+            fprintf(stderr, "ECIES decryption failed: OUT OF MEMORY!");
+            return CECIES_DECRYPT_ERROR_CODE_OUT_OF_MEMORY;
+        }
+
+        ret = mbedtls_base64_decode(input, encrypted_data_length, &input_length, encrypted_data, encrypted_data_length);
+        if (ret != 0)
+        {
+            free(input);
+            fprintf(stderr, "ECIES decryption failed due to insufficient output buffer size. Please allocate at least as many bytes as the encrypted input buffer to be sure.");
+            return CECIES_DECRYPT_ERROR_CODE_OUT_OF_MEMORY;
+        }
+    }
+
+    const size_t olen = input_length - 16 - 32 - 113 - 16;
 
     if (output_bufsize < olen)
     {
         fprintf(stderr, "ECIES decryption failed due to insufficient output buffer size. Please allocate at least as many bytes as the encrypted input buffer to be sure.");
         return CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE;
     }
-
-    int ret = 1;
 
     unsigned char iv[16];
     unsigned char tag[16];
@@ -113,12 +132,12 @@ int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_d
         goto exit;
     }
 
-    memcpy(iv, encrypted_data, 16);
-    memcpy(salt, encrypted_data + 16, 32);
-    memcpy(R_bytes, encrypted_data + 16 + 32, R_bytes_length);
-    memcpy(tag, encrypted_data + 16 + 32 + R_bytes_length, 16);
+    memcpy(iv, input, 16);
+    memcpy(salt, input + 16, 32);
+    memcpy(R_bytes, input + 16 + 32, R_bytes_length);
+    memcpy(tag, input + 16 + 32 + R_bytes_length, 16);
 
-    const unsigned char* ciphertext = encrypted_data + 16 + 32 + R_bytes_length + 16;
+    const unsigned char* ciphertext = input + 16 + 32 + R_bytes_length + 16;
 
     if (private_key_base64)
     {
@@ -216,6 +235,11 @@ exit:
     memset(R_bytes, 0x00, sizeof(R_bytes));
     memset(S_bytes, 0x00, sizeof(S_bytes));
     memset(private_key_bytes, 0x00, sizeof(private_key_bytes));
+
+    if (encrypted_data_base64)
+    {
+        free(input);
+    }
 
     return ret;
 }

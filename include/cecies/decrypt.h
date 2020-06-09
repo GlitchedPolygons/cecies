@@ -27,11 +27,13 @@ extern "C" {
 #define CECIES_DECRYPT_ERROR_CODE_NULL_ARG 2000
 #define CECIES_DECRYPT_ERROR_CODE_INVALID_ARG 2001
 #define CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE 2002
+#define CECIES_DECRYPT_ERROR_CODE_OUT_OF_MEMORY 2003
 
 /**
  * Decrypts the given data using ECIES, Curve448 and AES256-CBC.
  * @param encrypted_data The data to decrypt.
  * @param encrypted_data_length The length of the data array.
+ * @param encrypted_data_base64 Is the input \p encrypted_data base64-encoded?
  * @param private_key The private key to decrypt the data with.
  * @param private_key_length Length of the private_key string.
  * @param private_key_base64 Is the private key base64-encoded or raw? If this is false, the key will be directly fed into mbedtls_mpi_read_binary()!
@@ -40,7 +42,7 @@ extern "C" {
  * @param output_length Where to write the output buffer length into (how many bytes were written into it).
  * @return <c>0</c> if decryption succeeded;  error codes as defined inside the header file or MbedTLS otherwise.
  */
-int cecies_decrypt(const unsigned char* encrypted_data, size_t encrypted_data_length, const unsigned char* private_key, size_t private_key_length, bool private_key_base64, unsigned char* output, size_t output_bufsize, size_t* output_length);
+int cecies_decrypt(const unsigned char* encrypted_data, size_t encrypted_data_length, bool encrypted_data_base64, const unsigned char* private_key, size_t private_key_length, bool private_key_base64, unsigned char* output, size_t output_bufsize, size_t* output_length);
 
 #ifdef __cplusplus
 } // extern "C"
