@@ -14,6 +14,12 @@
    limitations under the License.
 */
 
+/**
+ *  @file decrypt.h
+ *  @author Raphael Beck
+ *  @brief ECIES decryption implementation using Curve448, AES256-GCM and MbedTLS.
+ */
+
 #ifndef CECIES_DECRYPT_H
 #define CECIES_DECRYPT_H
 
@@ -30,7 +36,7 @@ extern "C" {
 #define CECIES_DECRYPT_ERROR_CODE_OUT_OF_MEMORY 2003
 
 /**
- * Decrypts the given data using ECIES, Curve448 and AES256-CBC.
+ * Decrypts the given data using ECIES, Curve448 and AES256-GCM.
  * @param encrypted_data The data to decrypt.
  * @param encrypted_data_length The length of the data array.
  * @param encrypted_data_base64 Is the input \p encrypted_data base64-encoded?

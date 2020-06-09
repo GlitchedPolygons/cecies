@@ -14,6 +14,12 @@
    limitations under the License.
 */
 
+/**
+ *  @file keygen.h
+ *  @author Raphael Beck
+ *  @brief Curve448 key-pair generator (exports into raw binary output buffer or base64-encoded).
+ */
+
 #ifndef CECIES_KEYGEN_H
 #define CECIES_KEYGEN_H
 

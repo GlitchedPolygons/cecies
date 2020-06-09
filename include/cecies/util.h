@@ -14,6 +14,12 @@
    limitations under the License.
 */
 
+/**
+ *  @file util.h
+ *  @author Raphael Beck
+ *  @brief Useful utility functions for CECIES.
+ */
+
 #ifndef CECIES_UTIL_H
 #define CECIES_UTIL_H
 

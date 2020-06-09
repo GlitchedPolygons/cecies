@@ -14,6 +14,12 @@
    limitations under the License.
 */
 
+/**
+ *  @file encrypt.h
+ *  @author Raphael Beck
+ *  @brief ECIES encryption implementation using Curve448, AES256-GCM and MbedTLS.
+ */
+
 #ifndef CECIES_ENCRYPT_H
 #define CECIES_ENCRYPT_H
 
@@ -31,7 +37,7 @@ extern "C" {
 #define CECIES_ENCRYPT_ERROR_CODE_OUT_OF_MEMORY 1003
 
 /**
- * Encrypts the given data using ECIES over Curve448 and AES256-CBC.
+ * Encrypts the given data using ECIES over Curve448 and AES256-GCM.
  * @param data The data to encrypt.
  * @param data_length The length of the data array.
  * @param public_key The public key to encrypt the data with.
