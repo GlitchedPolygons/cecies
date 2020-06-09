@@ -108,7 +108,7 @@ int cecies_generate_curve448_keypair(const bool base64, unsigned char* output_pr
 
     // Check private key output buffer size.
 
-    if (output_private_key_buffer_size < (base64 ? cecies_calc_base64_length(prvkeybuflen) : prvkeybuflen))
+    if (output_private_key_buffer_size < (base64 ? cecies_calc_base64_length(prvkeybuflen) + 1 : prvkeybuflen))
     {
         ret = CECIES_KEYGEN_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE;
         fprintf(stderr, "Writing generated private key into output buffer failed because the buffer is too small! \n");
@@ -126,7 +126,7 @@ int cecies_generate_curve448_keypair(const bool base64, unsigned char* output_pr
 
     // Check public key output buffer size.
 
-    if (output_public_key_buffer_size < (base64 ? cecies_calc_base64_length(pubkeybuflen) : pubkeybuflen))
+    if (output_public_key_buffer_size < (base64 ? cecies_calc_base64_length(pubkeybuflen) + 1 : pubkeybuflen))
     {
         ret = CECIES_KEYGEN_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE;
         fprintf(stderr, "Writing generated public key into output buffer failed because the buffer is too small! \n");
@@ -144,12 +144,16 @@ int cecies_generate_curve448_keypair(const bool base64, unsigned char* output_pr
             goto exit;
         }
 
+        output_private_key_buffer[*output_private_key_buffer_length] = '\0';
+
         ret = mbedtls_base64_encode(output_public_key_buffer, output_public_key_buffer_size, output_public_key_buffer_length, pubkeybuf, pubkeybuflen);
         if (ret != 0)
         {
             fprintf(stderr, "Writing generated public key into output buffer failed! mbedtls_ecp_point_write_binary returned %d\n", ret);
             goto exit;
         }
+
+        output_public_key_buffer[*output_public_key_buffer_length] = '\0';
     }
     else
     {
