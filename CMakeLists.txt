@@ -83,6 +83,7 @@ if (CECIES_ENABLE_TESTS)
     target_include_directories(run_tests
             PUBLIC ${cmocka_INCLUDE_DIR}
             PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
+            PUBLIC ${CMAKE_CURRENT_LIST_DIR}/lib/mbedtls/include
             )
 
     target_link_libraries(run_tests
