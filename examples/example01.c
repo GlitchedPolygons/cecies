@@ -43,7 +43,7 @@ int main(void)
     unsigned char encrypted_string[1024];
     memset(encrypted_string, 0x00, sizeof(encrypted_string));
 
-    s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, (unsigned char*)TEST_PUBLIC_KEY, strlen(TEST_PUBLIC_KEY), true, encrypted_string, sizeof(encrypted_string), &encrypted_string_length);
+    s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, (unsigned char*)TEST_PUBLIC_KEY, strlen(TEST_PUBLIC_KEY), true, encrypted_string, sizeof(encrypted_string), &encrypted_string_length, true);
 
     printf("Encrypted string:\n%s\n\n", encrypted_string);
 

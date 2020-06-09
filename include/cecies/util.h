@@ -56,10 +56,10 @@ static inline size_t cecies_calc_output_buffer_needed_size(const size_t plaintex
     //     1    2    3     4
     return 16 + 32 + 113 + 16 + plaintext_length;
 
-    // 1: IV
-    // 2: Salt
-    // 3: R
-    // 4: Tag
+    // 1:  IV
+    // 2:  Salt
+    // 3:  R
+    // 4:  Tag
 }
 
 /**

@@ -26,7 +26,7 @@
 #include "cecies/util.h"
 #include "cecies/encrypt.h"
 
-int cecies_encrypt(const unsigned char* data, const size_t data_length, const unsigned char* public_key, const size_t public_key_length, const bool public_key_base64, unsigned char* output, const size_t output_bufsize, size_t* output_length)
+int cecies_encrypt(const unsigned char* data, const size_t data_length, const unsigned char* public_key, const size_t public_key_length, const bool public_key_base64, unsigned char* output, const size_t output_bufsize, size_t* output_length, const bool output_base64)
 {
     if (data == NULL //
             || public_key == NULL //
@@ -45,7 +45,8 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
 
     int ret = 1;
 
-    const size_t total_output_length = cecies_calc_output_buffer_needed_size(data_length);
+    const size_t olen = cecies_calc_output_buffer_needed_size(data_length);
+    const size_t total_output_length = output_base64 ? cecies_calc_base64_length(olen) : olen;
 
     if (output_bufsize < total_output_length)
     {
@@ -230,6 +231,30 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
     {
         fprintf(stderr, "AES-GCM encryption failed! mbedtls_gcm_crypt_and_tag returned %d\n", ret);
         goto exit;
+    }
+
+    if (output_base64)
+    {
+        size_t b64len;
+        unsigned char* b64 = malloc(total_output_length + 1);
+        if (b64 == NULL)
+        {
+            ret = CECIES_ENCRYPT_ERROR_CODE_OUT_OF_MEMORY;
+            fprintf(stderr, "AES-GCM encryption failed while base64-encoding the output - OUT OF MEMORY! \n");
+            goto exit;
+        }
+
+        ret = mbedtls_base64_encode(b64, total_output_length + 1, &b64len, output, olen);
+        if (ret != 0)
+        {
+            fprintf(stderr, "AES-GCM encryption failed while base64-encoding! mbedtls_base64_encode returned %d\n", ret);
+            free(b64);
+            goto exit;
+        }
+
+        b64[total_output_length] = '\0';
+        memcpy(output, b64, total_output_length + 1);
+        free(b64);
     }
 
     *output_length = total_output_length;

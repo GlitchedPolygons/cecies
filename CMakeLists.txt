@@ -30,16 +30,12 @@ set(${PROJECT_NAME}_INCLUDE_DIR
 set(${PROJECT_NAME}_HEADERS
         ${CMAKE_CURRENT_LIST_DIR}/include/cecies/util.h
         ${CMAKE_CURRENT_LIST_DIR}/include/cecies/keygen.h
-        ${CMAKE_CURRENT_LIST_DIR}/include/cecies/sign.h
-        ${CMAKE_CURRENT_LIST_DIR}/include/cecies/verify.h
         ${CMAKE_CURRENT_LIST_DIR}/include/cecies/encrypt.h
         ${CMAKE_CURRENT_LIST_DIR}/include/cecies/decrypt.h
         )
 
 set(${PROJECT_NAME}_SOURCES
         ${CMAKE_CURRENT_LIST_DIR}/src/keygen.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/sign.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/verify.c
         ${CMAKE_CURRENT_LIST_DIR}/src/encrypt.c
         ${CMAKE_CURRENT_LIST_DIR}/src/decrypt.c
         )

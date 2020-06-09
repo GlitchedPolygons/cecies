@@ -40,9 +40,10 @@ extern "C" {
  * @param output Where to write the encrypted output into (please pre-allocate this big enough).
  * @param output_bufsize How big the output buffer is.
  * @param output_length Where to write the output buffer length into (this will be less than the provided output_bufsize).
+ * @param output_base64 Should the encrypted output bytes be base64-encoded for easy transmission over e.g. email?
  * @return <c>0</c> if encryption succeeded;  error codes as defined inside the header file or MbedTLS otherwise.
  */
-int cecies_encrypt(const unsigned char* data, size_t data_length, const unsigned char* public_key, size_t public_key_length, bool public_key_base64, unsigned char* output, size_t output_bufsize, size_t* output_length);
+int cecies_encrypt(const unsigned char* data, size_t data_length, const unsigned char* public_key, size_t public_key_length, bool public_key_base64, unsigned char* output, size_t output_bufsize, size_t* output_length, bool output_base64);
 
 #ifdef __cplusplus
 } // extern "C"
