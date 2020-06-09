@@ -43,6 +43,11 @@ int main(void)
     unsigned char encrypted_string[1024];
     memset(encrypted_string, 0x00, sizeof(encrypted_string));
 
+    // If you don't know how big you should allocate your output buffer to contain the encrypted data,
+    // you can make use of the cecies_calc_output_buffer_needed_size(size_t) function inside util.h!
+    // Just keep in mind that if you choose to base64-encode too, allocate cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(size_t))
+    // bytes because base64-encoding always needs more space.
+
     s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, (unsigned char*)TEST_PUBLIC_KEY, strlen(TEST_PUBLIC_KEY), true, encrypted_string, sizeof(encrypted_string), &encrypted_string_length, true);
 
     printf("Encrypted string:\n%s\n\n", encrypted_string);
