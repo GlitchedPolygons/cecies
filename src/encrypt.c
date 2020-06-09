@@ -226,6 +226,11 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
         goto exit;
     }
 
+    memcpy(output, &data_length, 8);
+    memcpy(output + 8, iv, 16);
+    memcpy(output + 8 + 16, salt, 32);
+    memcpy(output + 8 + 16 + 32, R_bytes, R_bytes_length); // Uncompressed ECP point takes up 113 bytes.
+
     ret = mbedtls_aes_crypt_cbc(&aes_ctx, MBEDTLS_AES_ENCRYPT, ctlen, iv, databuf, output + (total_output_length - ctlen));
     if (ret != 0)
     {
@@ -233,10 +238,7 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
         goto exit;
     }
 
-    memcpy(output, &data_length, 8);
-    memcpy(output + 8, iv, 16);
-    memcpy(output + 8 + 16, salt, 32);
-    memcpy(output + 8 + 16 + 32, R_bytes, R_bytes_length); // Uncompressed ECP point takes up 113 bytes.
+
 
     *output_length = total_output_length;
 
