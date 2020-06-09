@@ -54,4 +54,6 @@ int main(void)
     s = cecies_decrypt(encrypted_string, encrypted_string_length, (unsigned char*)TEST_PRIVATE_KEY, strlen(TEST_PRIVATE_KEY), true, (unsigned char*)decrypted_string, sizeof(decrypted_string), &decrypted_string_length);
 
     printf("Decrypted string:\n%s\n\n", decrypted_string);
+
+    return s;
 }

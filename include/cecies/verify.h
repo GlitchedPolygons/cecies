@@ -26,6 +26,11 @@ extern "C" {
 #include <stdlib.h>
 #include <stdint.h>
 
+#define CECIES_VERIFY_ERROR_CODE_NULL_ARG 4000
+#define CECIES_VERIFY_ERROR_CODE_INVALID_ARG 4001
+#define CECIES_VERIFY_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE 4002
+#define CECIES_VERIFY_ERROR_CODE_OUT_OF_MEMORY 4003
+
 // TODO: declare ECDSA verification functions here
 
 #ifdef __cplusplus

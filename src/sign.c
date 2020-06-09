@@ -14,4 +14,5 @@
    limitations under the License.
 */
 
+#include "cecies/util.h"
 #include "cecies/sign.h"

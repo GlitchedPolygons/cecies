@@ -37,8 +37,8 @@ extern "C" {
  * @param private_key_base64 Is the private key base64-encoded or raw? If this is false, the key will be directly fed into mbedtls_mpi_read_binary()!
  * @param output Where to write the decrypted output into (please pre-allocate this big enough).
  * @param output_bufsize How big the output buffer is. Please allocate at least \p encrypted_data_length bytes!
- * @param output_length Where to write the output buffer length into.
- * @return <c>0</c> if decryption succeeded; <c>1</c> if the data, private_key, output or output_length pointer was <c>NULL</c>; <c>2</c> if the output array is not big enough to contain the encrypted result; <c>3</c> if key parsing failed; <c>10</c> for anything else that went wrong for an undefined reason.
+ * @param output_length Where to write the output buffer length into (how many bytes were written into it).
+ * @return <c>0</c> if decryption succeeded;  error codes as defined inside the header file or MbedTLS otherwise.
  */
 int cecies_decrypt(const unsigned char* encrypted_data, size_t encrypted_data_length, const unsigned char* private_key, size_t private_key_length, bool private_key_base64, unsigned char* output, size_t output_bufsize, size_t* output_length);
 
