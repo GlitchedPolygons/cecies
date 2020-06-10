@@ -72,7 +72,14 @@ endif ()
 
 if (CECIES_ENABLE_TESTS)
 
-    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/cmocka cmocka)
+    find_package(cmocka)
+
+    if (NOT ${cmocka_FOUND})
+        message(STATUS "cmocka not found; using included version inside tests/ folder...")
+        add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/tests/cmocka cmocka)
+    else ()
+        message(STATUS "Found cmocka!")
+    endif ()
 
     add_executable(run_tests
             ${CMAKE_CURRENT_LIST_DIR}/tests/tests.c
