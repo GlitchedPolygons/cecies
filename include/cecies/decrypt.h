@@ -48,7 +48,7 @@ extern "C" {
  * @param output_length Where to write the output buffer length into (how many bytes were written into it).
  * @return <c>0</c> if decryption succeeded;  error codes as defined inside the header file or MbedTLS otherwise.
  */
-int cecies_decrypt(const unsigned char* encrypted_data, size_t encrypted_data_length, bool encrypted_data_base64, const unsigned char* private_key, size_t private_key_length, bool private_key_base64, unsigned char* output, size_t output_bufsize, size_t* output_length);
+int cecies_decrypt(unsigned char* encrypted_data, size_t encrypted_data_length, bool encrypted_data_base64, const unsigned char* private_key, size_t private_key_length, bool private_key_base64, unsigned char* output, size_t output_bufsize, size_t* output_length);
 
 #ifdef __cplusplus
 } // extern "C"
