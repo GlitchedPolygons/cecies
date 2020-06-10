@@ -237,7 +237,9 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Gets a random big integer (only featuring limited randomness due to usage of <code>rand()</code>). </p><dl class="section return"><dt>Returns</dt><dd>Random big number </dd></dl>
+<p>Gets a random big integer. This only features very limited randomness due to usage of <code>rand()</code>! </p>
+<p><b>DO NOT USE THIS FOR ANY TYPE OF KEY GENERATION!</b> </p>
+<p>Current usage is for adding some lightweight additional entropy to the MbedTLS mbedtls_ctr_drbg_seed() function, which only gives the advantage of having a slightly different per-app starting point for the seed (as stated in the MbedTLS documentation). </p><dl class="section return"><dt>Returns</dt><dd>Random big number </dd></dl>
 
 </div>
 </div>

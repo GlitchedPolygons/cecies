@@ -97,50 +97,47 @@ $(function() {
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="util_8h.html#afccad4d81076bc94026ff47bf99c582a">   39</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> <span class="keywordtype">int</span> <a class="code" href="util_8h.html#afccad4d81076bc94026ff47bf99c582a">cecies_get_random_big_integer</a>()</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;{</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    srand(time(NULL) * time(NULL));</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordflow">return</span> rand() * rand() * rand()* rand();</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="util_8h.html#a335269d0e79567b20346bd39108403b0">   50</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">size_t</span> <a class="code" href="util_8h.html#a335269d0e79567b20346bd39108403b0">cecies_calc_aes_cbc_ciphertext_length</a>(<span class="keyword">const</span> <span class="keywordtype">size_t</span> plaintext_length)</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;{</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordflow">return</span> plaintext_length + 16 - (plaintext_length % 16);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;}</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="util_8h.html#a53b58157f11abc345fa36441e60cada3">   60</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">size_t</span> <a class="code" href="util_8h.html#a53b58157f11abc345fa36441e60cada3">cecies_calc_output_buffer_needed_size</a>(<span class="keyword">const</span> <span class="keywordtype">size_t</span> plaintext_length)</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;{</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="comment">//     1    2    3     4</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordflow">return</span> 16 + 32 + 113 + 16 + plaintext_length;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="comment">// 1:  IV</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="comment">// 2:  Salt</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="comment">// 3:  R</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="comment">// 4:  Tag</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;}</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="util_8h.html#ab6f12030d84b957f37ae69c27d70c497">   76</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">size_t</span> <a class="code" href="util_8h.html#ab6f12030d84b957f37ae69c27d70c497">cecies_calc_base64_length</a>(<span class="keyword">const</span> <span class="keywordtype">size_t</span> data_length)</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;{</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keywordflow">return</span> (4 * data_length / 3 + 3) &amp; ~(unsigned)3;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;}</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> empty32[32] = {</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="comment">//</span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="util_8h.html#afccad4d81076bc94026ff47bf99c582a">   42</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> <span class="keywordtype">int</span> <a class="code" href="util_8h.html#afccad4d81076bc94026ff47bf99c582a">cecies_get_random_big_integer</a>()</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;{</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    srand(time(NULL) * time(NULL));</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordflow">return</span> rand() * rand() * rand() * rand();</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;}</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="util_8h.html#a335269d0e79567b20346bd39108403b0">   53</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">size_t</span> <a class="code" href="util_8h.html#a335269d0e79567b20346bd39108403b0">cecies_calc_aes_cbc_ciphertext_length</a>(<span class="keyword">const</span> <span class="keywordtype">size_t</span> plaintext_length)</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;{</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordflow">return</span> plaintext_length + 16 - (plaintext_length % 16);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="util_8h.html#a53b58157f11abc345fa36441e60cada3">   63</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">size_t</span> <a class="code" href="util_8h.html#a53b58157f11abc345fa36441e60cada3">cecies_calc_output_buffer_needed_size</a>(<span class="keyword">const</span> <span class="keywordtype">size_t</span> plaintext_length)</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;{</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="comment">//     1    2    3     4</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordflow">return</span> 16 + 32 + 113 + 16 + plaintext_length;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="comment">// 1:  IV (AES initialization vector)</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="comment">// 2:  Salt (for PBKDF2)</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="comment">// 3:  R (ephemeral public key)</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="comment">// 4:  Tag (from AES-GCM)</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;}</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="util_8h.html#ab6f12030d84b957f37ae69c27d70c497">   79</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">size_t</span> <a class="code" href="util_8h.html#ab6f12030d84b957f37ae69c27d70c497">cecies_calc_base64_length</a>(<span class="keyword">const</span> <span class="keywordtype">size_t</span> data_length)</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;{</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keywordflow">return</span> (4 * data_length / 3 + 3) &amp; ~(unsigned)3;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;}</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> empty32[32] = {</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="comment">//</span></div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;};</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> empty64[64] = {</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="comment">//</span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;};</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> empty64[64] = {</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="comment">//</span></div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
@@ -154,18 +151,21 @@ $(function() {
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;};</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;} <span class="comment">// extern &quot;C&quot;</span></div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="preprocessor">#endif // CECIES_UTIL_H</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    0x00, 0x00, 0x00, 0x00, <span class="comment">//</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;};</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;} <span class="comment">// extern &quot;C&quot;</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="preprocessor">#endif // CECIES_UTIL_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="autil_8h_html_ab6f12030d84b957f37ae69c27d70c497"><div class="ttname"><a href="util_8h.html#ab6f12030d84b957f37ae69c27d70c497">cecies_calc_base64_length</a></div><div class="ttdeci">static size_t cecies_calc_base64_length(const size_t data_length)</div><div class="ttdef"><b>Definition:</b> util.h:76</div></div>
-<div class="ttc" id="autil_8h_html_a335269d0e79567b20346bd39108403b0"><div class="ttname"><a href="util_8h.html#a335269d0e79567b20346bd39108403b0">cecies_calc_aes_cbc_ciphertext_length</a></div><div class="ttdeci">static size_t cecies_calc_aes_cbc_ciphertext_length(const size_t plaintext_length)</div><div class="ttdef"><b>Definition:</b> util.h:50</div></div>
-<div class="ttc" id="autil_8h_html_afccad4d81076bc94026ff47bf99c582a"><div class="ttname"><a href="util_8h.html#afccad4d81076bc94026ff47bf99c582a">cecies_get_random_big_integer</a></div><div class="ttdeci">static unsigned long long int cecies_get_random_big_integer()</div><div class="ttdef"><b>Definition:</b> util.h:39</div></div>
-<div class="ttc" id="autil_8h_html_a53b58157f11abc345fa36441e60cada3"><div class="ttname"><a href="util_8h.html#a53b58157f11abc345fa36441e60cada3">cecies_calc_output_buffer_needed_size</a></div><div class="ttdeci">static size_t cecies_calc_output_buffer_needed_size(const size_t plaintext_length)</div><div class="ttdef"><b>Definition:</b> util.h:60</div></div>
+<div class="ttc" id="autil_8h_html_ab6f12030d84b957f37ae69c27d70c497"><div class="ttname"><a href="util_8h.html#ab6f12030d84b957f37ae69c27d70c497">cecies_calc_base64_length</a></div><div class="ttdeci">static size_t cecies_calc_base64_length(const size_t data_length)</div><div class="ttdef"><b>Definition:</b> util.h:79</div></div>
+<div class="ttc" id="autil_8h_html_a335269d0e79567b20346bd39108403b0"><div class="ttname"><a href="util_8h.html#a335269d0e79567b20346bd39108403b0">cecies_calc_aes_cbc_ciphertext_length</a></div><div class="ttdeci">static size_t cecies_calc_aes_cbc_ciphertext_length(const size_t plaintext_length)</div><div class="ttdef"><b>Definition:</b> util.h:53</div></div>
+<div class="ttc" id="autil_8h_html_afccad4d81076bc94026ff47bf99c582a"><div class="ttname"><a href="util_8h.html#afccad4d81076bc94026ff47bf99c582a">cecies_get_random_big_integer</a></div><div class="ttdeci">static unsigned long long int cecies_get_random_big_integer()</div><div class="ttdef"><b>Definition:</b> util.h:42</div></div>
+<div class="ttc" id="autil_8h_html_a53b58157f11abc345fa36441e60cada3"><div class="ttname"><a href="util_8h.html#a53b58157f11abc345fa36441e60cada3">cecies_calc_output_buffer_needed_size</a></div><div class="ttdeci">static size_t cecies_calc_output_buffer_needed_size(const size_t plaintext_length)</div><div class="ttdef"><b>Definition:</b> util.h:63</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

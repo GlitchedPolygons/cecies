@@ -33,13 +33,16 @@ extern "C" {
 #include <stdint.h>
 
 /**
- * Gets a random big integer (only featuring limited randomness due to usage of <c>rand()</c>).
+ * Gets a random big integer. This only features very limited randomness due to usage of <c>rand()</c>! <p>
+ * **DO NOT USE THIS FOR ANY TYPE OF KEY GENERATION!** <p>
+ * Current usage is for adding some lightweight additional entropy to the MbedTLS mbedtls_ctr_drbg_seed() function,
+ * which only gives the advantage of having a slightly different per-app starting point for the seed (as stated in the MbedTLS documentation).
  * @return Random big number
  */
 static inline unsigned long long int cecies_get_random_big_integer()
 {
     srand(time(NULL) * time(NULL));
-    return rand() * rand() * rand()* rand();
+    return rand() * rand() * rand() * rand();
 }
 
 /**
@@ -62,10 +65,10 @@ static inline size_t cecies_calc_output_buffer_needed_size(const size_t plaintex
     //     1    2    3     4
     return 16 + 32 + 113 + 16 + plaintext_length;
 
-    // 1:  IV
-    // 2:  Salt
-    // 3:  R
-    // 4:  Tag
+    // 1:  IV (AES initialization vector)
+    // 2:  Salt (for PBKDF2)
+    // 3:  R (ephemeral public key)
+    // 4:  Tag (from AES-GCM)
 }
 
 /**
