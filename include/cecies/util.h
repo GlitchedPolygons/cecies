@@ -31,6 +31,7 @@ extern "C" {
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 /**
  * Gets a random big integer. This only features very limited randomness due to usage of <c>rand()</c>! <p>
@@ -79,6 +80,94 @@ static inline size_t cecies_calc_output_buffer_needed_size(const size_t plaintex
 static inline size_t cecies_calc_base64_length(const size_t data_length)
 {
     return (4 * data_length / 3 + 3) & ~(unsigned)3;
+}
+
+/**
+ * Converts a hex string to binary array. <p>
+ * A NUL-terminator is appended at the end of the output buffer, so make sure to allocate at least <c>(hexstr_length / 2) + 1</c> bytes!
+ * @param hexstr The hex string to convert.
+ * @param hexstr_length Length of the \p hexstr
+ * @param output Where to write the converted binary data into.
+ * @param output_size Size of the output buffer (make sure to allocate at least <c>(hexstr_length / 2) + 1</c> bytes!).
+ * @param output_length [OPTIONAL] Where to write the output array length into. This is always gonna be <c>hexstr_length / 2</c>, but you can still choose to write it out just to be sure. If you want to omit this: no problem.. just pass <c>NULL</c>!
+ * @return <c>0</c> if conversion succeeded. <c>1</c> if one or more required arguments were <c>NULL</c> or invalid. <c>2</c> if the hexadecimal string is in an invalid format (e.g. not divisible by 2). <c>3</c> if output buffer size was insufficient (needs to be at least <c>(hexstr_length / 2) + 1</c> bytes).
+ */
+static int cecies_hexstr2bin(const unsigned char* hexstr, const size_t hexstr_length, unsigned char* output, const size_t output_size, size_t* output_length)
+{
+    if (hexstr == NULL || output == NULL || hexstr_length == 0)
+    {
+        return 1;
+    }
+
+    const size_t hl = hexstr[hexstr_length - 1] ? hexstr_length : hexstr_length - 1;
+
+    if (hl % 2 != 0)
+    {
+        return 2;
+    }
+
+    const size_t final_length = hl / 2;
+
+    if (output_size < final_length + 1)
+    {
+        return 3;
+    }
+
+    for (size_t i = 0, ii = 0; ii < final_length; i += 2, ii++)
+    {
+        output[ii] = (hexstr[i] % 32 + 9) % 25 * 16 + (hexstr[i + 1] % 32 + 9) % 25;
+    }
+
+    output[final_length] = '\0';
+
+    if (output_length != NULL)
+    {
+        *output_length = final_length;
+    }
+
+    return 0;
+}
+
+/**
+ * Converts a byte array to a hex string. <p>
+ * A NUL-terminator is appended at the end of the output buffer, so make sure to allocate at least <c>(bin_length * 2) + 1</c> bytes!
+ * @param bin The binary data to convert into hex string.
+ * @param bin_length Length of the \p bin array.
+ * @param output Where to write the hex string into.
+ * @param output_size Maximum capacity of the \p output buffer. Make sure to allocate at least <c>(bin_length * 2) + 1</c> bytes!
+ * @param output_length [OPTIONAL] Where to write the output string length into. This is always gonna be <c>bin_length * 2</c>, but you can still choose to write it out just to be sure. If you want to omit this: no problem.. just pass <c>NULL</c>!
+ * @param uppercase Should the \p output string characters be UPPER- or lowercase?
+ * @return <c>0</c> if conversion succeeded. <c>1</c> if one or more required arguments were <c>NULL</c> or invalid. <c>2</c> if the output buffer size is insufficient: please allocate at least <c>(bin_length * 2) + 1</c> bytes!
+ */
+static int cecies_bin2hexstr(const unsigned char* bin, const size_t bin_length, unsigned char* output, const size_t output_size, size_t* output_length, const bool uppercase)
+{
+    if (bin == NULL || bin_length == 0 || output == NULL)
+    {
+        return 1;
+    }
+
+    const size_t final_length = bin_length * 2;
+
+    if (output_size < final_length + 1)
+    {
+        return 2;
+    }
+
+    const char* format = uppercase ? "%02X" : "%02x";
+
+    for (size_t i = 0; i < bin_length; i++)
+    {
+        sprintf((char*)output + i * 2, format, bin[i]);
+    }
+
+    output[final_length] = '\0';
+
+    if (output_length != NULL)
+    {
+        *output_length = final_length;
+    }
+
+    return 0;
 }
 
 static const unsigned char empty32[32] = {
