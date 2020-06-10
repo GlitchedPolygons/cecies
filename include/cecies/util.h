@@ -64,7 +64,7 @@ static inline size_t cecies_calc_aes_cbc_ciphertext_length(const size_t plaintex
 static inline size_t cecies_calc_output_buffer_needed_size(const size_t plaintext_length)
 {
     //     1    2    3     4
-    return 16 + 32 + 113 + 16 + plaintext_length;
+    return 16 + 32 + 57 + 16 + plaintext_length;
 
     // 1:  IV (AES initialization vector)
     // 2:  Salt (for PBKDF2)
@@ -92,7 +92,7 @@ static inline size_t cecies_calc_base64_length(const size_t data_length)
  * @param output_length [OPTIONAL] Where to write the output array length into. This is always gonna be <c>hexstr_length / 2</c>, but you can still choose to write it out just to be sure. If you want to omit this: no problem.. just pass <c>NULL</c>!
  * @return <c>0</c> if conversion succeeded. <c>1</c> if one or more required arguments were <c>NULL</c> or invalid. <c>2</c> if the hexadecimal string is in an invalid format (e.g. not divisible by 2). <c>3</c> if output buffer size was insufficient (needs to be at least <c>(hexstr_length / 2) + 1</c> bytes).
  */
-static int cecies_hexstr2bin(const unsigned char* hexstr, const size_t hexstr_length, unsigned char* output, const size_t output_size, size_t* output_length)
+static int cecies_hexstr2bin(const char* hexstr, const size_t hexstr_length, unsigned char* output, const size_t output_size, size_t* output_length)
 {
     if (hexstr == NULL || output == NULL || hexstr_length == 0)
     {
@@ -139,7 +139,7 @@ static int cecies_hexstr2bin(const unsigned char* hexstr, const size_t hexstr_le
  * @param uppercase Should the \p output string characters be UPPER- or lowercase?
  * @return <c>0</c> if conversion succeeded. <c>1</c> if one or more required arguments were <c>NULL</c> or invalid. <c>2</c> if the output buffer size is insufficient: please allocate at least <c>(bin_length * 2) + 1</c> bytes!
  */
-static int cecies_bin2hexstr(const unsigned char* bin, const size_t bin_length, unsigned char* output, const size_t output_size, size_t* output_length, const bool uppercase)
+static int cecies_bin2hexstr(const unsigned char* bin, const size_t bin_length, char* output, const size_t output_size, size_t* output_length, const bool uppercase)
 {
     if (bin == NULL || bin_length == 0 || output == NULL)
     {
@@ -157,7 +157,7 @@ static int cecies_bin2hexstr(const unsigned char* bin, const size_t bin_length, 
 
     for (size_t i = 0; i < bin_length; i++)
     {
-        sprintf((char*)output + i * 2, format, bin[i]);
+        sprintf(output + i * 2, format, bin[i]);
     }
 
     output[final_length] = '\0';

@@ -26,7 +26,7 @@
 #include "cecies/util.h"
 #include "cecies/encrypt.h"
 
-int cecies_encrypt(const unsigned char* data, const size_t data_length, const unsigned char* public_key, const size_t public_key_length, const bool public_key_base64, unsigned char* output, const size_t output_bufsize, size_t* output_length, const bool output_base64)
+int cecies_encrypt(const unsigned char* data, size_t data_length, char public_key[114], unsigned char* output, size_t output_bufsize, size_t* output_length, bool output_base64)
 {
     if (data == NULL //
             || public_key == NULL //
@@ -36,17 +36,15 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
         return CECIES_ENCRYPT_ERROR_CODE_NULL_ARG;
     }
 
-    if (data_length == 0 //
-            || public_key_length == 0 //
-            || output_bufsize == 0)
+    if (data_length == 0 || output_bufsize == 0)
     {
         return CECIES_ENCRYPT_ERROR_CODE_INVALID_ARG;
     }
 
     int ret = 1;
 
-    const size_t olen = cecies_calc_output_buffer_needed_size(data_length);
-    const size_t total_output_length = output_base64 ? cecies_calc_base64_length(olen) : olen;
+    size_t olen = cecies_calc_output_buffer_needed_size(data_length);
+    size_t total_output_length = output_base64 ? cecies_calc_base64_length(olen) + 1 : olen;
 
     if (output_bufsize < total_output_length)
     {
@@ -129,23 +127,17 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
     }
 
     size_t public_key_bytes_length;
-    unsigned char public_key_bytes[128];
+    unsigned char public_key_bytes[113];
+    memset(public_key_bytes, 0x00, sizeof(public_key_bytes));
 
-    if (public_key_base64)
+    ret = cecies_hexstr2bin(public_key, 114, public_key_bytes, sizeof(public_key_bytes), &public_key_bytes_length);
+    if (ret != 0 || public_key_bytes_length != 57)
     {
-        ret = mbedtls_base64_decode(public_key_bytes, sizeof(public_key_bytes), &public_key_bytes_length, public_key, public_key_length);
-        if (ret != 0)
-        {
-            fprintf(stderr, "Parsing recipient's public key failed! mbedtls_base64_decode returned %d\n", ret);
-            goto exit;
-        }
-    }
-    else
-    {
-        memcpy(public_key_bytes, public_key, public_key_bytes_length = public_key_length);
+        fprintf(stderr, "Parsing recipient's public key failed! Invalid hex string format...\n");
+        goto exit;
     }
 
-    ret = mbedtls_ecp_point_read_binary(&ecp_group, &QA, public_key_bytes, public_key_bytes_length);
+    ret = mbedtls_ecp_point_read_binary(&ecp_group, &QA, public_key_bytes, 113);
     if (ret != 0)
     {
         fprintf(stderr, "Parsing recipient's public key failed! mbedtls_ecp_point_read_binary returned %d\n", ret);
@@ -174,9 +166,9 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
     }
 
     ret = mbedtls_ecp_point_write_binary(&ecp_group, &R, MBEDTLS_ECP_PF_UNCOMPRESSED, &R_bytes_length, R_bytes, sizeof(R_bytes));
-    if (ret != 0)
+    if (ret != 0 || R_bytes_length != 113)
     {
-        fprintf(stderr, "ECIES encryption failed! mbedtls_ecp_point_write_binary returned %d\n", ret);
+        fprintf(stderr, "ECIES encryption failed! mbedtls_ecp_point_write_binary returned %d ; or incorrect ephemeral public key length written by mbedtls_ecp_point_write_binary..\n", ret);
         goto exit;
     }
 
@@ -223,8 +215,8 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
     memcpy(o, salt, 32);
     o += 32;
 
-    memcpy(o, R_bytes, R_bytes_length); // Uncompressed ECP point takes up 113 bytes.
-    o += R_bytes_length;
+    memcpy(o, R_bytes, 57);
+    o += 57;
 
     ret = mbedtls_gcm_crypt_and_tag(&aes_ctx, MBEDTLS_GCM_ENCRYPT, data_length, iv, 16, NULL, 0, data, o + 16, 16, o);
     if (ret != 0)
@@ -236,7 +228,7 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
     if (output_base64)
     {
         size_t b64len;
-        unsigned char* b64 = malloc(total_output_length + 1);
+        unsigned char* b64 = malloc(total_output_length);
         if (b64 == NULL)
         {
             ret = CECIES_ENCRYPT_ERROR_CODE_OUT_OF_MEMORY;
@@ -244,7 +236,7 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
             goto exit;
         }
 
-        ret = mbedtls_base64_encode(b64, total_output_length + 1, &b64len, output, olen);
+        ret = mbedtls_base64_encode(b64, total_output_length, &b64len, output, olen);
         if (ret != 0)
         {
             fprintf(stderr, "AES-GCM encryption failed while base64-encoding! mbedtls_base64_encode returned %d\n", ret);
@@ -252,8 +244,8 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const un
             goto exit;
         }
 
-        b64[total_output_length] = '\0';
-        memcpy(output, b64, total_output_length + 1);
+        b64[total_output_length - 1] = '\0';
+        memcpy(output, b64, total_output_length--);
         free(b64);
     }
 

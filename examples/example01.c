@@ -25,9 +25,9 @@
  */
 static const char TEST_STRING[] = "Lorem ipsum dolor sick fuck amend something something ...";
 
-static const char TEST_PUBLIC_KEY[] = "BMAocEd2hsZvNRynFSu8YeCfOu2wkXMALnDkr2hALy5cfiECpi2b21j9lXpoijwBkULMy234iR69AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+static const char TEST_PUBLIC_KEY[] = "0450430325551ee86a6d9216947b5bdf04314771028e847029def87eb18474e10dcd981d72a2f51eff20ac1c1a3375850e0e53f1b065923304";
 
-static const char TEST_PRIVATE_KEY[] = "8FNsJbVMlSwr41fb8ktgWjG8WyyAup1j0icaspuiTtCxt7C//m84283s/VK8NDvstvxho2PR5qA=";
+static const char TEST_PRIVATE_KEY[] = "f5c2351c941cbba29313771c84693dacb80f21be8bcb07406217ee3a07143e2a8fdbccd083d045a2818858c2faf72e58ec7e006a1386361c";
 
 int main(void)
 {
@@ -48,7 +48,7 @@ int main(void)
     // Just keep in mind that if you choose to base64-encode too, allocate cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(size_t))
     // bytes because base64-encoding always needs more space.
 
-    s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, (unsigned char*)TEST_PUBLIC_KEY, strlen(TEST_PUBLIC_KEY), true, encrypted_string, sizeof(encrypted_string), &encrypted_string_length, true);
+    s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, (char*)TEST_PUBLIC_KEY, encrypted_string, sizeof(encrypted_string), &encrypted_string_length, false);
 
     printf("Encrypted string:\n%s\n\n", encrypted_string);
 
