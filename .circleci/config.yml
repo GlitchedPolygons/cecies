@@ -14,7 +14,7 @@ jobs:
           command: 'git submodule update --init --recursive'
       - run:
           name: Build and run tests with code coverage enabled
-          command: 'bash test.sh cov'
+          command: 'bash -eo pipefail test.sh cov'
       - run:
           name: Upload coverage reports
           when: on_success
