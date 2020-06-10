@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\git\gp\cecies\build-msvc\CMakeFiles\7581ad0d6e1903033c52b83ff112f12a\Experimental.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\git\gp\cecies\lib\cmocka\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\git\gp\cecies\build-msvc\cmocka\CMakeFiles\Experimental" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{5CAE7C5F-3480-3DEF-926C-73606267C7E4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
