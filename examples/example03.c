@@ -40,7 +40,7 @@ int main(void)
 
     // Here's how to encrypt data using the cecies_calc_output_buffer_needed_size() function to allocate the exactly right amount of bytes.
     size_t encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH);
-    unsigned char* encrypted_string = malloc(encrypted_string_length);
+    unsigned char* encrypted_string = malloc(encrypted_string_length+1);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
     // If you don't know how big you should allocate your output buffer to contain the encrypted data,
@@ -54,12 +54,14 @@ int main(void)
 
     // When unsure, allocate the same amount as the input encrypted data buffer. That's guaranteed to work.
     size_t decrypted_string_length;
-    char* decrypted_string = malloc(encrypted_string_length);
+    char* decrypted_string = malloc(encrypted_string_length+1);
     memset(decrypted_string, 0x00, encrypted_string_length);
 
     s = cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, (unsigned char*)decrypted_string, sizeof(decrypted_string), &decrypted_string_length);
 
     printf("Decrypted string:\n%s\n\n", decrypted_string);
 
+    free(encrypted_string);
+    free(decrypted_string);
     return s;
 }
