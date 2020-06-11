@@ -58,5 +58,7 @@ int main(void)
 
     printf("Decrypted string:\n%s\n\n", decrypted_string);
 
+    free(encrypted_string);
+    free(decrypted_string);
     return s;
 }
