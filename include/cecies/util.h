@@ -73,7 +73,7 @@ static inline size_t cecies_calc_output_buffer_needed_size(const size_t input_bu
 }
 
 /**
- * Calculates the output length in bytes after base64-encoding \p data_length bytes.
+ * Calculates the output length in bytes after base64-encoding \p data_length bytes (includes +1 for a NUL-terminator character)..
  * @param data_length The number of bytes you'd base64-encode.
  * @return <c>((4 * data_length / 3 + 3) & ~3) + 1</c>
  */

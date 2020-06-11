@@ -43,7 +43,7 @@ int cecies_encrypt(const unsigned char* data, size_t data_length, char public_ke
     int ret = 1;
 
     size_t olen = cecies_calc_output_buffer_needed_size(data_length);
-    size_t total_output_length = output_base64 ? cecies_calc_base64_length(olen) + 1 : olen;
+    size_t total_output_length = output_base64 ? cecies_calc_base64_length(olen) : olen;
 
     if (output_bufsize < total_output_length)
     {
