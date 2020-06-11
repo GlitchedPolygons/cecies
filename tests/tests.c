@@ -40,7 +40,7 @@ static void cecies_generate_curve448_keypair_NULL_args_return_CECIES_KEYGEN_ERRO
 static void cecies_generate_curve448_keypair_invalid_args_return_CECIES_KEYGEN_ERROR_CODE_INVALID_ARG(void** state)
 {
     cecies_curve448_keypair keypair;
-    assert_int_equal(CECIES_KEYGEN_ERROR_CODE_NULL_ARG, cecies_generate_curve448_keypair(&keypair, (unsigned char*)"test", 0));
+    assert_int_equal(CECIES_KEYGEN_ERROR_CODE_INVALID_ARG, cecies_generate_curve448_keypair(&keypair, (unsigned char*)"test", 0));
 }
 
 // --------------------------------------------------------------------------------------------------------------

@@ -33,7 +33,6 @@ int main(void)
 {
     int s = 1;
 
-    // sizeof(TEST_STRING) instead of strlen(TEST_STRING) because we also want to encrypt the NUL-terminator character along. Never forget the NUL-terminator in C-strings!
     const size_t TEST_STRING_LENGTH = sizeof(TEST_STRING);
 
     printf("\n---- CECIES ----\n-- Example 04 --\n\n");
