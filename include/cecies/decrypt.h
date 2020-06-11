@@ -40,15 +40,13 @@ extern "C" {
  * @param encrypted_data The data to decrypt.
  * @param encrypted_data_length The length of the data array.
  * @param encrypted_data_base64 Is the input \p encrypted_data base64-encoded?
- * @param private_key The private key to decrypt the data with.
- * @param private_key_length Length of the private_key string.
- * @param private_key_base64 Is the private key base64-encoded or raw? If this is false, the key will be directly fed into mbedtls_mpi_read_binary()!
- * @param output Where to write the decrypted output into (please pre-allocate this big enough).
+ * @param private_key The private key to decrypt the data with (hex-string, as is the output of cecies_generate_curve448_keypair()).
+ * @param output Where to write the decrypted output into (please pre-allocate this big enough; if unsure, allocate \p encrypted_data_length bytes!).
  * @param output_bufsize How big the output buffer is. Please allocate at least \p encrypted_data_length bytes!
  * @param output_length Where to write the output buffer length into (how many bytes were written into it).
- * @return <c>0</c> if decryption succeeded;  error codes as defined inside the header file or MbedTLS otherwise.
+ * @return <c>0</c> if decryption succeeded; error codes as defined inside the header file or MbedTLS otherwise.
  */
-int cecies_decrypt(unsigned char* encrypted_data, size_t encrypted_data_length, bool encrypted_data_base64, const unsigned char* private_key, size_t private_key_length, bool private_key_base64, unsigned char* output, size_t output_bufsize, size_t* output_length);
+int cecies_decrypt(unsigned char* encrypted_data, size_t encrypted_data_length, bool encrypted_data_base64, const char private_key[112], unsigned char* output, size_t output_bufsize, size_t* output_length);
 
 #ifdef __cplusplus
 } // extern "C"

@@ -168,7 +168,7 @@ int cecies_encrypt(const unsigned char* data, size_t data_length, char public_ke
     ret = mbedtls_ecp_point_write_binary(&ecp_group, &R, MBEDTLS_ECP_PF_UNCOMPRESSED, &R_bytes_length, R_bytes, sizeof(R_bytes));
     if (ret != 0 || R_bytes_length != 113)
     {
-        fprintf(stderr, "ECIES encryption failed! mbedtls_ecp_point_write_binary returned %d ; or incorrect ephemeral public key length written by mbedtls_ecp_point_write_binary..\n", ret);
+        fprintf(stderr, "ECIES encryption failed! mbedtls_ecp_point_write_binary returned %d ; or incorrect ephemeral public key length written by mbedtls_ecp_point_write_binary function..\n", ret);
         goto exit;
     }
 
