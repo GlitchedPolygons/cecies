@@ -15,15 +15,15 @@
 */
 
 #include <stdio.h>
-#include <stdint.h>
 #include <string.h>
+#include <cecies/util.h>
 #include <cecies/encrypt.h>
 #include <cecies/decrypt.h>
 
 /*
  *     This is the example test string to encrypt and decrypt.
  */
-static const char TEST_STRING[] = "Lorem ipsum dolor sick fuck amend something something ...";
+static const char TEST_STRING[] = "Doctor Freeman. I realize this moment may not be the most convenient for a heart-to-heart, but I had to wait until your friends were otherwise occupied. Hm. There was a time they cared nothing for Miss Vance... When their only experience of humanity was a crowbar coming at them down a steel corridor.";
 
 static const char TEST_PUBLIC_KEY[] = "0450430325551ee86a6d9216947b5bdf04314771028e847029def87eb18474e10dcd981d72a2f51eff20ac1c1a3375850e0e53f1b065923304";
 
@@ -36,26 +36,24 @@ int main(void)
     // sizeof(TEST_STRING) instead of strlen(TEST_STRING) because we also want to encrypt the NUL-terminator character along. Never forget the NUL-terminator in C-strings!
     const size_t TEST_STRING_LENGTH = sizeof(TEST_STRING);
 
-    printf("\n---- CECIES ----\n-- Example 01 --\n\n");
+    printf("\n---- CECIES ----\n-- Example 04 --\n\n");
     printf("Encrypting the following string:\n%s\n\n", TEST_STRING);
 
-    size_t encrypted_string_length;
-    unsigned char encrypted_string[1024];
-    memset(encrypted_string, 0x00, sizeof(encrypted_string));
+    // Here's how to encrypt data and base64 encrypt it
+    // using the cecies_calc_output_buffer_needed_size() function to allocate the exactly right amount of bytes.
 
-    // In this example we allocate "enough" space on the stack because the message is short and predictable.
-    // But if you don't know how big you should allocate your output buffer to contain the encrypted data,
-    // you can make use of the cecies_calc_output_buffer_needed_size(size_t) function inside util.h!
-    // Just keep in mind that if you choose to base64-encode too, allocate cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(size_t))
-    // bytes because base64-encoding always needs more space.
+    size_t encrypted_string_length = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH));
+    unsigned char* encrypted_string = malloc(encrypted_string_length);
+    memset(encrypted_string, 0x00, encrypted_string_length);
 
     s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, (char*)TEST_PUBLIC_KEY, encrypted_string, sizeof(encrypted_string), &encrypted_string_length, true);
 
     printf("Encrypted string:\n%s\n\n", encrypted_string);
 
+    // When unsure, allocate the same amount as the input encrypted data buffer. That's guaranteed to work.
     size_t decrypted_string_length;
-    char decrypted_string[1024];
-    memset(decrypted_string, 0x00, sizeof(decrypted_string));
+    char* decrypted_string = malloc(encrypted_string_length);
+    memset(decrypted_string, 0x00, encrypted_string_length);
 
     s = cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, (unsigned char*)decrypted_string, sizeof(decrypted_string), &decrypted_string_length);
 

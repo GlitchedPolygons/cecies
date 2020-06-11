@@ -30,8 +30,7 @@ int cecies_encrypt(const unsigned char* data, size_t data_length, char public_ke
 {
     if (data == NULL //
             || public_key == NULL //
-            || output == NULL //
-            || output_length == NULL)
+            || output == NULL)
     {
         return CECIES_ENCRYPT_ERROR_CODE_NULL_ARG;
     }
@@ -249,7 +248,10 @@ int cecies_encrypt(const unsigned char* data, size_t data_length, char public_ke
         free(b64);
     }
 
-    *output_length = total_output_length;
+    if (output_length != NULL)
+    {
+        *output_length = total_output_length;
+    }
 
 exit:
 

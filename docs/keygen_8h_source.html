@@ -96,21 +96,30 @@ $(function() {
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;stddef.h&gt;</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#define CECIES_KEYGEN_ERROR_CODE_NULL_ARG 7000</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#define CECIES_KEYGEN_ERROR_CODE_INVALID_ARG 7001</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#define CECIES_KEYGEN_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE 7002</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keywordtype">int</span> <a class="code" href="keygen_8h.html#a97107adae97daa6f96bc78a7df0ad46c">cecies_generate_curve448_keypair</a>(<span class="keywordtype">bool</span> base64, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* output_private_key_buffer, <span class="keywordtype">size_t</span> output_private_key_buffer_size, <span class="keywordtype">size_t</span>* output_private_key_buffer_length, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* output_public_key_buffer, <span class="keywordtype">size_t</span> output_public_key_buffer_size, <span class="keywordtype">size_t</span>* output_public_key_buffer_length, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* additional_entropy, <span class="keywordtype">size_t</span> additional_entropy_length);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;} <span class="comment">// extern &quot;C&quot;</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#endif // CECIES_KEYGEN_H</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#define CECIES_KEYGEN_ERROR_CODE_NULL_ARG 7000</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#define CECIES_KEYGEN_ERROR_CODE_INVALID_ARG 7001</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="structcecies__curve448__keypair.html">   41</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structcecies__curve448__keypair.html">cecies_curve448_keypair</a></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;{</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="structcecies__curve448__keypair.html#a86e571d643968247075fc0071bf2b08b">   46</a></span>&#160;    <span class="keywordtype">char</span> <a class="code" href="structcecies__curve448__keypair.html#a86e571d643968247075fc0071bf2b08b">public_key</a>[115];</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="structcecies__curve448__keypair.html#aa38afee959e1355b19b71bb2e371e1ac">   51</a></span>&#160;    <span class="keywordtype">char</span> <a class="code" href="structcecies__curve448__keypair.html#aa38afee959e1355b19b71bb2e371e1ac">private_key</a>[113];</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;} <a class="code" href="keygen_8h.html#a1a8e8a6e53174f4b812a2dfb5c25adc2">cecies_curve448_keypair</a>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keywordtype">int</span> <a class="code" href="keygen_8h.html#a7f8a8b95f7d22fd84c3c8e8871232242">cecies_generate_curve448_keypair</a>(<a class="code" href="structcecies__curve448__keypair.html">cecies_curve448_keypair</a>* output, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* additional_entropy, <span class="keywordtype">size_t</span> additional_entropy_length);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;} <span class="comment">// extern &quot;C&quot;</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#endif // CECIES_KEYGEN_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="akeygen_8h_html_a97107adae97daa6f96bc78a7df0ad46c"><div class="ttname"><a href="keygen_8h.html#a97107adae97daa6f96bc78a7df0ad46c">cecies_generate_curve448_keypair</a></div><div class="ttdeci">int cecies_generate_curve448_keypair(bool base64, unsigned char *output_private_key_buffer, size_t output_private_key_buffer_size, size_t *output_private_key_buffer_length, unsigned char *output_public_key_buffer, size_t output_public_key_buffer_size, size_t *output_public_key_buffer_length, unsigned char *additional_entropy, size_t additional_entropy_length)</div></div>
+<div class="ttc" id="astructcecies__curve448__keypair_html_aa38afee959e1355b19b71bb2e371e1ac"><div class="ttname"><a href="structcecies__curve448__keypair.html#aa38afee959e1355b19b71bb2e371e1ac">cecies_curve448_keypair::private_key</a></div><div class="ttdeci">char private_key[113]</div><div class="ttdef"><b>Definition:</b> keygen.h:51</div></div>
+<div class="ttc" id="astructcecies__curve448__keypair_html_a86e571d643968247075fc0071bf2b08b"><div class="ttname"><a href="structcecies__curve448__keypair.html#a86e571d643968247075fc0071bf2b08b">cecies_curve448_keypair::public_key</a></div><div class="ttdeci">char public_key[115]</div><div class="ttdef"><b>Definition:</b> keygen.h:46</div></div>
+<div class="ttc" id="astructcecies__curve448__keypair_html"><div class="ttname"><a href="structcecies__curve448__keypair.html">cecies_curve448_keypair</a></div><div class="ttdef"><b>Definition:</b> keygen.h:41</div></div>
+<div class="ttc" id="akeygen_8h_html_a1a8e8a6e53174f4b812a2dfb5c25adc2"><div class="ttname"><a href="keygen_8h.html#a1a8e8a6e53174f4b812a2dfb5c25adc2">cecies_curve448_keypair</a></div><div class="ttdeci">struct cecies_curve448_keypair cecies_curve448_keypair</div></div>
+<div class="ttc" id="akeygen_8h_html_a7f8a8b95f7d22fd84c3c8e8871232242"><div class="ttname"><a href="keygen_8h.html#a7f8a8b95f7d22fd84c3c8e8871232242">cecies_generate_curve448_keypair</a></div><div class="ttdeci">int cecies_generate_curve448_keypair(cecies_curve448_keypair *output, unsigned char *additional_entropy, size_t additional_entropy_length)</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

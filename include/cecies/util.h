@@ -58,13 +58,13 @@ static inline size_t cecies_calc_aes_cbc_ciphertext_length(const size_t plaintex
 
 /**
  * Gets the minimum amount of needed buffer size for a given encryption with a given plaintext data length.
- * @param plaintext_length The amount of bytes to encrypt.
- * @return The min. buffer size for encrypting \p plaintext_length bytes of data.
+ * @param input_buffer_length The amount of bytes to encrypt.
+ * @return The min. buffer size for encrypting \p input_buffer_length bytes of data.
  */
-static inline size_t cecies_calc_output_buffer_needed_size(const size_t plaintext_length)
+static inline size_t cecies_calc_output_buffer_needed_size(const size_t input_buffer_length)
 {
     //     1    2    3     4
-    return 16 + 32 + 57 + 16 + plaintext_length;
+    return 16 + 32 + 57 + 16 + input_buffer_length;
 
     // 1:  IV (AES initialization vector)
     // 2:  Salt (for PBKDF2)
@@ -75,11 +75,11 @@ static inline size_t cecies_calc_output_buffer_needed_size(const size_t plaintex
 /**
  * Calculates the output length in bytes after base64-encoding \p data_length bytes.
  * @param data_length The number of bytes you'd base64-encode.
- * @return <c>(4 * data_length / 3 + 3) & ~3</c>
+ * @return <c>((4 * data_length / 3 + 3) & ~3) + 1</c>
  */
 static inline size_t cecies_calc_base64_length(const size_t data_length)
 {
-    return (4 * data_length / 3 + 3) & ~(unsigned)3;
+    return ((4 * data_length / 3 + 3) & ~(unsigned)3) + 1;
 }
 
 /**

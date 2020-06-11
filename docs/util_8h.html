@@ -79,16 +79,18 @@ $(function() {
 <code>#include &lt;stddef.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;stdint.h&gt;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for util.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="util_8h__incl.png" border="0" usemap="#include_2cecies_2util_8h" alt=""/></div>
 <map name="include_2cecies_2util_8h" id="include_2cecies_2util_8h">
-<area shape="rect" title="Useful utility functions for CECIES." alt="" coords="99,5,237,32"/>
+<area shape="rect" title="Useful utility functions for CECIES." alt="" coords="145,5,282,32"/>
 <area shape="rect" title=" " alt="" coords="5,80,64,107"/>
 <area shape="rect" title=" " alt="" coords="89,80,157,107"/>
 <area shape="rect" title=" " alt="" coords="181,80,245,107"/>
 <area shape="rect" title=" " alt="" coords="270,80,335,107"/>
+<area shape="rect" title=" " alt="" coords="360,80,435,107"/>
 </map>
 </div>
 </div>
@@ -100,10 +102,14 @@ Functions</h2></td></tr>
 <tr class="separator:afccad4d81076bc94026ff47bf99c582a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a335269d0e79567b20346bd39108403b0"><td class="memItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a335269d0e79567b20346bd39108403b0">cecies_calc_aes_cbc_ciphertext_length</a> (const size_t plaintext_length)</td></tr>
 <tr class="separator:a335269d0e79567b20346bd39108403b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53b58157f11abc345fa36441e60cada3"><td class="memItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a53b58157f11abc345fa36441e60cada3">cecies_calc_output_buffer_needed_size</a> (const size_t plaintext_length)</td></tr>
-<tr class="separator:a53b58157f11abc345fa36441e60cada3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62762846d58428815c88d1930cde3e16"><td class="memItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a62762846d58428815c88d1930cde3e16">cecies_calc_output_buffer_needed_size</a> (const size_t input_buffer_length)</td></tr>
+<tr class="separator:a62762846d58428815c88d1930cde3e16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6f12030d84b957f37ae69c27d70c497"><td class="memItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#ab6f12030d84b957f37ae69c27d70c497">cecies_calc_base64_length</a> (const size_t data_length)</td></tr>
 <tr class="separator:ab6f12030d84b957f37ae69c27d70c497"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a161ff2c2d1e0dce6c6a005fc49d9fbdc"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a161ff2c2d1e0dce6c6a005fc49d9fbdc">cecies_hexstr2bin</a> (const char *hexstr, const size_t hexstr_length, unsigned char *output, const size_t output_size, size_t *output_length)</td></tr>
+<tr class="separator:a161ff2c2d1e0dce6c6a005fc49d9fbdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a850d353b74a0fbccb9fb2754e9582297"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a850d353b74a0fbccb9fb2754e9582297">cecies_bin2hexstr</a> (const unsigned char *bin, const size_t bin_length, char *output, const size_t output_size, size_t *output_length, const bool uppercase)</td></tr>
+<tr class="separator:a850d353b74a0fbccb9fb2754e9582297"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -116,6 +122,79 @@ Variables</h2></td></tr>
 <div class="textblock"><p>Useful utility functions for CECIES. </p>
 <dl class="section author"><dt>Author</dt><dd>Raphael Beck </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
+<a id="a850d353b74a0fbccb9fb2754e9582297"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a850d353b74a0fbccb9fb2754e9582297">&#9670;&nbsp;</a></span>cecies_bin2hexstr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int cecies_bin2hexstr </td>
+          <td>(</td>
+          <td class="paramtype">const unsigned char *&#160;</td>
+          <td class="paramname"><em>bin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>bin_length</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>output</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>output_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t *&#160;</td>
+          <td class="paramname"><em>output_length</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>uppercase</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Converts a byte array to a hex string. </p>
+<p>A NUL-terminator is appended at the end of the output buffer, so make sure to allocate at least <code>(bin_length * 2) + 1</code> bytes! </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bin</td><td>The binary data to convert into hex string. </td></tr>
+    <tr><td class="paramname">bin_length</td><td>Length of the <code>bin</code> array. </td></tr>
+    <tr><td class="paramname">output</td><td>Where to write the hex string into. </td></tr>
+    <tr><td class="paramname">output_size</td><td>Maximum capacity of the <code>output</code> buffer. Make sure to allocate at least <code>(bin_length * 2) + 1</code> bytes! </td></tr>
+    <tr><td class="paramname">output_length</td><td>[OPTIONAL] Where to write the output string length into. This is always gonna be <code>bin_length * 2</code>, but you can still choose to write it out just to be sure. If you want to omit this: no problem.. just pass <code>NULL</code>! </td></tr>
+    <tr><td class="paramname">uppercase</td><td>Should the <code>output</code> string characters be UPPER- or lowercase? </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>0</code> if conversion succeeded. <code>1</code> if one or more required arguments were <code>NULL</code> or invalid. <code>2</code> if the output buffer size is insufficient: please allocate at least <code>(bin_length * 2) + 1</code> bytes! </dd></dl>
+
+</div>
+</div>
 <a id="a335269d0e79567b20346bd39108403b0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a335269d0e79567b20346bd39108403b0">&#9670;&nbsp;</a></span>cecies_calc_aes_cbc_ciphertext_length()</h2>
 
@@ -178,12 +257,12 @@ Variables</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><code>(4 * data_length / 3 + 3) &amp; ~3</code> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>((4 * data_length / 3 + 3) &amp; ~3) + 1</code> </dd></dl>
 
 </div>
 </div>
-<a id="a53b58157f11abc345fa36441e60cada3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a53b58157f11abc345fa36441e60cada3">&#9670;&nbsp;</a></span>cecies_calc_output_buffer_needed_size()</h2>
+<a id="a62762846d58428815c88d1930cde3e16"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62762846d58428815c88d1930cde3e16">&#9670;&nbsp;</a></span>cecies_calc_output_buffer_needed_size()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -195,7 +274,7 @@ Variables</h2></td></tr>
           <td class="memname">static size_t cecies_calc_output_buffer_needed_size </td>
           <td>(</td>
           <td class="paramtype">const size_t&#160;</td>
-          <td class="paramname"><em>plaintext_length</em></td><td>)</td>
+          <td class="paramname"><em>input_buffer_length</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -207,11 +286,11 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Gets the minimum amount of needed buffer size for a given encryption with a given plaintext data length. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">plaintext_length</td><td>The amount of bytes to encrypt. </td></tr>
+    <tr><td class="paramname">input_buffer_length</td><td>The amount of bytes to encrypt. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The min. buffer size for encrypting <code>plaintext_length</code> bytes of data. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The min. buffer size for encrypting <code>input_buffer_length</code> bytes of data. </dd></dl>
 
 </div>
 </div>
@@ -240,6 +319,72 @@ Variables</h2></td></tr>
 <p>Gets a random big integer. This only features very limited randomness due to usage of <code>rand()</code>! </p>
 <p><b>DO NOT USE THIS FOR ANY TYPE OF KEY GENERATION!</b> </p>
 <p>Current usage is for adding some lightweight additional entropy to the MbedTLS mbedtls_ctr_drbg_seed() function, which only gives the advantage of having a slightly different per-app starting point for the seed (as stated in the MbedTLS documentation). </p><dl class="section return"><dt>Returns</dt><dd>Random big number </dd></dl>
+
+</div>
+</div>
+<a id="a161ff2c2d1e0dce6c6a005fc49d9fbdc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a161ff2c2d1e0dce6c6a005fc49d9fbdc">&#9670;&nbsp;</a></span>cecies_hexstr2bin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int cecies_hexstr2bin </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>hexstr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>hexstr_length</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned char *&#160;</td>
+          <td class="paramname"><em>output</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>output_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t *&#160;</td>
+          <td class="paramname"><em>output_length</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Converts a hex string to binary array. </p>
+<p>A NUL-terminator is appended at the end of the output buffer, so make sure to allocate at least <code>(hexstr_length / 2) + 1</code> bytes! </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">hexstr</td><td>The hex string to convert. </td></tr>
+    <tr><td class="paramname">hexstr_length</td><td>Length of the <code>hexstr</code> </td></tr>
+    <tr><td class="paramname">output</td><td>Where to write the converted binary data into. </td></tr>
+    <tr><td class="paramname">output_size</td><td>Size of the output buffer (make sure to allocate at least <code>(hexstr_length / 2) + 1</code> bytes!). </td></tr>
+    <tr><td class="paramname">output_length</td><td>[OPTIONAL] Where to write the output array length into. This is always gonna be <code>hexstr_length / 2</code>, but you can still choose to write it out just to be sure. If you want to omit this: no problem.. just pass <code>NULL</code>! </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>0</code> if conversion succeeded. <code>1</code> if one or more required arguments were <code>NULL</code> or invalid. <code>2</code> if the hexadecimal string is in an invalid format (e.g. not divisible by 2). <code>3</code> if output buffer size was insufficient (needs to be at least <code>(hexstr_length / 2) + 1</code> bytes). </dd></dl>
 
 </div>
 </div>
