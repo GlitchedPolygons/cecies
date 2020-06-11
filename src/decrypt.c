@@ -86,8 +86,8 @@ int cecies_decrypt(unsigned char* encrypted_data, size_t encrypted_data_length, 
     unsigned char salt[32];
     unsigned char aes_key[32];
     unsigned char R_bytes[113];
-    unsigned char S_bytes[256];
-    unsigned char private_key_bytes[256];
+    unsigned char S_bytes[113];
+    unsigned char private_key_bytes[64];
     size_t private_key_bytes_length, S_bytes_length;
 
     memset(iv, 0x00, 16);
@@ -141,19 +141,12 @@ int cecies_decrypt(unsigned char* encrypted_data, size_t encrypted_data_length, 
 
     const unsigned char* ciphertext = input + (16 + 32 + 57 + 16);
 
-    // TODO: decode hex key
-    if (private_key_base64)
+    ret = cecies_hexstr2bin(private_key, 112, private_key_bytes, sizeof(private_key_bytes), &private_key_bytes_length);
+    if (ret != 0 || private_key_bytes_length != 56)
     {
-        ret = mbedtls_base64_decode(private_key_bytes, sizeof(private_key_bytes), &private_key_bytes_length, private_key, private_key_length);
-        if (ret != 0)
-        {
-            fprintf(stderr, "Parsing decryption private key failed! mbedtls_base64_decode returned %d\n", ret);
-            goto exit;
-        }
-    }
-    else
-    {
-        memcpy(private_key_bytes, private_key, private_key_bytes_length = private_key_length);
+        fprintf(stderr, "Parsing decryption private key failed! Invalid hex string format or invalid key length... cecies_hexstr2bin returned %d\n", ret);
+        ret = CECIES_DECRYPT_ERROR_CODE_INVALID_ARG;
+        goto exit;
     }
 
     ret = mbedtls_mpi_read_binary(&dA, private_key_bytes, private_key_bytes_length);
@@ -163,7 +156,7 @@ int cecies_decrypt(unsigned char* encrypted_data, size_t encrypted_data_length, 
         goto exit;
     }
 
-    ret = mbedtls_ecp_point_read_binary(&ecp_group, &R, R_bytes, R_bytes_length);
+    ret = mbedtls_ecp_point_read_binary(&ecp_group, &R, R_bytes, 113);
     if (ret != 0)
     {
         fprintf(stderr, "Parsing ephemeral public key failed! mbedtls_ecp_point_read_binary returned %d\n", ret);
@@ -185,9 +178,9 @@ int cecies_decrypt(unsigned char* encrypted_data, size_t encrypted_data_length, 
     }
 
     ret = mbedtls_ecp_point_write_binary(&ecp_group, &S, MBEDTLS_ECP_PF_UNCOMPRESSED, &S_bytes_length, S_bytes, sizeof(S_bytes));
-    if (ret != 0)
+    if (ret != 0 || S_bytes_length != 113)
     {
-        fprintf(stderr, "ECIES decryption failed! mbedtls_ecp_point_write_binary returned %d\n", ret);
+        fprintf(stderr, "ECIES decryption failed! Invalid ECP point; mbedtls_ecp_point_write_binary returned %d\n", ret);
         goto exit;
     }
 
