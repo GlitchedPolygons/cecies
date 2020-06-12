@@ -15,7 +15,7 @@
 */
 
 /**
- *  @file util.h
+ *  @file constants.h
  *  @author Raphael Beck
  *  @brief Constants used in CECIES.
  */
