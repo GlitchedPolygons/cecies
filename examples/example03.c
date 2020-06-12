@@ -54,7 +54,7 @@ int main(void)
     // cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(size_t))
     // bytes, because base64-encoding always needs more space. See example04 for more details about this scenario.
 
-    s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false);
+    s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, TEST_PUBLIC_KEY, 0, encrypted_string, encrypted_string_length, NULL, false);
 
     printf("Status code: %d\n\n", s);
 
@@ -77,7 +77,7 @@ int main(void)
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
 
-    s = cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length);
+    s = cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, 0, decrypted_string, encrypted_string_length, &decrypted_string_length);
 
     printf("\n\nStatus code: %d\n\n", s);
 

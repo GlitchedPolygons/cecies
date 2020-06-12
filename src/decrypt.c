@@ -27,23 +27,30 @@
 #include <mbedtls/md_internal.h>
 
 #include "cecies/util.h"
+#include "cecies/constants.h"
 #include "cecies/decrypt.h"
 
-int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, const char private_key[112], unsigned char* output, const size_t output_bufsize, size_t* output_length)
+int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, const char private_key[112], size_t pbkdf2_iterations, unsigned char* output, const size_t output_bufsize, size_t* output_length)
 {
     if (encrypted_data == NULL //
             || private_key == NULL //
             || output == NULL //
             || output_length == NULL)
     {
-        fprintf(stderr, "ECIES decryption failed: one or more NULL arguments.");
+        fprintf(stderr, "CECIES: decryption failed: one or more NULL arguments.\n");
         return CECIES_DECRYPT_ERROR_CODE_NULL_ARG;
     }
 
     if (encrypted_data_length < 122 || output_bufsize == 0)
     {
-        fprintf(stderr, "ECIES decryption failed: one or more invalid arguments.");
+        fprintf(stderr, "CECIES: decryption failed: one or more invalid arguments.\n");
         return CECIES_DECRYPT_ERROR_CODE_INVALID_ARG;
+    }
+
+    if (pbkdf2_iterations != 0 && pbkdf2_iterations < CECIES_PBKDF2_MIN_ITERATIONS)
+    {
+        fprintf(stderr, "CECIES: decryption cancelled: invalid PBKDF2 iteration count (too small). Please use the exact same value you also used to encrypt, which MUST be >32k (and preferrably is >100k).\n");
+        return CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_PBKDF2_ITERATIONS;
     }
 
     int ret = 1;
@@ -55,7 +62,7 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
         input = malloc(input_length);
         if (input == NULL)
         {
-            fprintf(stderr, "ECIES decryption failed: OUT OF MEMORY!\n");
+            fprintf(stderr, "CECIES: decryption failed: OUT OF MEMORY!\n");
             return CECIES_DECRYPT_ERROR_CODE_OUT_OF_MEMORY;
         }
 
@@ -68,7 +75,7 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
         if (ret != 0)
         {
             free(input);
-            fprintf(stderr, "ECIES decryption failed: couldn't base64-decode the given data! mbedtls_base64_decode returned %d", ret);
+            fprintf(stderr, "CECIES: decryption failed: couldn't base64-decode the given data! mbedtls_base64_decode returned %d\n", ret);
             return CECIES_DECRYPT_ERROR_CODE_INVALID_ARG;
         }
     }
@@ -77,7 +84,7 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
 
     if (output_bufsize < olen)
     {
-        fprintf(stderr, "ECIES decryption failed due to insufficient output buffer size. Please allocate at least as many bytes as the encrypted input buffer, just to be sure!");
+        fprintf(stderr, "CECIES: decryption failed due to insufficient output buffer size. Please allocate at least as many bytes as the encrypted input buffer, just to be sure!\n");
         return CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE;
     }
 
@@ -120,7 +127,7 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
     ret = mbedtls_ecp_group_load(&ecp_group, MBEDTLS_ECP_DP_CURVE448);
     if (ret != 0)
     {
-        fprintf(stderr, "MbedTLS ECP group setup failed! mbedtls_ecp_group_load returned %d\n", ret);
+        fprintf(stderr, "CECIES: MbedTLS ECP group setup failed! mbedtls_ecp_group_load returned %d\n", ret);
         goto exit;
     }
 
@@ -130,7 +137,7 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
     ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, sizeof(pers));
     if (ret != 0)
     {
-        fprintf(stderr, "MbedTLS PRNG seed failed! mbedtls_ctr_drbg_seed returned %d\n", ret);
+        fprintf(stderr, "CECIES: MbedTLS PRNG seed failed! mbedtls_ctr_drbg_seed returned %d\n", ret);
         goto exit;
     }
 
@@ -144,7 +151,7 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
     ret = cecies_hexstr2bin(private_key, 112, private_key_bytes, sizeof(private_key_bytes), &private_key_bytes_length);
     if (ret != 0 || private_key_bytes_length != 56)
     {
-        fprintf(stderr, "Parsing decryption private key failed! Invalid hex string format or invalid key length... cecies_hexstr2bin returned %d\n", ret);
+        fprintf(stderr, "CECIES: Parsing decryption private key failed! Invalid hex string format or invalid key length... cecies_hexstr2bin returned %d\n", ret);
         ret = CECIES_DECRYPT_ERROR_CODE_INVALID_ARG;
         goto exit;
     }
@@ -152,63 +159,63 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
     ret = mbedtls_mpi_read_binary(&dA, private_key_bytes, private_key_bytes_length);
     if (ret != 0)
     {
-        fprintf(stderr, "Parsing decryption private key failed! mbedtls_mpi_read_binary returned %d\n", ret);
+        fprintf(stderr, "CECIES: Parsing decryption private key failed! mbedtls_mpi_read_binary returned %d\n", ret);
         goto exit;
     }
 
     ret = mbedtls_ecp_point_read_binary(&ecp_group, &R, R_bytes, 113);
     if (ret != 0)
     {
-        fprintf(stderr, "Parsing ephemeral public key failed! mbedtls_ecp_point_read_binary returned %d\n", ret);
+        fprintf(stderr, "CECIES: Parsing ephemeral public key failed! mbedtls_ecp_point_read_binary returned %d\n", ret);
         goto exit;
     }
 
     ret = mbedtls_ecp_check_pubkey(&ecp_group, &R);
     if (ret != 0)
     {
-        fprintf(stderr, "Ephemeral public key invalid! mbedtls_ecp_check_pubkey returned %d\n", ret);
+        fprintf(stderr, "CECIES: Ephemeral public key invalid! mbedtls_ecp_check_pubkey returned %d\n", ret);
         goto exit;
     }
 
     ret = mbedtls_ecp_mul(&ecp_group, &S, &dA, &R, mbedtls_ctr_drbg_random, &ctr_drbg);
     if (ret != 0)
     {
-        fprintf(stderr, "Ephemeral public key multiplication invalid; couldn't compute AES secret! mbedtls_ecp_mul returned %d\n", ret);
+        fprintf(stderr, "CECIES: Ephemeral public key multiplication invalid; couldn't compute AES secret! mbedtls_ecp_mul returned %d\n", ret);
         goto exit;
     }
 
     ret = mbedtls_ecp_point_write_binary(&ecp_group, &S, MBEDTLS_ECP_PF_UNCOMPRESSED, &S_bytes_length, S_bytes, sizeof(S_bytes));
     if (ret != 0 || S_bytes_length != 113)
     {
-        fprintf(stderr, "ECIES decryption failed! Invalid ECP point; mbedtls_ecp_point_write_binary returned %d\n", ret);
+        fprintf(stderr, "CECIES: decryption failed! Invalid ECP point; mbedtls_ecp_point_write_binary returned %d\n", ret);
         goto exit;
     }
 
     ret = mbedtls_md_setup(&md_ctx, mbedtls_md_info_from_type(MBEDTLS_MD_SHA512), 1);
     if (ret != 0)
     {
-        fprintf(stderr, "MbedTLS MD context (SHA512) setup failed! mbedtls_md_setup returned %d\n", ret);
+        fprintf(stderr, "CECIES: MbedTLS MD context (SHA512) setup failed! mbedtls_md_setup returned %d\n", ret);
         goto exit;
     }
 
-    ret = mbedtls_pkcs5_pbkdf2_hmac(&md_ctx, S_bytes, S_bytes_length, salt, 32, 1024 * 256, 32, aes_key);
+    ret = mbedtls_pkcs5_pbkdf2_hmac(&md_ctx, S_bytes, 57, salt, 32, pbkdf2_iterations != 0 ? pbkdf2_iterations : CECIES_PBKDF2_DEFAULT_ITERATIONS, 32, aes_key);
     if (ret != 0 || memcmp(aes_key, empty32, 32) == 0)
     {
-        fprintf(stderr, "PBKDF2 failed! mbedtls_pkcs5_pbkdf2_hmac returned %d\n", ret);
+        fprintf(stderr, "CECIES: PBKDF2 failed! mbedtls_pkcs5_pbkdf2_hmac returned %d\n", ret);
         goto exit;
     }
 
     ret = mbedtls_gcm_setkey(&aes_ctx, MBEDTLS_CIPHER_ID_AES, aes_key, 256);
     if (ret != 0)
     {
-        fprintf(stderr, "AES key setup failed! mbedtls_gcm_setkey returned %d\n", ret);
+        fprintf(stderr, "CECIES: AES key setup failed! mbedtls_gcm_setkey returned %d\n", ret);
         goto exit;
     }
 
     ret = mbedtls_gcm_auth_decrypt(&aes_ctx, olen, iv, 16, NULL, 0, tag, 16, ciphertext, output);
     if (ret != 0)
     {
-        fprintf(stderr, "ECIES decryption failed! mbedtls_gcm_auth_decrypt returned %d\n", ret);
+        fprintf(stderr, "CECIES: decryption failed! mbedtls_gcm_auth_decrypt returned %d\n", ret);
         goto exit;
     }
 
