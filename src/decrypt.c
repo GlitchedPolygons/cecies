@@ -29,7 +29,7 @@
 #include "cecies/util.h"
 #include "cecies/decrypt.h"
 
-int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, const unsigned char* private_key, const size_t private_key_length, const bool private_key_base64, unsigned char* output, const size_t output_bufsize, size_t* output_length)
+int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, const char private_key[112], unsigned char* output, const size_t output_bufsize, size_t* output_length)
 {
     if (encrypted_data == NULL //
             || private_key == NULL //
@@ -40,9 +40,7 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
         return CECIES_DECRYPT_ERROR_CODE_NULL_ARG;
     }
 
-    if (encrypted_data_length < 178 //
-            || private_key_length == 0 //
-            || output_bufsize == 0)
+    if (encrypted_data_length < 122 || output_bufsize == 0)
     {
         fprintf(stderr, "ECIES decryption failed: one or more invalid arguments.");
         return CECIES_DECRYPT_ERROR_CODE_INVALID_ARG;
@@ -54,27 +52,32 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
 
     if (encrypted_data_base64)
     {
-        input = malloc(encrypted_data_length);
+        input = malloc(input_length);
         if (input == NULL)
         {
-            fprintf(stderr, "ECIES decryption failed: OUT OF MEMORY!");
+            fprintf(stderr, "ECIES decryption failed: OUT OF MEMORY!\n");
             return CECIES_DECRYPT_ERROR_CODE_OUT_OF_MEMORY;
         }
 
-        ret = mbedtls_base64_decode(input, encrypted_data_length, &input_length, encrypted_data, encrypted_data_length);
+        if (encrypted_data[input_length - 1] == '\0')
+        {
+            input_length--;
+        }
+
+        ret = mbedtls_base64_decode(input, input_length, &input_length, encrypted_data, input_length);
         if (ret != 0)
         {
             free(input);
-            fprintf(stderr, "ECIES decryption failed due to insufficient output buffer size. Please allocate at least as many bytes as the encrypted input buffer to be sure.");
-            return CECIES_DECRYPT_ERROR_CODE_OUT_OF_MEMORY;
+            fprintf(stderr, "ECIES decryption failed: couldn't base64-decode the given data! mbedtls_base64_decode returned %d", ret);
+            return CECIES_DECRYPT_ERROR_CODE_INVALID_ARG;
         }
     }
 
-    const size_t olen = input_length - 16 - 32 - 113 - 16;
+    const size_t olen = input_length - 16 - 32 - 57 - 16;
 
     if (output_bufsize < olen)
     {
-        fprintf(stderr, "ECIES decryption failed due to insufficient output buffer size. Please allocate at least as many bytes as the encrypted input buffer to be sure.");
+        fprintf(stderr, "ECIES decryption failed due to insufficient output buffer size. Please allocate at least as many bytes as the encrypted input buffer, just to be sure!");
         return CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE;
     }
 
@@ -82,10 +85,9 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
     unsigned char tag[16];
     unsigned char salt[32];
     unsigned char aes_key[32];
-    unsigned char R_bytes[256];
-    unsigned char S_bytes[256];
-    unsigned char private_key_bytes[256];
-    const size_t R_bytes_length = 113;
+    unsigned char R_bytes[113];
+    unsigned char S_bytes[113];
+    unsigned char private_key_bytes[64];
     size_t private_key_bytes_length, S_bytes_length;
 
     memset(iv, 0x00, 16);
@@ -134,23 +136,17 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
 
     memcpy(iv, input, 16);
     memcpy(salt, input + 16, 32);
-    memcpy(R_bytes, input + 16 + 32, R_bytes_length);
-    memcpy(tag, input + 16 + 32 + R_bytes_length, 16);
+    memcpy(R_bytes, input + 16 + 32, 57);
+    memcpy(tag, input + 16 + 32 + 57, 16);
 
-    const unsigned char* ciphertext = input + 16 + 32 + R_bytes_length + 16;
+    const unsigned char* ciphertext = input + (16 + 32 + 57 + 16);
 
-    if (private_key_base64)
+    ret = cecies_hexstr2bin(private_key, 112, private_key_bytes, sizeof(private_key_bytes), &private_key_bytes_length);
+    if (ret != 0 || private_key_bytes_length != 56)
     {
-        ret = mbedtls_base64_decode(private_key_bytes, sizeof(private_key_bytes), &private_key_bytes_length, private_key, private_key_length);
-        if (ret != 0)
-        {
-            fprintf(stderr, "Parsing decryption private key failed! mbedtls_base64_decode returned %d\n", ret);
-            goto exit;
-        }
-    }
-    else
-    {
-        memcpy(private_key_bytes, private_key, private_key_bytes_length = private_key_length);
+        fprintf(stderr, "Parsing decryption private key failed! Invalid hex string format or invalid key length... cecies_hexstr2bin returned %d\n", ret);
+        ret = CECIES_DECRYPT_ERROR_CODE_INVALID_ARG;
+        goto exit;
     }
 
     ret = mbedtls_mpi_read_binary(&dA, private_key_bytes, private_key_bytes_length);
@@ -160,7 +156,7 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
         goto exit;
     }
 
-    ret = mbedtls_ecp_point_read_binary(&ecp_group, &R, R_bytes, R_bytes_length);
+    ret = mbedtls_ecp_point_read_binary(&ecp_group, &R, R_bytes, 113);
     if (ret != 0)
     {
         fprintf(stderr, "Parsing ephemeral public key failed! mbedtls_ecp_point_read_binary returned %d\n", ret);
@@ -182,9 +178,9 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
     }
 
     ret = mbedtls_ecp_point_write_binary(&ecp_group, &S, MBEDTLS_ECP_PF_UNCOMPRESSED, &S_bytes_length, S_bytes, sizeof(S_bytes));
-    if (ret != 0)
+    if (ret != 0 || S_bytes_length != 113)
     {
-        fprintf(stderr, "ECIES decryption failed! mbedtls_ecp_point_write_binary returned %d\n", ret);
+        fprintf(stderr, "ECIES decryption failed! Invalid ECP point; mbedtls_ecp_point_write_binary returned %d\n", ret);
         goto exit;
     }
 

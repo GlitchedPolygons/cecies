@@ -21,6 +21,10 @@
 #include <stdbool.h>
 #include <setjmp.h>
 #include <cmocka.h>
+#include <cecies/util.h>
+#include <cecies/keygen.h>
+#include <cecies/encrypt.h>
+#include <cecies/decrypt.h>
 
 /* A test case that does nothing and succeeds. */
 static void null_test_success(void** state)
@@ -28,12 +32,25 @@ static void null_test_success(void** state)
     (void)state;
 }
 
+static void cecies_generate_curve448_keypair_NULL_args_return_CECIES_KEYGEN_ERROR_CODE_NULL_ARG(void** state)
+{
+    assert_int_equal(CECIES_KEYGEN_ERROR_CODE_NULL_ARG, cecies_generate_curve448_keypair(NULL, (unsigned char*)"test", 4));
+}
+
+static void cecies_generate_curve448_keypair_invalid_args_return_CECIES_KEYGEN_ERROR_CODE_INVALID_ARG(void** state)
+{
+    cecies_curve448_keypair keypair;
+    assert_int_equal(CECIES_KEYGEN_ERROR_CODE_INVALID_ARG, cecies_generate_curve448_keypair(&keypair, (unsigned char*)"test", 0));
+}
+
 // --------------------------------------------------------------------------------------------------------------
 
 int main(void)
 {
     const struct CMUnitTest tests[] = {
-            cmocka_unit_test(null_test_success),
+        cmocka_unit_test(null_test_success),
+        cmocka_unit_test(cecies_generate_curve448_keypair_NULL_args_return_CECIES_KEYGEN_ERROR_CODE_NULL_ARG),
+        cmocka_unit_test(cecies_generate_curve448_keypair_invalid_args_return_CECIES_KEYGEN_ERROR_CODE_INVALID_ARG),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

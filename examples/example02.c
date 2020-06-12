@@ -21,22 +21,18 @@
 
 /*
  *     This example shows how to generate CECIES keypairs.
+ *     The results are written into a cecies_curve448_keypair struct instance
+ *     and are basically the private key, which is a bignum (known in MbedTLS as an mbedtls_mpi)
+ *     written as a binary array (BIG endian)
  */
 
 int main(void)
 {
     printf("\n---- CECIES ----\n-- Example 02 --\n\n");
 
-    unsigned char public_key[256];
-    memset(public_key, 0x00, sizeof(public_key));
+    cecies_curve448_keypair keypair;
 
-    unsigned char private_key[256];
-    memset(private_key, 0x00, sizeof(private_key));
-
-    size_t public_key_length;
-    size_t private_key_length;
-
-    int r = cecies_generate_curve448_keypair(true, private_key, sizeof(private_key), &private_key_length, public_key, sizeof(public_key), &public_key_length, NULL, 0);
+    int r = cecies_generate_curve448_keypair(&keypair, NULL, 0);
 
     if (r != 0)
     {
@@ -44,7 +40,8 @@ int main(void)
         return r;
     }
 
-    printf("Successfully generated CECIES key-pair (Curve448)\n\nPrivate key: %s\n\nPublic key: %s\n\n", private_key, public_key);
+    printf("Successfully generated CECIES key-pair (Curve448)\n\nPrivate key: %s\n\nPublic key: %s\n\n", keypair.private_key, keypair.public_key);
 
+    memset(&keypair, 0x00, sizeof(keypair));
     return r;
 }

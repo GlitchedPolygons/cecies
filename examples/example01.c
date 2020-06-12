@@ -25,9 +25,9 @@
  */
 static const char TEST_STRING[] = "Lorem ipsum dolor sick fuck amend something something ...";
 
-static const char TEST_PUBLIC_KEY[] = "BMAocEd2hsZvNRynFSu8YeCfOu2wkXMALnDkr2hALy5cfiECpi2b21j9lXpoijwBkULMy234iR69AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+static const char TEST_PUBLIC_KEY[] = "0450430325551ee86a6d9216947b5bdf04314771028e847029def87eb18474e10dcd981d72a2f51eff20ac1c1a3375850e0e53f1b065923304";
 
-static const char TEST_PRIVATE_KEY[] = "8FNsJbVMlSwr41fb8ktgWjG8WyyAup1j0icaspuiTtCxt7C//m84283s/VK8NDvstvxho2PR5qA=";
+static const char TEST_PRIVATE_KEY[] = "f5c2351c941cbba29313771c84693dacb80f21be8bcb07406217ee3a07143e2a8fdbccd083d045a2818858c2faf72e58ec7e006a1386361c";
 
 int main(void)
 {
@@ -37,28 +37,29 @@ int main(void)
     const size_t TEST_STRING_LENGTH = sizeof(TEST_STRING);
 
     printf("\n---- CECIES ----\n-- Example 01 --\n\n");
-    printf("Encrypting the following string:\n%s\n\n", TEST_STRING);
+    printf("Encrypting the following string:\n\n%s\n\n", TEST_STRING);
 
     size_t encrypted_string_length;
     unsigned char encrypted_string[1024];
     memset(encrypted_string, 0x00, sizeof(encrypted_string));
 
-    // If you don't know how big you should allocate your output buffer to contain the encrypted data,
+    // In this example we allocate "enough" space on the stack because we know the message is short and predictable.
+    // But if you don't know how big you should allocate your output buffer to contain the encrypted data,
     // you can make use of the cecies_calc_output_buffer_needed_size(size_t) function inside util.h!
     // Just keep in mind that if you choose to base64-encode too, allocate cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(size_t))
-    // bytes because base64-encoding always needs more space.
+    // bytes, because base64-encoding always needs more space. See example04 for more details about this scenario.
 
-    s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, (unsigned char*)TEST_PUBLIC_KEY, strlen(TEST_PUBLIC_KEY), true, encrypted_string, sizeof(encrypted_string), &encrypted_string_length, true);
+    s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, TEST_PUBLIC_KEY, encrypted_string, sizeof(encrypted_string), &encrypted_string_length, true);
 
-    printf("Encrypted string:\n%s\n\n", encrypted_string);
+    printf("Encrypted string >>> base64:\n\n%s\n\nStatus code: %d\n\n", encrypted_string, s);
 
     size_t decrypted_string_length;
     char decrypted_string[1024];
     memset(decrypted_string, 0x00, sizeof(decrypted_string));
 
-    s = cecies_decrypt(encrypted_string, encrypted_string_length, true, (unsigned char*)TEST_PRIVATE_KEY, strlen(TEST_PRIVATE_KEY), true, (unsigned char*)decrypted_string, sizeof(decrypted_string), &decrypted_string_length);
+    s = cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, (unsigned char*)decrypted_string, sizeof(decrypted_string), &decrypted_string_length);
 
-    printf("Decrypted string:\n%s\n\n", decrypted_string);
+    printf("Decrypted string:\n\n%s\n\nStatus code: %d\n\n", decrypted_string, s);
 
     return s;
 }

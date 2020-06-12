@@ -31,24 +31,34 @@ extern "C" {
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <stdbool.h>
 
 #define CECIES_KEYGEN_ERROR_CODE_NULL_ARG 7000
 #define CECIES_KEYGEN_ERROR_CODE_INVALID_ARG 7001
-#define CECIES_KEYGEN_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE 7002
+
+/**
+ * Contains a stack-allocated Curve448 keypair.
+ */
+typedef struct cecies_curve448_keypair
+{
+    /**
+     * The public key (formatted as a hex string).
+     */
+    char public_key[115];
+
+    /**
+     * The private key (formatted as a hex string).
+     */
+    char private_key[113];
+} cecies_curve448_keypair;
 
 /**
  * Generates a CECIES keypair (currently using Curve448) and writes it into the specified output buffers.
- * @param base64 Should the generated keys be exported into the output buffers as human-readable base64-encoded strings or just raw binary data?
- * @param output_private_key_buffer Private key output buffer into which to write the private key.
- * @param output_private_key_buffer_size Private key output buffer size. Make sure to allocate enough space!
- * @param output_private_key_buffer_length How many bytes were written into the \p output_private_key_buffer output buffer.
- * @param output_public_key_buffer Public key output buffer into which to write the public key.
- * @param output_public_key_buffer_size Public key output buffer size. Make sure to allocate enough space!
- * @param output_public_key_buffer_length How many bytes were written into the \p output_public_key_buffer output buffer.
+ * @param output The cecies_curve448_keypair instance into which to write the generated key-pair.
+ * @param additional_entropy [OPTIONAL] Additional entropy bytes for the CSPRNG. Can be set to <c>NULL</c> if you wish not to add custom entropy.
+ * @param additional_entropy_length [OPTIONAL] Length of the \p additional_entropy array. If \p additional_entropy is <c>NULL</c>, this value is ignored.
  * @return <c>0</c> if key generation succeeded; error codes as defined inside the header file or MbedTLS otherwise.
  */
-int cecies_generate_curve448_keypair(bool base64, unsigned char* output_private_key_buffer, size_t output_private_key_buffer_size, size_t* output_private_key_buffer_length, unsigned char* output_public_key_buffer, size_t output_public_key_buffer_size, size_t* output_public_key_buffer_length, unsigned char* additional_entropy, size_t additional_entropy_length);
+int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, unsigned char* additional_entropy, size_t additional_entropy_length);
 
 #ifdef __cplusplus
 } // extern "C"
