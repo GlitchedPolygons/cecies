@@ -52,7 +52,7 @@ int main(void)
     // you can make use of the cecies_calc_output_buffer_needed_size(size_t) function inside util.h!
     // Just keep in mind that if you choose to base64-encode too, allocate
     // cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(size_t))
-    // bytes because base64-encoding always needs more space.
+    // bytes, because base64-encoding always needs more space. See example04 for more details about this scenario.
 
     s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false);
 
