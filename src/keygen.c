@@ -15,6 +15,7 @@
 */
 
 #include <string.h>
+
 #include <mbedtls/ecdh.h>
 #include <mbedtls/base64.h>
 #include <mbedtls/entropy.h>
