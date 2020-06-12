@@ -29,7 +29,7 @@
 #include "cecies/util.h"
 #include "cecies/decrypt.h"
 
-int cecies_decrypt(unsigned char* encrypted_data, size_t encrypted_data_length, bool encrypted_data_base64, const char private_key[112], unsigned char* output, size_t output_bufsize, size_t* output_length)
+int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, const char private_key[112], unsigned char* output, const size_t output_bufsize, size_t* output_length)
 {
     if (encrypted_data == NULL //
             || private_key == NULL //
@@ -52,19 +52,19 @@ int cecies_decrypt(unsigned char* encrypted_data, size_t encrypted_data_length, 
 
     if (encrypted_data_base64)
     {
-        input = malloc(encrypted_data_length);
+        input = malloc(input_length);
         if (input == NULL)
         {
             fprintf(stderr, "ECIES decryption failed: OUT OF MEMORY!\n");
             return CECIES_DECRYPT_ERROR_CODE_OUT_OF_MEMORY;
         }
 
-        if (encrypted_data[encrypted_data_length - 1] == '\0')
+        if (encrypted_data[input_length - 1] == '\0')
         {
-            encrypted_data_length--;
+            input_length--;
         }
 
-        ret = mbedtls_base64_decode(input, encrypted_data_length, &input_length, encrypted_data, encrypted_data_length);
+        ret = mbedtls_base64_decode(input, input_length, &input_length, encrypted_data, input_length);
         if (ret != 0)
         {
             free(input);

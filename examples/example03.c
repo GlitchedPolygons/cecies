@@ -32,35 +32,63 @@ static const char TEST_PRIVATE_KEY[] = "f5c2351c941cbba29313771c84693dacb80f21be
 int main(void)
 {
     int s = 1;
-
+    unsigned char* encrypted_string = NULL;
+    unsigned char* decrypted_string = NULL;
+    size_t encrypted_string_length;
+    size_t decrypted_string_length;
     const size_t TEST_STRING_LENGTH = sizeof(TEST_STRING);
 
     printf("\n---- CECIES ----\n-- Example 03 --\n\n");
-    printf("Encrypting the following string:\n%s\n\n", TEST_STRING);
+    printf("Encrypting the following string:\n\n%s\n\n", TEST_STRING);
 
-    // Here's how to encrypt data using the cecies_calc_output_buffer_needed_size() function to allocate the exactly right amount of bytes.
-    size_t encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH);
-    unsigned char* encrypted_string = malloc(encrypted_string_length+1);
+    // Here's how to encrypt data using the
+    // cecies_calc_output_buffer_needed_size()
+    // function to allocate the exactly right amount of bytes.
+    encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH);
+    encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
     // If you don't know how big you should allocate your output buffer to contain the encrypted data,
     // you can make use of the cecies_calc_output_buffer_needed_size(size_t) function inside util.h!
-    // Just keep in mind that if you choose to base64-encode too, allocate cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(size_t))
+    // Just keep in mind that if you choose to base64-encode too, allocate
+    // cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(size_t))
     // bytes because base64-encoding always needs more space.
 
-    s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, (char*)TEST_PUBLIC_KEY, encrypted_string, sizeof(encrypted_string), &encrypted_string_length, false);
+    s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false);
 
-    printf("Encrypted string:\n%s\n\n", encrypted_string);
+    printf("Status code: %d\n\n", s);
 
-    // When unsure, allocate the same amount as the input encrypted data buffer. That's guaranteed to work.
-    size_t decrypted_string_length;
-    char* decrypted_string = malloc(encrypted_string_length+1);
+    if (s != 0)
+    {
+        goto exit;
+    }
+
+    printf("Encrypted string >>> binary:\n\n%s\n\n", encrypted_string);
+
+    printf("Encrypted string >>> hexstr:\n\n");
+
+    for (int i = 0; i < encrypted_string_length; ++i)
+    {
+        printf("%02x", encrypted_string[i]);
+    }
+
+    // When unsure, allocate the same amount of space as the input
+    // encrypted data buffer for decryption. That's guaranteed to work.
+    decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
 
-    s = cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, (unsigned char*)decrypted_string, sizeof(decrypted_string), &decrypted_string_length);
+    s = cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length);
 
-    printf("Decrypted string:\n%s\n\n", decrypted_string);
+    printf("\n\nStatus code: %d\n\n", s);
 
+    if (s != 0)
+    {
+        goto exit;
+    }
+
+    printf("Decrypted string:\n\n%s\n\n", decrypted_string);
+
+exit:
     free(encrypted_string);
     free(decrypted_string);
     return s;

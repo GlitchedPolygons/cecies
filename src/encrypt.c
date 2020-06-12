@@ -26,7 +26,7 @@
 #include "cecies/util.h"
 #include "cecies/encrypt.h"
 
-int cecies_encrypt(const unsigned char* data, size_t data_length, char public_key[114], unsigned char* output, size_t output_bufsize, size_t* output_length, bool output_base64)
+int cecies_encrypt(const unsigned char* data, const size_t data_length, const char public_key[114], unsigned char* output, const size_t output_bufsize, size_t* output_length, const bool output_base64)
 {
     if (data == NULL //
             || public_key == NULL //
