@@ -31,6 +31,7 @@ extern "C" {
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include "cecies/util.h"
 
 #define CECIES_KEYGEN_ERROR_CODE_NULL_ARG 7000
 #define CECIES_KEYGEN_ERROR_CODE_INVALID_ARG 7001

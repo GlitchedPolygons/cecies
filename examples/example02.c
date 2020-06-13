@@ -23,25 +23,36 @@
  *     This example shows how to generate CECIES keypairs.
  *     The results are written into a cecies_curve448_keypair struct instance
  *     and are basically the private key, which is a bignum (known in MbedTLS as an mbedtls_mpi)
- *     written as a binary array (BIG endian)
+ *     written as a binary array (BIG endian) and exported as hex string into cecies_curve448_keypair.private_key
+ *     and the public key, which is a point on the curve (mbedtls_ecp_point) and also exported into cecies_curve448_keypair.public_key as a hex string.
  */
 
-int main(void)
+int main(int argc, char* argv[])
 {
+    cecies_enable_fprintf(); // Allow fprintf in case errors occur and need to be fprintf'ed.
     printf("\n---- CECIES ----\n-- Example 02 --\n\n");
+
+    const char* additional_entropy = argc > 1 ? argv[1] : NULL;
+    const size_t additional_entropy_length = additional_entropy ? strlen(additional_entropy) : 0;
+
+    if (additional_entropy != NULL)
+    {
+        printf("Using additional entropy string \"%s\"\n", additional_entropy);
+    }
 
     cecies_curve448_keypair keypair;
 
-    int r = cecies_generate_curve448_keypair(&keypair, NULL, 0);
+    int r = cecies_generate_curve448_keypair(&keypair, (unsigned char*)additional_entropy, additional_entropy_length);
 
     if (r != 0)
     {
-        printf("CECIES example key-pair generation failed!  cecies_generate_curve448_keypair returned %d", r);
+        printf("\nCECIES example key-pair generation failed!  cecies_generate_curve448_keypair returned %d\n", r);
         return r;
     }
 
-    printf("Successfully generated CECIES key-pair (Curve448)\n\nPrivate key: %s\n\nPublic key: %s\n\n", keypair.private_key, keypair.public_key);
+    printf("\nSuccessfully generated CECIES key-pair (Curve448)\n\nPrivate key: %s\n\nPublic key: %s\n\n", keypair.private_key, keypair.public_key);
 
     memset(&keypair, 0x00, sizeof(keypair));
+    cecies_disable_fprintf();
     return r;
 }

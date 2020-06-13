@@ -21,19 +21,14 @@
 #include <mbedtls/entropy.h>
 #include <mbedtls/ctr_drbg.h>
 
-#include "cecies/util.h"
 #include "cecies/keygen.h"
 
 int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, unsigned char* additional_entropy, size_t additional_entropy_length)
 {
     if (output == NULL)
     {
+        cecies_fprintf(stderr, "\nCECIES: Key generation failed because the output argument was NULL!");
         return CECIES_KEYGEN_ERROR_CODE_NULL_ARG;
-    }
-
-    if (additional_entropy != NULL && additional_entropy_length == 0)
-    {
-        return CECIES_KEYGEN_ERROR_CODE_INVALID_ARG;
     }
 
     int ret = 1;
@@ -50,7 +45,7 @@ int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, unsigned c
     mbedtls_mpi_init(&r);
     mbedtls_ecp_point_init(&R);
 
-    unsigned char pers[32];
+    unsigned char pers[256];
     unsigned char prvkeybuf[56];
     unsigned char pubkeybuf[256];
     size_t prvkeybuflen, pubkeybuflen;
@@ -58,26 +53,28 @@ int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, unsigned c
     memset(prvkeybuf, 0x00, sizeof(prvkeybuf));
     memset(pubkeybuf, 0x00, sizeof(pubkeybuf));
 
+    cecies_dev_urandom(pers, 128);
+
     if (additional_entropy != NULL && additional_entropy_length > 0)
     {
-        snprintf((char*)pers, sizeof(pers), "%llu%s", cecies_get_random_big_integer(), additional_entropy);
+        snprintf((char*)(pers + 128), sizeof(pers) - 128, "%s%llu", additional_entropy, cecies_get_random_big_integer());
     }
     else
     {
-        snprintf((char*)pers, sizeof(pers), "cecies_PERS_#!$\\+@74%llu", cecies_get_random_big_integer());
+        snprintf((char*)(pers + 128), sizeof(pers) - 128, "cecies_PERS_#!$\\+@74%llu", cecies_get_random_big_integer());
     }
 
-    ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, sizeof(pers));
+    ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, CECIES_MIN(sizeof(pers), (MBEDTLS_CTR_DRBG_MAX_SEED_INPUT - MBEDTLS_CTR_DRBG_ENTROPY_LEN - 1)));
     if (ret != 0)
     {
-        fprintf(stderr, "MbedTLS PRNG seed failed! mbedtls_ctr_drbg_seed returned %d\n", ret);
+        cecies_fprintf(stderr, "\nCECIES: MbedTLS PRNG seed failed! mbedtls_ctr_drbg_seed returned %d\n", ret);
         goto exit;
     }
 
     ret = mbedtls_ecp_group_load(&ecp_group, MBEDTLS_ECP_DP_CURVE448);
     if (ret != 0)
     {
-        fprintf(stderr, "MbedTLS ECP group setup failed! mbedtls_ecp_group_load returned %d\n", ret);
+        cecies_fprintf(stderr, "\nCECIES: MbedTLS ECP group setup failed! mbedtls_ecp_group_load returned %d\n", ret);
         goto exit;
     }
 
@@ -86,7 +83,7 @@ int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, unsigned c
     ret = mbedtls_ecp_gen_keypair(&ecp_group, &r, &R, mbedtls_ctr_drbg_random, &ctr_drbg);
     if (ret != 0)
     {
-        fprintf(stderr, "CECIES Keypair generation failed! mbedtls_ecp_gen_keypair returned %d\n", ret);
+        cecies_fprintf(stderr, "\nCECIES: Keypair generation failed! mbedtls_ecp_gen_keypair returned %d\n", ret);
         goto exit;
     }
 
@@ -95,14 +92,14 @@ int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, unsigned c
     ret = mbedtls_mpi_write_binary(&r, prvkeybuf, sizeof(prvkeybuf));
     if (ret != 0)
     {
-        fprintf(stderr, "Writing generated private key into temporary buffer failed! mbedtls_mpi_write_binary returned %d\n", ret);
+        cecies_fprintf(stderr, "\nCECIES: Writing generated private key into temporary buffer failed! mbedtls_mpi_write_binary returned %d\n", ret);
         goto exit;
     }
 
     prvkeybuflen = mbedtls_mpi_size(&r);
     if (prvkeybuflen != 56)
     {
-        fprintf(stderr, "Invalid key length!");
+        cecies_fprintf(stderr, "\nCECIES: Invalid key length!");
         ret = -1;
         goto exit;
     }
@@ -112,13 +109,13 @@ int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, unsigned c
     ret = mbedtls_ecp_point_write_binary(&ecp_group, &R, MBEDTLS_ECP_PF_UNCOMPRESSED, &pubkeybuflen, pubkeybuf, sizeof(pubkeybuf));
     if (ret != 0)
     {
-        fprintf(stderr, "Writing generated public key into temporary buffer failed! mbedtls_ecp_point_write_binary returned %d\n", ret);
+        cecies_fprintf(stderr, "\nCECIES: Writing generated public key into temporary buffer failed! mbedtls_ecp_point_write_binary returned %d\n", ret);
         goto exit;
     }
 
     if (pubkeybuf[0] != 0x04 || memcmp(pubkeybuf + 57, empty64, pubkeybuflen - 57) != 0)
     {
-        fprintf(stderr, "Public key has invalid format!\n");
+        cecies_fprintf(stderr, "\nCECIES: Public key has invalid format!\n");
         goto exit;
     }
 
@@ -127,14 +124,14 @@ int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, unsigned c
     ret = cecies_bin2hexstr(prvkeybuf, prvkeybuflen, output->private_key, sizeof(output->private_key), NULL, false);
     if (ret != 0)
     {
-        fprintf(stderr, "Writing generated private key into hex string output buffer failed! cecies_bin2hexstr returned %d\n", ret);
+        cecies_fprintf(stderr, "\nCECIES: Writing generated private key into hex string output buffer failed! cecies_bin2hexstr returned %d\n", ret);
         goto exit;
     }
 
     ret = cecies_bin2hexstr(pubkeybuf, 57, output->public_key, sizeof(output->public_key), NULL, false);
     if (ret != 0)
     {
-        fprintf(stderr, "Writing generated public_key key into hex string output buffer failed! cecies_bin2hexstr returned %d\n", ret);
+        cecies_fprintf(stderr, "\nCECIES: Writing generated public_key key into hex string output buffer failed! cecies_bin2hexstr returned %d\n", ret);
         goto exit;
     }
 

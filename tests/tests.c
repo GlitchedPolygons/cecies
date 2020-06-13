@@ -156,12 +156,6 @@ static void cecies_generate_curve448_keypair_NULL_args_return_CECIES_KEYGEN_ERRO
     assert_int_equal(CECIES_KEYGEN_ERROR_CODE_NULL_ARG, cecies_generate_curve448_keypair(NULL, (unsigned char*)"test", 4));
 }
 
-static void cecies_generate_curve448_keypair_invalid_args_return_CECIES_KEYGEN_ERROR_CODE_INVALID_ARG(void** state)
-{
-    cecies_curve448_keypair keypair;
-    assert_int_equal(CECIES_KEYGEN_ERROR_CODE_INVALID_ARG, cecies_generate_curve448_keypair(&keypair, (unsigned char*)"test", 0));
-}
-
 static void cecies_generate_curve448_keypair_generated_keys_are_valid(void** state)
 {
     cecies_curve448_keypair keypair1;
@@ -557,7 +551,6 @@ int main(void)
         cmocka_unit_test(cecies_bin2hexstr_insufficient_output_buffer_size_returns_2),
         cmocka_unit_test(cecies_bin2hexstr_success_returns_0),
         cmocka_unit_test(cecies_generate_curve448_keypair_NULL_args_return_CECIES_KEYGEN_ERROR_CODE_NULL_ARG),
-        cmocka_unit_test(cecies_generate_curve448_keypair_invalid_args_return_CECIES_KEYGEN_ERROR_CODE_INVALID_ARG),
         cmocka_unit_test(cecies_generate_curve448_keypair_generated_keys_are_valid),
         cmocka_unit_test(cecies_generate_curve448_keypair_generated_keys_are_invalid),
         cmocka_unit_test(cecies_encrypt_raw_binary_decrypts_successfully),
