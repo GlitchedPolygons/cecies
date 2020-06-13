@@ -504,7 +504,8 @@ static void cecies_encrypt_bin_decrypt_with_wrong_pbkdf2_iterations_fails(void**
     memset(decrypted_string, 0x00, encrypted_string_length);
 
     assert_int_not_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, pbkdf2_iterations_for_decryption, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    assert_int_not_equal(0, memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
+    assert_int_not_equal(0, memcmp(TEST_STRING, decrypted_string, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
+    assert_int_equal(0, memcmp(decrypted_string, empty64, sizeof(empty64)));
 
     //
 
