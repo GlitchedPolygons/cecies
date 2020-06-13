@@ -49,7 +49,7 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
 
     if (pbkdf2_iterations != 0 && pbkdf2_iterations < CECIES_PBKDF2_MIN_ITERATIONS)
     {
-        cecies_fprintf(stderr, "CECIES: decryption cancelled: invalid PBKDF2 iteration count (too small). Please use the exact same value you also used to encrypt, which MUST be >32k (and preferrably is >100k).\n");
+        cecies_fprintf(stderr, "CECIES: decryption cancelled: invalid PBKDF2 iteration count (too small). Please use the exact same value you also used to encrypt, which MUST be >16k (and preferrably is >100k).\n");
         return CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_PBKDF2_ITERATIONS;
     }
 
