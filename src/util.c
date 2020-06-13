@@ -90,16 +90,26 @@ bool cecies_is_fprintf_enabled()
     return _cecies_fprintf_enabled;
 }
 
-int (*_cecies_fprintf_fptr)(FILE* stream, const char* format, ...) = &fprintf;
-
 void cecies_enable_fprintf()
 {
     _cecies_fprintf_enabled = true;
-    _cecies_fprintf_fptr = &fprintf;
 }
 
 void cecies_disable_fprintf()
 {
     _cecies_fprintf_enabled = false;
-    _cecies_fprintf_fptr = &cecies_printvoid;
+}
+
+int cecies_fprintf(FILE* stream, const char* format, ...)
+{
+    if (cecies_is_fprintf_enabled())
+    {
+        va_list arglist;
+        va_start(arglist, format);
+        const int r = vfprintf(stream, format, arglist);
+        va_end(arglist);
+        return r;
+    }
+
+    return 0;
 }

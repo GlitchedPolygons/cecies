@@ -43,20 +43,13 @@ static void null_test_success(void** state)
     (void)state;
 }
 
-static void cecies_printvoid_returns_0(void** state)
-{
-    assert_int_equal(0, cecies_printvoid(stderr, "void", 4));
-}
-
 static void cecies_fprintf_enables_and_disables_correctly(void** state)
 {
     cecies_disable_fprintf();
     assert_false(cecies_is_fprintf_enabled());
-    assert_memory_not_equal(_cecies_fprintf_fptr, &fprintf, sizeof(&fprintf));
 
     cecies_enable_fprintf();
     assert_true(cecies_is_fprintf_enabled());
-    assert_memory_equal(_cecies_fprintf_fptr, &fprintf, sizeof(&fprintf));
 
     cecies_disable_fprintf();
 }
@@ -583,7 +576,6 @@ int main(void)
 
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(null_test_success),
-        cmocka_unit_test(cecies_printvoid_returns_0),
         cmocka_unit_test(cecies_fprintf_enables_and_disables_correctly),
         cmocka_unit_test(cecies_hexstr2bin_invalid_args_returns_1),
         cmocka_unit_test(cecies_hexstr2bin_hexlen_odd_number_fails_returns_2),

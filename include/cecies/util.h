@@ -32,6 +32,7 @@ extern "C" {
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include "cecies/constants.h"
 
@@ -120,21 +121,6 @@ int cecies_bin2hexstr(const unsigned char* bin, size_t bin_length, char* output,
 bool cecies_is_fprintf_enabled();
 
 /**
- * Like fprintf() except it doesn't do anything. Like printing into <c>/dev/null</c> :D lots of fun!
- * @param stream [IGNORED]
- * @param format [IGNORED]
- * @param ... [IGNORED]
- * @return <c>0</c>
- */
-static inline int cecies_printvoid(FILE* stream, const char* format, ...)
-{
-    return 0;
-}
-
-/** @private */
-extern int (*_cecies_fprintf_fptr)(FILE* stream, const char* format, ...);
-
-/**
  * Enables CECIES' use of fprintf().
  */
 void cecies_enable_fprintf();
@@ -145,7 +131,7 @@ void cecies_enable_fprintf();
 void cecies_disable_fprintf();
 
 /** @private */
-#define cecies_fprintf _cecies_fprintf_fptr
+int cecies_fprintf(FILE* stream, const char* format, ...);
 
 /**
  * Gets a random big integer. This only features very limited randomness due to usage of <c>rand()</c>! <p>
