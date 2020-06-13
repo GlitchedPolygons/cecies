@@ -57,6 +57,8 @@ static void cecies_fprintf_enables_and_disables_correctly(void** state)
     cecies_enable_fprintf();
     assert_true(cecies_is_fprintf_enabled());
     assert_memory_equal(_cecies_fprintf_fptr, &fprintf, sizeof(&fprintf));
+
+    cecies_disable_fprintf();
 }
 
 static void cecies_hexstr2bin_invalid_args_returns_1(void** state)
