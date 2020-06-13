@@ -32,7 +32,7 @@ extern "C" {
 #endif
 
 #ifndef CECIES_PBKDF2_DEFAULT_ITERATIONS
-#define CECIES_PBKDF2_DEFAULT_ITERATIONS (1024 * 128)
+#define CECIES_PBKDF2_DEFAULT_ITERATIONS (1024 * 64)
 #endif
 
 #ifdef __cplusplus

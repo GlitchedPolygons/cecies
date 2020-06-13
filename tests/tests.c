@@ -569,6 +569,111 @@ static void cecies_encrypt_bin_decrypt_with_INVALID_args_fails_returns_CECIES_DE
     free(decrypted_string);
 }
 
+static void cecies_encrypt_base64_decrypt_with_insufficient_output_buffer_size_fails_returns_CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE(void** state)
+{
+    unsigned char* encrypted_string = NULL;
+    unsigned char* decrypted_string = NULL;
+    size_t encrypted_string_length;
+    size_t decrypted_string_length;
+
+    //
+
+    encrypted_string_length = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
+    encrypted_string = malloc(encrypted_string_length);
+    memset(encrypted_string, 0x00, encrypted_string_length);
+
+    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, 0, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
+
+    decrypted_string = malloc(encrypted_string_length);
+    memset(decrypted_string, 0x00, encrypted_string_length);
+
+    assert_int_equal(CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE, cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, 0, decrypted_string, 32, &decrypted_string_length));
+
+    //
+
+    free(encrypted_string);
+    free(decrypted_string);
+}
+
+static void cecies_encrypt_base64_decrypt_with_insufficient_PBKDF2_rounds_fails_returns_CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_PBKDF2_ITERATIONS(void** state)
+{
+    unsigned char* encrypted_string = NULL;
+    unsigned char* decrypted_string = NULL;
+    size_t encrypted_string_length;
+    size_t decrypted_string_length;
+
+    //
+
+    encrypted_string_length = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
+    encrypted_string = malloc(encrypted_string_length);
+    memset(encrypted_string, 0x00, encrypted_string_length);
+
+    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, 0, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
+
+    decrypted_string = malloc(encrypted_string_length);
+    memset(decrypted_string, 0x00, encrypted_string_length);
+
+    assert_int_equal(CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_PBKDF2_ITERATIONS, cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, 1024 * 4, decrypted_string, 32, &decrypted_string_length));
+
+    //
+
+    free(encrypted_string);
+    free(decrypted_string);
+}
+
+static void cecies_encrypt_base64_decrypt_invalid_base64_str_returns_CECIES_DECRYPT_ERROR_CODE_INVALID_ARG(void** state)
+{
+    unsigned char* encrypted_string = NULL;
+    unsigned char* decrypted_string = NULL;
+    size_t encrypted_string_length;
+    size_t decrypted_string_length;
+
+    //
+
+    encrypted_string_length = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
+    encrypted_string = malloc(encrypted_string_length);
+    memset(encrypted_string, 0x00, encrypted_string_length);
+
+    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, 0, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
+
+    decrypted_string = malloc(encrypted_string_length);
+    memset(decrypted_string, 0x00, encrypted_string_length);
+
+    assert_int_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, 0, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_equal(CECIES_DECRYPT_ERROR_CODE_INVALID_ARG, cecies_decrypt((unsigned char*)"Definitively not a valid base64-encoded string! HJAB37GSVG37HJBSH83JBSH836TVSIV3663T7UV6TVSIV3663T7UVWGS87JBSH836TVSIV3663T7UV368736368", 135, true, TEST_PRIVATE_KEY, 0, decrypted_string, 32, &decrypted_string_length));
+
+    //
+
+    free(encrypted_string);
+    free(decrypted_string);
+}
+
+static void cecies_encrypt_base64_decrypt_base64_with_or_without_NUL_terminator_both_succeeds(void** state)
+{
+    unsigned char encrypted_string[2048];
+    unsigned char decrypted_string[2048];
+    size_t encrypted_string_length;
+    size_t decrypted_string_length;
+
+    //
+
+    encrypted_string_length = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
+    memset(encrypted_string, 0x03, sizeof(encrypted_string));
+
+    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, 0, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
+    assert_int_equal(encrypted_string_length, strlen((char*)encrypted_string));
+
+    memset(decrypted_string, 0x03, sizeof(decrypted_string));
+
+    assert_int_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, 0, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, 0, decrypted_string, encrypted_string_length + 1, &decrypted_string_length));
+
+    //
+
+    // free(encrypted_string);
+    // free(decrypted_string);
+}
+
 static void cecies_encrypt_null_args_fails_returns_CECIES_ENCRYPT_ERROR_CODE_NULL_ARG(void** state)
 {
     unsigned char* encrypted_string = NULL;
@@ -699,6 +804,10 @@ int main(void)
         cmocka_unit_test(cecies_encrypt_output_length_always_identical_with_calculated_prediction),
         cmocka_unit_test(cecies_encrypt_bin_decrypt_with_NULL_args_fails_returns_CECIES_DECRYPT_ERROR_CODE_NULL_ARG),
         cmocka_unit_test(cecies_encrypt_bin_decrypt_with_INVALID_args_fails_returns_CECIES_DECRYPT_ERROR_CODE_INVALID_ARG),
+        cmocka_unit_test(cecies_encrypt_base64_decrypt_with_insufficient_output_buffer_size_fails_returns_CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE),
+        cmocka_unit_test(cecies_encrypt_base64_decrypt_with_insufficient_PBKDF2_rounds_fails_returns_CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_PBKDF2_ITERATIONS),
+        cmocka_unit_test(cecies_encrypt_base64_decrypt_invalid_base64_str_returns_CECIES_DECRYPT_ERROR_CODE_INVALID_ARG),
+        cmocka_unit_test(cecies_encrypt_base64_decrypt_base64_with_or_without_NUL_terminator_both_succeeds),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
