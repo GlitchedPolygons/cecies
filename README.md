@@ -35,3 +35,5 @@ If you use [CMake](https://cmake.org) you can just `add_subdirectory(path_to_sub
 ### Examples
 
 To find out how to use the encrypt and decrypt functions, [check out the docs](https://glitchedpolygons.github.io/cecies/files.html) or [the provided example .c files.](https://github.com/GlitchedPolygons/cecies/tree/master/examples).
+
+# _In Curve448 we trust!_
