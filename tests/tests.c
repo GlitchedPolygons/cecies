@@ -658,15 +658,16 @@ static void cecies_encrypt_base64_decrypt_base64_with_or_without_NUL_terminator_
     //
 
     encrypted_string_length = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
-    memset(encrypted_string, 0x03, sizeof(encrypted_string));
+    memset(encrypted_string, 0x00, sizeof(encrypted_string));
 
     assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, 0, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
     assert_int_equal(encrypted_string_length, strlen((char*)encrypted_string));
 
-    memset(decrypted_string, 0x03, sizeof(decrypted_string));
+    memset(decrypted_string, 0x00, sizeof(decrypted_string));
 
+    assert_int_equal(encrypted_string[encrypted_string_length], '\0');
     assert_int_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, 0, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    assert_int_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, 0, decrypted_string, encrypted_string_length + 1, &decrypted_string_length));
+    assert_int_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length + 1, true, TEST_PRIVATE_KEY, 0, decrypted_string, encrypted_string_length, &decrypted_string_length));
 
     //
 
