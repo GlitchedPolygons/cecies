@@ -61,6 +61,10 @@ if (UNIX AND NOT APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE -luuid -lm)
 endif ()
 
+if (WIN32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE -lbcrypt)
+endif ()
+
 target_include_directories(${PROJECT_NAME}
         PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
         PUBLIC ${CMAKE_CURRENT_LIST_DIR}/lib/mbedtls/include

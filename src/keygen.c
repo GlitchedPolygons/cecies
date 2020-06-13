@@ -45,7 +45,6 @@ int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, unsigned c
     mbedtls_mpi_init(&r);
     mbedtls_ecp_point_init(&R);
 
-    unsigned char pers[256];
     unsigned char prvkeybuf[56];
     unsigned char pubkeybuf[256];
     size_t prvkeybuflen, pubkeybuflen;
@@ -53,16 +52,9 @@ int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, unsigned c
     memset(prvkeybuf, 0x00, sizeof(prvkeybuf));
     memset(pubkeybuf, 0x00, sizeof(pubkeybuf));
 
+    unsigned char pers[256];
     cecies_dev_urandom(pers, 128);
-
-    if (additional_entropy != NULL && additional_entropy_length > 0)
-    {
-        snprintf((char*)(pers + 128), sizeof(pers) - 128, "%s%llu", additional_entropy, cecies_get_random_big_integer());
-    }
-    else
-    {
-        snprintf((char*)(pers + 128), sizeof(pers) - 128, "cecies_PERS_#!$\\+@74%llu", cecies_get_random_big_integer());
-    }
+    snprintf((char*)(pers + 128), sizeof(pers) - 128, "%llu-cecies_PERS_#!$\\+@58-%s", cecies_get_random_big_integer(), additional_entropy);
 
     ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, CECIES_MIN(sizeof(pers), (MBEDTLS_CTR_DRBG_MAX_SEED_INPUT - MBEDTLS_CTR_DRBG_ENTROPY_LEN - 1)));
     if (ret != 0)

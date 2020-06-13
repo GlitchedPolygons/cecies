@@ -35,9 +35,11 @@ extern "C" {
 #include <stdbool.h>
 #include "cecies/constants.h"
 
-// TODO: implement cecies_dev_urandom asap!
 #ifdef _WIN32
-//#include <wincrypt.h>
+#define WIN32_NO_STATUS
+#include <windows.h>
+#undef WIN32_NO_STATUS
+#include <bcrypt.h>
 #endif
 
 /**
@@ -166,7 +168,7 @@ static inline unsigned long long int cecies_get_random_big_integer()
 static inline void cecies_dev_urandom(unsigned char* output_buffer, const size_t output_buffer_size)
 {
 #ifdef _WIN32
-// TODO: implement this asap!
+    BCryptGenRandom(NULL, output_buffer, output_buffer_size, BCRYPT_USE_SYSTEM_PREFERRED_RNG);
 #else
     FILE* rnd = fopen("/dev/urandom", "r");
     if (rnd != NULL && output_buffer != NULL)

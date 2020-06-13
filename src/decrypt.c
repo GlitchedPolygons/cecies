@@ -131,10 +131,11 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
         goto exit;
     }
 
-    unsigned char pers[32];
-    snprintf((char*)pers, sizeof(pers), "cecies_PERS_#^¨\\@+86%llu", cecies_get_random_big_integer());
+    unsigned char pers[256];
+    cecies_dev_urandom(pers, 128);
+    snprintf((char*)(pers + 128), 128, "cecies_PERS_#^¨\\@+83_6%llu", cecies_get_random_big_integer());
 
-    ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, sizeof(pers));
+    ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, CECIES_MIN(sizeof(pers), (MBEDTLS_CTR_DRBG_MAX_SEED_INPUT - MBEDTLS_CTR_DRBG_ENTROPY_LEN - 1)));
     if (ret != 0)
     {
         cecies_fprintf(stderr, "CECIES: MbedTLS PRNG seed failed! mbedtls_ctr_drbg_seed returned %d\n", ret);
