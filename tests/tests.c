@@ -543,6 +543,32 @@ static void cecies_encrypt_bin_decrypt_with_NULL_args_fails_returns_CECIES_DECRY
     free(decrypted_string);
 }
 
+static void cecies_encrypt_bin_decrypt_with_INVALID_args_fails_returns_CECIES_DECRYPT_ERROR_CODE_INVALID_ARG(void** state)
+{
+    unsigned char* encrypted_string = NULL;
+    unsigned char* decrypted_string = NULL;
+    size_t encrypted_string_length;
+    size_t decrypted_string_length;
+
+    //
+
+    encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
+    encrypted_string = malloc(encrypted_string_length);
+    memset(encrypted_string, 0x00, encrypted_string_length);
+
+    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, 0, encrypted_string, encrypted_string_length, &encrypted_string_length, false));
+
+    decrypted_string = malloc(encrypted_string_length);
+    memset(decrypted_string, 0x00, encrypted_string_length);
+
+    assert_int_equal(CECIES_DECRYPT_ERROR_CODE_INVALID_ARG, cecies_decrypt(encrypted_string, 58, false, TEST_PRIVATE_KEY, 0, decrypted_string, encrypted_string_length, &decrypted_string_length));
+
+    //
+
+    free(encrypted_string);
+    free(decrypted_string);
+}
+
 static void cecies_encrypt_null_args_fails_returns_CECIES_ENCRYPT_ERROR_CODE_NULL_ARG(void** state)
 {
     unsigned char* encrypted_string = NULL;
@@ -672,6 +698,7 @@ int main(void)
         cmocka_unit_test(cecies_encrypt_insufficient_output_buffer_size_fails_returns_CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE),
         cmocka_unit_test(cecies_encrypt_output_length_always_identical_with_calculated_prediction),
         cmocka_unit_test(cecies_encrypt_bin_decrypt_with_NULL_args_fails_returns_CECIES_DECRYPT_ERROR_CODE_NULL_ARG),
+        cmocka_unit_test(cecies_encrypt_bin_decrypt_with_INVALID_args_fails_returns_CECIES_DECRYPT_ERROR_CODE_INVALID_ARG),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
