@@ -552,6 +552,27 @@ static void cecies_encrypt_insufficient_output_buffer_size_fails_returns_CECIES_
     free(decrypted_string);
 }
 
+static void cecies_encrypt_output_length_always_identical_with_calculated_prediction(void** state)
+{
+    unsigned char* encrypted_string = NULL;
+    unsigned char* decrypted_string = NULL;
+    size_t encrypted_string_length;
+    size_t decrypted_string_length;
+
+    //
+
+    encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
+    encrypted_string = malloc(encrypted_string_length);
+    memset(encrypted_string, 0x00, encrypted_string_length);
+
+    size_t written_bytes;
+    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, CECIES_TESTS_PBKDF2_ITERATIONS, encrypted_string, encrypted_string_length, &written_bytes, false));
+    assert_int_equal(written_bytes, encrypted_string_length);
+
+    free(encrypted_string);
+    free(decrypted_string);
+}
+
 // --------------------------------------------------------------------------------------------------------------
 
 int main(void)
@@ -583,6 +604,7 @@ int main(void)
         cmocka_unit_test(cecies_encrypt_null_args_fails_returns_CECIES_ENCRYPT_ERROR_CODE_NULL_ARG),
         cmocka_unit_test(cecies_encrypt_invalid_args_fails_returns_CECIES_ENCRYPT_ERROR_CODE_INVALID_ARG),
         cmocka_unit_test(cecies_encrypt_insufficient_output_buffer_size_fails_returns_CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE),
+        cmocka_unit_test(cecies_encrypt_output_length_always_identical_with_calculated_prediction),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
