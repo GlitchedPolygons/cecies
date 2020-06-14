@@ -20,17 +20,16 @@
 
 #include <mbedtls/gcm.h>
 #include <mbedtls/ecdh.h>
-#include <mbedtls/pkcs5.h>
+#include <mbedtls/hkdf.h>
 #include <mbedtls/base64.h>
 #include <mbedtls/entropy.h>
 #include <mbedtls/ctr_drbg.h>
 #include <mbedtls/md_internal.h>
 
 #include "cecies/util.h"
-#include "cecies/constants.h"
 #include "cecies/decrypt.h"
 
-int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, const char private_key[112], size_t pbkdf2_iterations, unsigned char* output, const size_t output_bufsize, size_t* output_length)
+int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, const char private_key[112], unsigned char* output, const size_t output_bufsize, size_t* output_length)
 {
     if (encrypted_data == NULL //
             || private_key == NULL //
@@ -45,12 +44,6 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
     {
         cecies_fprintf(stderr, "CECIES: decryption failed: one or more invalid arguments.\n");
         return CECIES_DECRYPT_ERROR_CODE_INVALID_ARG;
-    }
-
-    if (pbkdf2_iterations != 0 && pbkdf2_iterations < CECIES_PBKDF2_MIN_ITERATIONS)
-    {
-        cecies_fprintf(stderr, "CECIES: decryption cancelled: invalid PBKDF2 iteration count (too small). Please use the exact same value you also used to encrypt, which MUST be >16k (and preferrably is >100k).\n");
-        return CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_PBKDF2_ITERATIONS;
     }
 
     int ret = 1;
@@ -199,10 +192,10 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
         goto exit;
     }
 
-    ret = mbedtls_pkcs5_pbkdf2_hmac(&md_ctx, S_bytes, 57, salt, 32, pbkdf2_iterations != 0 ? pbkdf2_iterations : CECIES_PBKDF2_DEFAULT_ITERATIONS, 32, aes_key);
+    ret = mbedtls_hkdf(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512), salt, 32, S_bytes, 57, NULL, 0, aes_key, 32);
     if (ret != 0 || memcmp(aes_key, empty32, 32) == 0)
     {
-        cecies_fprintf(stderr, "CECIES: PBKDF2 failed! mbedtls_pkcs5_pbkdf2_hmac returned %d\n", ret);
+        cecies_fprintf(stderr, "CECIES: HKDF failed! mbedtls_hkdf returned %d\n", ret);
         goto exit;
     }
 

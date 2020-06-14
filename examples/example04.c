@@ -50,7 +50,7 @@ int main(void)
     memset(encrypted_string, 0x00, encrypted_string_length);
 
     // You can pass NULL to the output_length pointer argument, since you already calculated the size above.
-    s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, TEST_PUBLIC_KEY, 0, encrypted_string, encrypted_string_length, NULL, true);
+    s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, true);
 
     printf("Status code: %d\n\n", s);
 
@@ -65,7 +65,7 @@ int main(void)
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
 
-    s = cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, 0, decrypted_string, encrypted_string_length, &decrypted_string_length);
+    s = cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length);
 
     printf("Status code: %d\n\n", s);
 

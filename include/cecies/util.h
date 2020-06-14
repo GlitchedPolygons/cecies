@@ -33,7 +33,6 @@ extern "C" {
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "cecies/constants.h"
 
 #ifdef _WIN32
 #define WIN32_NO_STATUS
