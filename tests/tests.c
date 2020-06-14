@@ -797,6 +797,63 @@ static void cecies_encrypt_binary_decrypt_base64_fails(void** state)
     free(decrypted_string);
 }
 
+static void cecies_encrypt_base64_decrypt_ciphertext_was_tampered_with_fails(void** state)
+{
+    unsigned char* encrypted_string = NULL;
+    unsigned char* decrypted_string = NULL;
+    size_t encrypted_string_length;
+    size_t decrypted_string_length;
+
+    //
+
+    encrypted_string_length = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
+    encrypted_string = malloc(encrypted_string_length);
+    memset(encrypted_string, 0x00, encrypted_string_length);
+
+    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
+
+    decrypted_string = malloc(encrypted_string_length);
+    memset(decrypted_string, 0x00, encrypted_string_length);
+
+    encrypted_string[200] = 'A';
+    encrypted_string[201] = 'B';
+    encrypted_string[202] = 'C';
+    assert_int_not_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
+
+    //
+
+    free(encrypted_string);
+    free(decrypted_string);
+}
+
+static void cecies_encrypt_binary_decrypt_ciphertext_was_tampered_with_fails(void** state)
+{
+    unsigned char* encrypted_string = NULL;
+    unsigned char* decrypted_string = NULL;
+    size_t encrypted_string_length;
+    size_t decrypted_string_length;
+
+    //
+
+    encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
+    encrypted_string = malloc(encrypted_string_length);
+    memset(encrypted_string, 0x00, encrypted_string_length);
+
+    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, false));
+
+    decrypted_string = malloc(encrypted_string_length);
+    memset(decrypted_string, 0x00, encrypted_string_length);
+
+    encrypted_string[200] = 'A';
+    encrypted_string[201] = 'B';
+    encrypted_string[202] = 'C';
+    assert_int_not_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
+
+    //
+
+    free(encrypted_string);
+    free(decrypted_string);
+}
 // --------------------------------------------------------------------------------------------------------------
 
 int main(void)
@@ -837,6 +894,8 @@ int main(void)
         cmocka_unit_test(cecies_encrypt_base64_decrypt_base64_tampered_ephemeral_public_key_embedded_in_ciphertext_fails),
         cmocka_unit_test(cecies_encrypt_base64_decrypt_binary_fails),
         cmocka_unit_test(cecies_encrypt_binary_decrypt_base64_fails),
+        cmocka_unit_test(cecies_encrypt_base64_decrypt_ciphertext_was_tampered_with_fails),
+        cmocka_unit_test(cecies_encrypt_binary_decrypt_ciphertext_was_tampered_with_fails),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
