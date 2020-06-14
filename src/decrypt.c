@@ -157,6 +157,13 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
         goto exit;
     }
 
+    ret = mbedtls_ecp_check_privkey(&ecp_group, &dA);
+    if (ret != 0)
+    {
+        cecies_fprintf(stderr, "CECIES: Invalid decryption private key! mbedtls_ecp_check_privkey returned %d\n", ret);
+        goto exit;
+    }
+
     ret = mbedtls_ecp_point_read_binary(&ecp_group, &R, R_bytes, 113);
     if (ret != 0)
     {
