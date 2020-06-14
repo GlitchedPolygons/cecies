@@ -106,21 +106,18 @@ Macros</h2></td></tr>
 <tr class="memitem:af619eba3eb6c20e95e818b1f71b5bd21"><td class="memItemLeft" align="right" valign="top"><a id="af619eba3eb6c20e95e818b1f71b5bd21"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>CECIES_ENCRYPT_ERROR_CODE_OUT_OF_MEMORY</b>&#160;&#160;&#160;1003</td></tr>
 <tr class="separator:af619eba3eb6c20e95e818b1f71b5bd21"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a885b0fd18330a7af30c9625069ebc397"><td class="memItemLeft" align="right" valign="top"><a id="a885b0fd18330a7af30c9625069ebc397"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_PBKDF2_ITERATIONS</b>&#160;&#160;&#160;1004</td></tr>
-<tr class="separator:a885b0fd18330a7af30c9625069ebc397"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aa56162b8fce6bab2a5160462fb1c4d7e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="encrypt_8h.html#aa56162b8fce6bab2a5160462fb1c4d7e">cecies_encrypt</a> (const unsigned char *data, size_t data_length, const char public_key[114], size_t pbkdf2_iterations, unsigned char *output, size_t output_bufsize, size_t *output_length, bool output_base64)</td></tr>
-<tr class="separator:aa56162b8fce6bab2a5160462fb1c4d7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f5dc998628ea6a488c758f671ccbd71"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="encrypt_8h.html#a3f5dc998628ea6a488c758f671ccbd71">cecies_encrypt</a> (const unsigned char *data, size_t data_length, const char public_key[114], unsigned char *output, size_t output_bufsize, size_t *output_length, bool output_base64)</td></tr>
+<tr class="separator:a3f5dc998628ea6a488c758f671ccbd71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>ECIES encryption implementation using Curve448, AES256-GCM and MbedTLS. </p>
 <dl class="section author"><dt>Author</dt><dd>Raphael Beck </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="aa56162b8fce6bab2a5160462fb1c4d7e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa56162b8fce6bab2a5160462fb1c4d7e">&#9670;&nbsp;</a></span>cecies_encrypt()</h2>
+<a id="a3f5dc998628ea6a488c758f671ccbd71"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f5dc998628ea6a488c758f671ccbd71">&#9670;&nbsp;</a></span>cecies_encrypt()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -142,12 +139,6 @@ Functions</h2></td></tr>
           <td></td>
           <td class="paramtype">const char&#160;</td>
           <td class="paramname"><em>public_key</em>[114], </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>pbkdf2_iterations</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -185,7 +176,6 @@ Functions</h2></td></tr>
     <tr><td class="paramname">data</td><td>The data to encrypt. </td></tr>
     <tr><td class="paramname">data_length</td><td>The length of the data array. </td></tr>
     <tr><td class="paramname">public_key</td><td>The public key to encrypt the data with (hex-string format, as is the output of <a class="el" href="keygen_8h.html#a7f8a8b95f7d22fd84c3c8e8871232242">cecies_generate_curve448_keypair()</a>). 114 bytes will be read; so make sure not to pass anything smaller (can end up in a read access violation!). 115th character (the NUL-terminator) will be ignored. </td></tr>
-    <tr><td class="paramname">pbkdf2_iterations</td><td>The amount of PBKDF2 iterations to use for deriving the AES key from the ephemeral key. Pass <code>0</code> to use the default value (which currently is 64k iterations). A value of &gt;32k is recommended, and anything under 16k immediately stops the procedure and returns an error. For safety's sake. Also, very important: keep this value somewhere, as you'll need it inside <a class="el" href="decrypt_8h.html#a1d4118210744cc0b1f74e2c5bb9b7c22">cecies_decrypt()</a>, where it needs to be <b>IDENTICAL</b> in order for decryption to succeed (even despite having the correct private key!). </td></tr>
     <tr><td class="paramname">output</td><td>Where to write the encrypted output into (please pre-allocate this big enough, you can use <a class="el" href="util_8h.html#a62762846d58428815c88d1930cde3e16">cecies_calc_output_buffer_needed_size()</a> to find out how much you need). </td></tr>
     <tr><td class="paramname">output_bufsize</td><td>How big the output buffer is. </td></tr>
     <tr><td class="paramname">output_length</td><td>[OPTIONAL] Where to write the output buffer length into (this will be less than the provided output_bufsize). Pass <code>NULL</code> if you don't care (e.g. you already know the output size because you allocated space using <a class="el" href="util_8h.html#a62762846d58428815c88d1930cde3e16">cecies_calc_output_buffer_needed_size()</a>). </td></tr>
