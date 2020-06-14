@@ -29,6 +29,7 @@ extern "C" {
 
 #include <stddef.h>
 #include <stdint.h>
+#include "cecies/types.h"
 
 #define CECIES_DECRYPT_ERROR_CODE_NULL_ARG 2000
 #define CECIES_DECRYPT_ERROR_CODE_INVALID_ARG 2001
@@ -40,13 +41,13 @@ extern "C" {
  * @param encrypted_data The data to decrypt.
  * @param encrypted_data_length The length of the data array.
  * @param encrypted_data_base64 Is the input \p encrypted_data base64-encoded?
- * @param private_key The private key to decrypt the data with (hex-string, as is the output of cecies_generate_curve448_keypair()). 112 bytes will be read; so make sure not to pass anything smaller (can end up in a read access violation!). 113th character (the NUL-terminator) will be ignored.
+ * @param private_key The private key to decrypt the data with (hex-string, as is the output of cecies_generate_curve448_keypair()).
  * @param output Where to write the decrypted output into (please pre-allocate this big enough; if unsure, allocate \p encrypted_data_length bytes!).
  * @param output_bufsize How big the output buffer is. Please allocate at least \p encrypted_data_length bytes!
  * @param output_length Where to write the output buffer length into (how many bytes were written into it).
  * @return <c>0</c> if decryption succeeded; error codes as defined inside the header file or MbedTLS otherwise.
  */
-int cecies_decrypt(unsigned char* encrypted_data, size_t encrypted_data_length, bool encrypted_data_base64, const char private_key[112], unsigned char* output, size_t output_bufsize, size_t* output_length);
+int cecies_decrypt(unsigned char* encrypted_data, size_t encrypted_data_length, bool encrypted_data_base64, cecies_curve448_key private_key, unsigned char* output, size_t output_bufsize, size_t* output_length);
 
 #ifdef __cplusplus
 } // extern "C"

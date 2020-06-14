@@ -29,12 +29,9 @@
 #include "cecies/util.h"
 #include "cecies/decrypt.h"
 
-int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, const char private_key[112], unsigned char* output, const size_t output_bufsize, size_t* output_length)
+int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, cecies_curve448_key private_key, unsigned char* output, const size_t output_bufsize, size_t* output_length)
 {
-    if (encrypted_data == NULL //
-            || private_key == NULL //
-            || output == NULL //
-            || output_length == NULL)
+    if (encrypted_data == NULL || output == NULL || output_length == NULL)
     {
         cecies_fprintf(stderr, "CECIES: decryption failed: one or more NULL arguments.\n");
         return CECIES_DECRYPT_ERROR_CODE_NULL_ARG;
@@ -87,7 +84,7 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
     unsigned char aes_key[32];
     unsigned char R_bytes[113];
     unsigned char S_bytes[113];
-    unsigned char private_key_bytes[64];
+    unsigned char private_key_bytes[56 + 1];
     size_t private_key_bytes_length, S_bytes_length;
 
     memset(iv, 0x00, 16);
@@ -142,7 +139,7 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
 
     const unsigned char* ciphertext = input + (16 + 32 + 57 + 16);
 
-    ret = cecies_hexstr2bin(private_key, 112, private_key_bytes, sizeof(private_key_bytes), &private_key_bytes_length);
+    ret = cecies_hexstr2bin(private_key.hexstring, 112, private_key_bytes, sizeof(private_key_bytes), &private_key_bytes_length);
     if (ret != 0 || private_key_bytes_length != 56)
     {
         cecies_fprintf(stderr, "CECIES: Parsing decryption private key failed! Invalid hex string format or invalid key length... cecies_hexstr2bin returned %d\n", ret);
@@ -238,6 +235,7 @@ exit:
     memset(aes_key, 0x00, 32);
     memset(R_bytes, 0x00, sizeof(R_bytes));
     memset(S_bytes, 0x00, sizeof(S_bytes));
+    memset(&private_key, 0x00, sizeof(private_key));
     memset(private_key_bytes, 0x00, sizeof(private_key_bytes));
 
     if (encrypted_data_base64)

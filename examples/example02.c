@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
         return r;
     }
 
-    printf("\nSuccessfully generated CECIES key-pair (Curve448)\n\nPrivate key: %s\n\nPublic key: %s\n\n", keypair.private_key, keypair.public_key);
+    printf("\nSuccessfully generated CECIES key-pair (Curve448)\n\nPrivate key:  %s\n\nPublic key:   %s\n\n", keypair.private_key.hexstring, keypair.public_key.hexstring);
 
     memset(&keypair, 0x00, sizeof(keypair));
     cecies_disable_fprintf();

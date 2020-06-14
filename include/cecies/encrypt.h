@@ -30,6 +30,7 @@ extern "C" {
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "cecies/types.h"
 
 #define CECIES_ENCRYPT_ERROR_CODE_NULL_ARG 1000
 #define CECIES_ENCRYPT_ERROR_CODE_INVALID_ARG 1001
@@ -40,14 +41,14 @@ extern "C" {
  * Encrypts the given data using ECIES over Curve448 and AES256-GCM.
  * @param data The data to encrypt.
  * @param data_length The length of the data array.
- * @param public_key The public key to encrypt the data with (hex-string format, as is the output of cecies_generate_curve448_keypair()). 114 bytes will be read; so make sure not to pass anything smaller (can end up in a read access violation!). 115th character (the NUL-terminator) will be ignored.
+ * @param public_key The public key to encrypt the data with (hex-string format, as is the output of cecies_generate_curve448_keypair()).
  * @param output Where to write the encrypted output into (please pre-allocate this big enough, you can use cecies_calc_output_buffer_needed_size() to find out how much you need).
  * @param output_bufsize How big the output buffer is.
  * @param output_length [OPTIONAL] Where to write the output buffer length into (this will be less than the provided output_bufsize). Pass <c>NULL</c> if you don't care (e.g. you already know the output size because you allocated space using cecies_calc_output_buffer_needed_size()).
  * @param output_base64 Should the encrypted output bytes be base64-encoded for easy transmission over e.g. email? If you decide to base64-encode the encrypted data buffer, please be aware that a NUL-terminator is appended at the end to allow usage as a C-string but it will not be counted in \p output_length.
  * @return <c>0</c> if encryption succeeded;  error codes as defined inside the header file or MbedTLS otherwise.
  */
-int cecies_encrypt(const unsigned char* data, size_t data_length, const char public_key[114], unsigned char* output, size_t output_bufsize, size_t* output_length, bool output_base64);
+int cecies_encrypt(const unsigned char* data, size_t data_length, cecies_curve448_key public_key, unsigned char* output, size_t output_bufsize, size_t* output_length, bool output_base64);
 
 #ifdef __cplusplus
 } // extern "C"

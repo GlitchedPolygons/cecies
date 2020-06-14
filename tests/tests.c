@@ -193,17 +193,19 @@ static void cecies_generate_curve448_keypair_generated_keys_are_valid(void** sta
     size_t prvkey1_decoded_bytes_length;
     unsigned char prvkey1_decoded_bytes[256];
 
-    cecies_hexstr2bin(keypair1.private_key, sizeof(keypair1.private_key), prvkey1_decoded_bytes, sizeof(prvkey1_decoded_bytes), &prvkey1_decoded_bytes_length);
+    cecies_hexstr2bin(keypair1.private_key.hexstring, sizeof(keypair1.private_key.hexstring), prvkey1_decoded_bytes, sizeof(prvkey1_decoded_bytes), &prvkey1_decoded_bytes_length);
 
     assert_int_equal(0, mbedtls_mpi_read_binary(&prvkey1, prvkey1_decoded_bytes, prvkey1_decoded_bytes_length));
     assert_int_equal(0, mbedtls_ecp_check_privkey(&ecp_group1, &prvkey1));
 
     size_t pubkey1_decoded_bytes_length;
     unsigned char pubkey1_decoded_bytes[113];
+    pubkey1_decoded_bytes[0] = 0x04;
+    memset(pubkey1_decoded_bytes + 1, 0x00, sizeof(pubkey1_decoded_bytes) - 1);
 
-    cecies_hexstr2bin(keypair1.public_key, sizeof(keypair1.public_key), pubkey1_decoded_bytes, sizeof(pubkey1_decoded_bytes), &pubkey1_decoded_bytes_length);
+    cecies_hexstr2bin(keypair1.public_key.hexstring, sizeof(keypair1.public_key.hexstring), pubkey1_decoded_bytes + 1, sizeof(pubkey1_decoded_bytes) - 1, &pubkey1_decoded_bytes_length);
 
-    assert_int_equal(57, pubkey1_decoded_bytes_length);
+    assert_int_equal(56, pubkey1_decoded_bytes_length);
     assert_int_equal(0, mbedtls_ecp_point_read_binary(&ecp_group1, &pubkey1, pubkey1_decoded_bytes, 113));
     assert_int_equal(0, mbedtls_ecp_check_pubkey(&ecp_group1, &pubkey1));
 
@@ -229,17 +231,17 @@ static void cecies_generate_curve448_keypair_generated_keys_are_valid(void** sta
     size_t prvkey2_decoded_bytes_length;
     unsigned char prvkey2_decoded_bytes[256];
 
-    cecies_hexstr2bin(keypair2.private_key, sizeof(keypair2.private_key), prvkey2_decoded_bytes, sizeof(prvkey2_decoded_bytes), &prvkey2_decoded_bytes_length);
+    cecies_hexstr2bin(keypair2.private_key.hexstring, sizeof(keypair2.private_key.hexstring), prvkey2_decoded_bytes, sizeof(prvkey2_decoded_bytes), &prvkey2_decoded_bytes_length);
 
     assert_int_equal(0, mbedtls_mpi_read_binary(&prvkey2, prvkey2_decoded_bytes, prvkey2_decoded_bytes_length));
     assert_int_equal(0, mbedtls_ecp_check_privkey(&ecp_group2, &prvkey2));
 
     size_t pubkey2_decoded_bytes_length;
     unsigned char pubkey2_decoded_bytes[113];
+    pubkey2_decoded_bytes[0] = 0x04;
+    cecies_hexstr2bin(keypair2.public_key.hexstring, sizeof(keypair2.public_key.hexstring), pubkey2_decoded_bytes + 1, sizeof(pubkey2_decoded_bytes) - 1, &pubkey2_decoded_bytes_length);
 
-    cecies_hexstr2bin(keypair2.public_key, sizeof(keypair2.public_key), pubkey2_decoded_bytes, sizeof(pubkey2_decoded_bytes), &pubkey2_decoded_bytes_length);
-
-    assert_int_equal(57, pubkey2_decoded_bytes_length);
+    assert_int_equal(56, pubkey2_decoded_bytes_length);
     assert_int_equal(0, mbedtls_ecp_point_read_binary(&ecp_group2, &pubkey2, pubkey2_decoded_bytes, 113));
     assert_int_equal(0, mbedtls_ecp_check_pubkey(&ecp_group2, &pubkey2));
 
@@ -266,7 +268,7 @@ static void cecies_generate_curve448_keypair_generated_keys_are_invalid(void** s
     size_t prvkey1_decoded_bytes_length;
     unsigned char prvkey1_decoded_bytes[256];
 
-    cecies_hexstr2bin(keypair1.private_key, sizeof(keypair1.private_key), prvkey1_decoded_bytes, sizeof(prvkey1_decoded_bytes), &prvkey1_decoded_bytes_length);
+    cecies_hexstr2bin(keypair1.private_key.hexstring, sizeof(keypair1.private_key.hexstring), prvkey1_decoded_bytes, sizeof(prvkey1_decoded_bytes), &prvkey1_decoded_bytes_length);
     prvkey1_decoded_bytes[0] = 0x9;
     prvkey1_decoded_bytes[1] = 13;
 
@@ -277,7 +279,7 @@ static void cecies_generate_curve448_keypair_generated_keys_are_invalid(void** s
     size_t pubkey1_decoded_bytes_length;
     unsigned char pubkey1_decoded_bytes[113];
 
-    cecies_hexstr2bin(keypair1.public_key, sizeof(keypair1.public_key), pubkey1_decoded_bytes, sizeof(pubkey1_decoded_bytes), &pubkey1_decoded_bytes_length);
+    cecies_hexstr2bin(keypair1.public_key.hexstring, sizeof(keypair1.public_key.hexstring), pubkey1_decoded_bytes, sizeof(pubkey1_decoded_bytes), &pubkey1_decoded_bytes_length);
     pubkey1_decoded_bytes[0] = 1;
     assert_int_not_equal(0, mbedtls_ecp_point_read_binary(&ecp_group1, &pubkey1, pubkey1_decoded_bytes, 113));
     assert_int_not_equal(0, mbedtls_ecp_check_pubkey(&ecp_group1, &pubkey1));
@@ -292,11 +294,9 @@ static const char TEST_STRING[263] = "Still, I am not one to squander my investm
 static const size_t TEST_STRING_LENGTH_WITH_NUL_TERMINATOR = 263;
 static const size_t TEST_STRING_LENGTH_WITHOUT_NUL_TERMINATOR = 262;
 
-static const char TEST_PUBLIC_KEY[] = "04ebf5be2d15c7fb53ff38a5759f78f2d87d77f0d243374ad1cceae84a7dc1d50ef5acda5b7b7359d49b7457e8537277e78ace1db6ca363221";
-
-static const char TEST_PRIVATE_KEY[] = "dbee49abcf57dc0e2eb3b35ff00860fa683e0ac725c9e5d576340724f4894fac85730c93f688cbad98f98516d27e255ffeffd2365563cf24";
-
-static const char TEST_PRIVATE_KEY_INVALID_HEX[] = "dbee49abcfpzqqik2eb3b35ff00860fa683e0ac725c9e5d576340724f4894fac85730c93f688cbad98f98516d27e255ffeffd2365563cf24";
+static const cecies_curve448_key TEST_PUBLIC_KEY = { .hexstring = "6211c857e3b939daf039bc32d8ceb52b6055d871451d03431ef48ff65bc72124112592edad63ca208665e557ca4cd9c74608415a8d6aeac0" };
+static const cecies_curve448_key TEST_PRIVATE_KEY = { .hexstring = "c8f6e3c096b7adadba0aa1be3bbbdeb3e8a400005ce3a42f25af7bc75a327831242a18ab200c7b2bedfad297554c5c02387cf06397596fc8" };
+static const cecies_curve448_key TEST_PRIVATE_KEY_INVALID_HEX = { .hexstring = "dbee49abcfpzqqik2eb3b35ff00860fa683e0ac725c9e5d576340724f4894fac85730c93f688cbad98f98516d27e255ffeffd2365563cf24" };
 
 static void cecies_encrypt_raw_binary_decrypts_successfully(void** state)
 {
@@ -376,7 +376,7 @@ static void cecies_encrypt_bin_decrypt_with_public_key_fails(void** state)
     free(decrypted_string);
 }
 
-static const char INVALID_KEY[] = "Just something that isn't quite a key..";
+static const cecies_curve448_key INVALID_KEY = { .hexstring = "Just something that isn't quite a key..." };
 
 static void cecies_encrypt_bin_decrypt_with_invalid_key_fails(void** state)
 {
@@ -404,7 +404,7 @@ static void cecies_encrypt_bin_decrypt_with_invalid_key_fails(void** state)
     free(decrypted_string);
 }
 
-static const char INVALID_KEY2[] = "Just something that isn't quite a key... At least this one has the same length as a key would be of this size ;D";
+static const cecies_curve448_key INVALID_KEY2 = { .hexstring = "Just something that isn't quite a key... At least this one has the same length as a key would be of this size ;D" };
 
 static void cecies_encrypt_bin_decrypt_with_invalid_key_2_fails(void** state)
 {
@@ -432,9 +432,9 @@ static void cecies_encrypt_bin_decrypt_with_invalid_key_2_fails(void** state)
     free(decrypted_string);
 }
 
-static const char TEST_PUBLIC_KEY2[] = "0450430325551ee86a6d9216947b5bdf04314771028e847029def87eb18474e10dcd981d72a2f51eff20ac1c1a3375850e0e53f1b065923304";
+static const cecies_curve448_key TEST_PUBLIC_KEY2 = { .hexstring = "50430325551ee86a6d9216947b5bdf04314771028e847029def87eb18474e10dcd981d72a2f51eff20ac1c1a3375850e0e53f1b065923304" };
 
-static const char TEST_PRIVATE_KEY2[] = "f5c2351c941cbba29313771c84693dacb80f21be8bcb07406217ee3a07143e2a8fdbccd083d045a2818858c2faf72e58ec7e006a1386361c";
+static const cecies_curve448_key TEST_PRIVATE_KEY2 = { .hexstring = "f5c2351c941cbba29313771c84693dacb80f21be8bcb07406217ee3a07143e2a8fdbccd083d045a2818858c2faf72e58ec7e006a1386361c" };
 
 static void cecies_encrypt_bin_decrypt_with_wrong_key_fails(void** state)
 {
@@ -482,7 +482,6 @@ static void cecies_encrypt_bin_decrypt_with_NULL_args_fails_returns_CECIES_DECRY
 
     assert_int_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
     assert_int_equal(CECIES_DECRYPT_ERROR_CODE_NULL_ARG, cecies_decrypt(NULL, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    assert_int_equal(CECIES_DECRYPT_ERROR_CODE_NULL_ARG, cecies_decrypt(encrypted_string, encrypted_string_length, false, NULL, decrypted_string, encrypted_string_length, &decrypted_string_length));
     assert_int_equal(CECIES_DECRYPT_ERROR_CODE_NULL_ARG, cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, NULL, encrypted_string_length, &decrypted_string_length));
     assert_int_equal(CECIES_DECRYPT_ERROR_CODE_NULL_ARG, cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, NULL));
 
@@ -612,7 +611,6 @@ static void cecies_encrypt_null_args_fails_returns_CECIES_ENCRYPT_ERROR_CODE_NUL
     memset(encrypted_string, 0x00, encrypted_string_length);
 
     assert_int_equal(CECIES_ENCRYPT_ERROR_CODE_NULL_ARG, cecies_encrypt(NULL, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false));
-    assert_int_equal(CECIES_ENCRYPT_ERROR_CODE_NULL_ARG, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, NULL, encrypted_string, encrypted_string_length, NULL, false));
     assert_int_equal(CECIES_ENCRYPT_ERROR_CODE_NULL_ARG, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, NULL, encrypted_string_length, NULL, false));
 
     //

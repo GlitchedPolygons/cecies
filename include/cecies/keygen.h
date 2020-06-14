@@ -32,30 +32,10 @@ extern "C" {
 #include <stdlib.h>
 #include <stdint.h>
 #include "cecies/util.h"
+#include "cecies/types.h"
 
 #define CECIES_KEYGEN_ERROR_CODE_NULL_ARG 7000
 #define CECIES_KEYGEN_ERROR_CODE_INVALID_ARG 7001
-
-/**
- * Contains a stack-allocated Curve448 keypair.
- */
-typedef struct cecies_curve448_keypair
-{
-    /**
-     * The public key (formatted as a hex string). <p>
-     * 114 bytes of hex string + 1 NUL-terminator. <p>
-     * The reason this is slightly bigger than the private_key
-     * is because it needs to start with the 0x04 prefix byte
-     * (according to the EC key encoding standard).
-     */
-    char public_key[115];
-
-    /**
-     * The private key (formatted as a hex string). <p>
-     * 112 bytes of hex string + 1 NUL-terminator.
-     */
-    char private_key[113];
-} cecies_curve448_keypair;
 
 /**
  * Generates a CECIES keypair (currently using Curve448) and writes it into the specified output buffers.

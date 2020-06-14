@@ -25,9 +25,8 @@
  */
 static const char TEST_STRING[] = "Doctor Freeman. I realize this moment may not be the most convenient for a heart-to-heart, but I had to wait until your friends were otherwise occupied. Hm. There was a time they cared nothing for Miss Vance... When their only experience of humanity was a crowbar coming at them down a steel corridor.";
 
-static const char TEST_PUBLIC_KEY[] = "04ebf5be2d15c7fb53ff38a5759f78f2d87d77f0d243374ad1cceae84a7dc1d50ef5acda5b7b7359d49b7457e8537277e78ace1db6ca363221";
-
-static const char TEST_PRIVATE_KEY[] = "dbee49abcf57dc0e2eb3b35ff00860fa683e0ac725c9e5d576340724f4894fac85730c93f688cbad98f98516d27e255ffeffd2365563cf24";
+static const cecies_curve448_key TEST_PUBLIC_KEY = { .hexstring = "ebf5be2d15c7fb53ff38a5759f78f2d87d77f0d243374ad1cceae84a7dc1d50ef5acda5b7b7359d49b7457e8537277e78ace1db6ca363221" };
+static const cecies_curve448_key TEST_PRIVATE_KEY = { .hexstring = "dbee49abcf57dc0e2eb3b35ff00860fa683e0ac725c9e5d576340724f4894fac85730c93f688cbad98f98516d27e255ffeffd2365563cf24" };
 
 int main(void)
 {

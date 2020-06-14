@@ -72,7 +72,7 @@ static inline size_t cecies_calc_output_buffer_needed_size(const size_t input_bu
     return 16 + 32 + 57 + 16 + input_buffer_length;
 
     // 1:  IV (AES initialization vector)
-    // 2:  Salt (for PBKDF2)
+    // 2:  Salt (for HKDF)
     // 3:  R (ephemeral public key)
     // 4:  Tag (from AES-GCM)
 }

@@ -26,11 +26,9 @@
 #include "cecies/util.h"
 #include "cecies/encrypt.h"
 
-int cecies_encrypt(const unsigned char* data, const size_t data_length, const char public_key[114], unsigned char* output, const size_t output_bufsize, size_t* output_length, const bool output_base64)
+int cecies_encrypt(const unsigned char* data, const size_t data_length, const cecies_curve448_key public_key, unsigned char* output, const size_t output_bufsize, size_t* output_length, const bool output_base64)
 {
-    if (data == NULL //
-            || public_key == NULL //
-            || output == NULL)
+    if (data == NULL || output == NULL)
     {
         return CECIES_ENCRYPT_ERROR_CODE_NULL_ARG;
     }
@@ -128,10 +126,12 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const ch
 
     size_t public_key_bytes_length;
     unsigned char public_key_bytes[113];
-    memset(public_key_bytes, 0x00, sizeof(public_key_bytes));
 
-    ret = cecies_hexstr2bin(public_key, 114, public_key_bytes, sizeof(public_key_bytes), &public_key_bytes_length);
-    if (ret != 0 || public_key_bytes_length != 57)
+    public_key_bytes[0] = 0x04;
+    memset(public_key_bytes + 1, 0x00, 112);
+
+    ret = cecies_hexstr2bin(public_key.hexstring, 112, public_key_bytes + 1, 112, &public_key_bytes_length);
+    if (ret != 0 || public_key_bytes_length != 56)
     {
         cecies_fprintf(stderr, "CECIES: Parsing recipient's public key failed! Invalid hex string format...\n");
         goto exit;

@@ -25,9 +25,8 @@
  */
 static const char TEST_STRING[] = "Lorem ipsum dolor sick fuck amend something something ...";
 
-static const char TEST_PUBLIC_KEY[] = "0450430325551ee86a6d9216947b5bdf04314771028e847029def87eb18474e10dcd981d72a2f51eff20ac1c1a3375850e0e53f1b065923304";
-
-static const char TEST_PRIVATE_KEY[] = "f5c2351c941cbba29313771c84693dacb80f21be8bcb07406217ee3a07143e2a8fdbccd083d045a2818858c2faf72e58ec7e006a1386361c";
+static const cecies_curve448_key TEST_PUBLIC_KEY = { .hexstring = "50430325551ee86a6d9216947b5bdf04314771028e847029def87eb18474e10dcd981d72a2f51eff20ac1c1a3375850e0e53f1b065923304" };
+static const cecies_curve448_key TEST_PRIVATE_KEY = { .hexstring = "f5c2351c941cbba29313771c84693dacb80f21be8bcb07406217ee3a07143e2a8fdbccd083d045a2818858c2faf72e58ec7e006a1386361c" };
 
 int main(void)
 {
