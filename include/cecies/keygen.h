@@ -17,7 +17,7 @@
 /**
  *  @file keygen.h
  *  @author Raphael Beck
- *  @brief Curve448 key-pair generator (exports into raw binary output buffer or base64-encoded).
+ *  @brief Curve448 key-pair generator (exports into NUL-terminated, hex-encoded strings).
  */
 
 #ifndef CECIES_KEYGEN_H
