@@ -41,7 +41,7 @@ extern "C" {
  * @param encrypted_data The data to decrypt.
  * @param encrypted_data_length The length of the data array.
  * @param encrypted_data_base64 Is the input \p encrypted_data base64-encoded?
- * @param private_key The private key to decrypt the data with (hex-string, as is the output of cecies_generate_curve448_keypair()).
+ * @param private_key The private key to decrypt the data with (hex-string, as is the output of cecies_generate_curve448_keypair()). 112 bytes will be read; so make sure not to pass anything smaller (can end up in a read access violation!). 113th character (the NUL-terminator) will be ignored.
  * @param pbkdf2_iterations The amount of PBKDF2 iterations that were used to encrypt the data. It's important to have this value **EXACTLY IDENTICAL** to the one used in cecies_encrypt(), otherwise encryption WILL FAIL despite valid private key. Pass <c>0</c> to use the default value (if that's what you also used when encrypting).
  * @param output Where to write the decrypted output into (please pre-allocate this big enough; if unsure, allocate \p encrypted_data_length bytes!).
  * @param output_bufsize How big the output buffer is. Please allocate at least \p encrypted_data_length bytes!

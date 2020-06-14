@@ -41,7 +41,7 @@ extern "C" {
  * Encrypts the given data using ECIES over Curve448 and AES256-GCM.
  * @param data The data to encrypt.
  * @param data_length The length of the data array.
- * @param public_key The public key to encrypt the data with (hex-string format, as is the output of cecies_generate_curve448_keypair()).
+ * @param public_key The public key to encrypt the data with (hex-string format, as is the output of cecies_generate_curve448_keypair()). 114 bytes will be read; so make sure not to pass anything smaller (can end up in a read access violation!). 115th character (the NUL-terminator) will be ignored.
  * @param pbkdf2_iterations The amount of PBKDF2 iterations to use for deriving the AES key from the ephemeral key. Pass <c>0</c> to use the default value (which currently is 64k iterations). A value of >32k is recommended, and anything under 16k immediately stops the procedure and returns an error. For safety's sake. Also, very important: keep this value somewhere, as you'll need it inside cecies_decrypt(), where it needs to be **IDENTICAL** in order for decryption to succeed (even despite having the correct private key!).
  * @param output Where to write the encrypted output into (please pre-allocate this big enough, you can use cecies_calc_output_buffer_needed_size() to find out how much you need).
  * @param output_bufsize How big the output buffer is.

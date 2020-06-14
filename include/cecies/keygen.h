@@ -42,12 +42,17 @@ extern "C" {
 typedef struct cecies_curve448_keypair
 {
     /**
-     * The public key (formatted as a hex string).
+     * The public key (formatted as a hex string). <p>
+     * 114 bytes of hex string + 1 NUL-terminator. <p>
+     * The reason this is slightly bigger than the private_key
+     * is because it needs to start with the 0x04 prefix byte
+     * (according to the EC key encoding standard).
      */
     char public_key[115];
 
     /**
-     * The private key (formatted as a hex string).
+     * The private key (formatted as a hex string). <p>
+     * 112 bytes of hex string + 1 NUL-terminator.
      */
     char private_key[113];
 } cecies_curve448_keypair;
