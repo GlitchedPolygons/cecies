@@ -48,6 +48,8 @@ static void cecies_printvoid_returns_0(void** state)
     assert_int_equal(0, cecies_printvoid(stderr, "void", 4));
 }
 
+// DISCLAIMER:  Coverage won't be 100% because MbedTLS return codes and failures won't be tested against. It just doesn't make sense: they are already tested by MbedTLS itself.
+
 static void cecies_fprintf_enables_and_disables_correctly(void** state)
 {
     cecies_disable_fprintf();
