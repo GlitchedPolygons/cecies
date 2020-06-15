@@ -66,9 +66,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">keygen.h File Reference</div>  </div>
@@ -82,17 +80,19 @@ $(function() {
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="util_8h_source.html">cecies/util.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="types_8h_source.html">cecies/types.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for keygen.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="keygen_8h__incl.png" border="0" usemap="#include_2cecies_2keygen_8h" alt=""/></div>
 <map name="include_2cecies_2keygen_8h" id="include_2cecies_2keygen_8h">
-<area shape="rect" title="Curve448 key&#45;pair generator (exports into NUL&#45;terminated, hex&#45;encoded strings)." alt="" coords="121,5,284,32"/>
+<area shape="rect" title="Curve448 key&#45;pair generator (exports into NUL&#45;terminated, hex&#45;encoded strings)." alt="" coords="163,5,325,32"/>
 <area shape="rect" title=" " alt="" coords="5,155,64,181"/>
 <area shape="rect" title=" " alt="" coords="89,155,157,181"/>
 <area shape="rect" title=" " alt="" coords="181,155,245,181"/>
 <area shape="rect" title=" " alt="" coords="454,155,519,181"/>
 <area shape="rect" href="util_8h.html" title="Useful utility functions for CECIES." alt="" coords="241,80,333,107"/>
+<area shape="rect" href="types_8h.html" title="CECIES types." alt="" coords="408,80,515,107"/>
 <area shape="rect" title=" " alt="" coords="269,155,331,181"/>
 <area shape="rect" title=" " alt="" coords="355,155,429,181"/>
 </map>
@@ -100,11 +100,6 @@ Include dependency graph for keygen.h:</div>
 </div>
 <p><a href="keygen_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcecies__curve448__keypair.html">cecies_curve448_keypair</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:aab025edec681a215a63123fc1d4e4186"><td class="memItemLeft" align="right" valign="top"><a id="aab025edec681a215a63123fc1d4e4186"></a>
@@ -114,11 +109,6 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>CECIES_KEYGEN_ERROR_CODE_INVALID_ARG</b>&#160;&#160;&#160;7001</td></tr>
 <tr class="separator:a5723c52436795bd8966c16a261f54491"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr class="memitem:a1a8e8a6e53174f4b812a2dfb5c25adc2"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structcecies__curve448__keypair.html">cecies_curve448_keypair</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="keygen_8h.html#a1a8e8a6e53174f4b812a2dfb5c25adc2">cecies_curve448_keypair</a></td></tr>
-<tr class="separator:a1a8e8a6e53174f4b812a2dfb5c25adc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a7f8a8b95f7d22fd84c3c8e8871232242"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="keygen_8h.html#a7f8a8b95f7d22fd84c3c8e8871232242">cecies_generate_curve448_keypair</a> (<a class="el" href="structcecies__curve448__keypair.html">cecies_curve448_keypair</a> *output, unsigned char *additional_entropy, size_t additional_entropy_length)</td></tr>
@@ -127,23 +117,7 @@ Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Curve448 key-pair generator (exports into NUL-terminated, hex-encoded strings). </p>
 <dl class="section author"><dt>Author</dt><dd>Raphael Beck </dd></dl>
-</div><h2 class="groupheader">Typedef Documentation</h2>
-<a id="a1a8e8a6e53174f4b812a2dfb5c25adc2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1a8e8a6e53174f4b812a2dfb5c25adc2">&#9670;&nbsp;</a></span>cecies_curve448_keypair</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct <a class="el" href="structcecies__curve448__keypair.html">cecies_curve448_keypair</a>  <a class="el" href="structcecies__curve448__keypair.html">cecies_curve448_keypair</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Contains a stack-allocated Curve448 keypair. </p>
-
-</div>
-</div>
-<h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="a7f8a8b95f7d22fd84c3c8e8871232242"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7f8a8b95f7d22fd84c3c8e8871232242">&#9670;&nbsp;</a></span>cecies_generate_curve448_keypair()</h2>
 

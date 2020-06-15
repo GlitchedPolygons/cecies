@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cecies: Class Members - Variables</title>
+<title>cecies: cecies_curve448_key Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -45,7 +45,6 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
-</div><!-- top -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -60,17 +59,43 @@ $(function() {
 </iframe>
 </div>
 
+</div><!-- top -->
+<div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="structcecies__curve448__key-members.html">List of all members</a>  </div>
+  <div class="headertitle">
+<div class="title">cecies_curve448_key Struct Reference</div>  </div>
+</div><!--header-->
 <div class="contents">
-&#160;<ul>
-<li>hexstring
-: <a class="el" href="structcecies__curve448__key.html#a97ad4b93f4ae3f1ee51e0ec9d30b310d">cecies_curve448_key</a>
-</li>
-<li>private_key
-: <a class="el" href="structcecies__curve448__keypair.html#a64221be323012411324f3d1dc93c2095">cecies_curve448_keypair</a>
-</li>
-<li>public_key
-: <a class="el" href="structcecies__curve448__keypair.html#ad391bdc968191a52ca93b53d3f834a25">cecies_curve448_keypair</a>
-</li>
+
+<p><code>#include &lt;<a class="el" href="types_8h_source.html">types.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a97ad4b93f4ae3f1ee51e0ec9d30b310d"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcecies__curve448__key.html#a97ad4b93f4ae3f1ee51e0ec9d30b310d">hexstring</a> [112+1]</td></tr>
+<tr class="separator:a97ad4b93f4ae3f1ee51e0ec9d30b310d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Contains a Curve448 key encoded as a NUL-terminated hex-string. </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="a97ad4b93f4ae3f1ee51e0ec9d30b310d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97ad4b93f4ae3f1ee51e0ec9d30b310d">&#9670;&nbsp;</a></span>hexstring</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char cecies_curve448_key::hexstring[112+1]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Hex-encoded string of a 56-byte Curve448 key. For public keys, the 0x04 byte prefix is omitted. The 113th character is the NUL-terminator. </p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
+<li>include/cecies/<a class="el" href="types_8h_source.html">types.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
