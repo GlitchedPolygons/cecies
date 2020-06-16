@@ -29,6 +29,7 @@ set(${PROJECT_NAME}_INCLUDE_DIR
 
 set(${PROJECT_NAME}_HEADERS
         ${CMAKE_CURRENT_LIST_DIR}/include/cecies/util.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/cecies/guid.h
         ${CMAKE_CURRENT_LIST_DIR}/include/cecies/types.h
         ${CMAKE_CURRENT_LIST_DIR}/include/cecies/keygen.h
         ${CMAKE_CURRENT_LIST_DIR}/include/cecies/encrypt.h
@@ -37,6 +38,7 @@ set(${PROJECT_NAME}_HEADERS
 
 set(${PROJECT_NAME}_SOURCES
         ${CMAKE_CURRENT_LIST_DIR}/src/util.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/guid.c
         ${CMAKE_CURRENT_LIST_DIR}/src/keygen.c
         ${CMAKE_CURRENT_LIST_DIR}/src/encrypt.c
         ${CMAKE_CURRENT_LIST_DIR}/src/decrypt.c

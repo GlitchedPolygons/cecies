@@ -44,7 +44,7 @@ extern "C" {
  * @param additional_entropy_length [OPTIONAL] Length of the \p additional_entropy array. If \p additional_entropy is <c>NULL</c>, this value is ignored.
  * @return <c>0</c> if key generation succeeded; error codes as defined inside the header file or MbedTLS otherwise.
  */
-int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, unsigned char* additional_entropy, size_t additional_entropy_length);
+int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, const unsigned char* additional_entropy, size_t additional_entropy_length);
 
 #ifdef __cplusplus
 } // extern "C"

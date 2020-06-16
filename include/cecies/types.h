@@ -61,6 +61,16 @@ typedef struct cecies_curve448_keypair
     cecies_curve448_key private_key;
 } cecies_curve448_keypair;
 
+/**
+ * @brief Struct containing the output from a call to the cecies_new_guid() function. <p>
+ * 36 characters (only 32 if you chose to omit the hyphens) + 1 NUL terminator.
+ */
+typedef struct cecies_guid
+{
+    /** NUL-terminated string containing the GUID. */
+    char string[36 + 1];
+} cecies_guid;
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
