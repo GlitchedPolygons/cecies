@@ -62,6 +62,15 @@ static void cecies_fprintf_enables_and_disables_correctly(void** state)
     cecies_disable_fprintf();
 }
 
+static const char TEST_STRING[263] = "Still, I am not one to squander my investments... and I remain confident she was worth far more than the initial.. .appraisal. That's why I must now extract from you some small repayment owed for your own survival. See her safely to White Forest, Doctor Freeman!";
+
+static const size_t TEST_STRING_LENGTH_WITH_NUL_TERMINATOR = 263;
+static const size_t TEST_STRING_LENGTH_WITHOUT_NUL_TERMINATOR = 262;
+
+static const cecies_curve448_key TEST_PUBLIC_KEY = { .hexstring = "6211c857e3b939daf039bc32d8ceb52b6055d871451d03431ef48ff65bc72124112592edad63ca208665e557ca4cd9c74608415a8d6aeac0" };
+static const cecies_curve448_key TEST_PRIVATE_KEY = { .hexstring = "c8f6e3c096b7adadba0aa1be3bbbdeb3e8a400005ce3a42f25af7bc75a327831242a18ab200c7b2bedfad297554c5c02387cf06397596fc8" };
+static const cecies_curve448_key TEST_PRIVATE_KEY_INVALID_HEX = { .hexstring = "dbee49abcfpzqqik2eb3b35ff00860fa683e0ac725c9e5d576340724f4894fac85730c93f688cbad98f98516d27e255ffeffd2365563cf24" };
+
 static void cecies_hexstr2bin_invalid_args_returns_1(void** state)
 {
     char hex[] = "90b008b752871710f032e58396eb75ead53b4abd83e074a855e8ca4c5fef4de7bb5e6a191cc10132466dbaee16a031c0046ce38535b8f922b93edd5e"
@@ -289,14 +298,45 @@ static void cecies_generate_curve448_keypair_generated_keys_are_invalid(void** s
     mbedtls_ecp_group_free(&ecp_group1);
 }
 
-static const char TEST_STRING[263] = "Still, I am not one to squander my investments... and I remain confident she was worth far more than the initial.. .appraisal. That's why I must now extract from you some small repayment owed for your own survival. See her safely to White Forest, Doctor Freeman!";
+static void cecies_generate_curve448_keypair_with_way_too_much_additional_entropy_successful_nonetheless(void** state)
+{
+    cecies_curve448_keypair keypair1;
+    const char* additional_entropy = TEST_STRING;
+    assert_int_equal(0, cecies_generate_curve448_keypair(&keypair1, (unsigned char*)additional_entropy, strlen(additional_entropy)));
 
-static const size_t TEST_STRING_LENGTH_WITH_NUL_TERMINATOR = 263;
-static const size_t TEST_STRING_LENGTH_WITHOUT_NUL_TERMINATOR = 262;
+    mbedtls_mpi prvkey1;
+    mbedtls_mpi_init(&prvkey1);
 
-static const cecies_curve448_key TEST_PUBLIC_KEY = { .hexstring = "6211c857e3b939daf039bc32d8ceb52b6055d871451d03431ef48ff65bc72124112592edad63ca208665e557ca4cd9c74608415a8d6aeac0" };
-static const cecies_curve448_key TEST_PRIVATE_KEY = { .hexstring = "c8f6e3c096b7adadba0aa1be3bbbdeb3e8a400005ce3a42f25af7bc75a327831242a18ab200c7b2bedfad297554c5c02387cf06397596fc8" };
-static const cecies_curve448_key TEST_PRIVATE_KEY_INVALID_HEX = { .hexstring = "dbee49abcfpzqqik2eb3b35ff00860fa683e0ac725c9e5d576340724f4894fac85730c93f688cbad98f98516d27e255ffeffd2365563cf24" };
+    mbedtls_ecp_group ecp_group1;
+    mbedtls_ecp_group_init(&ecp_group1);
+    mbedtls_ecp_group_load(&ecp_group1, MBEDTLS_ECP_DP_CURVE448);
+
+    mbedtls_ecp_point pubkey1;
+    mbedtls_ecp_point_init(&pubkey1);
+
+    size_t prvkey1_decoded_bytes_length;
+    unsigned char prvkey1_decoded_bytes[256];
+
+    cecies_hexstr2bin(keypair1.private_key.hexstring, sizeof(keypair1.private_key.hexstring), prvkey1_decoded_bytes, sizeof(prvkey1_decoded_bytes), &prvkey1_decoded_bytes_length);
+    prvkey1_decoded_bytes[0] = 0x9;
+    prvkey1_decoded_bytes[1] = 13;
+
+    mbedtls_mpi_read_binary(&prvkey1, prvkey1_decoded_bytes, prvkey1_decoded_bytes_length);
+
+    assert_int_not_equal(0, mbedtls_ecp_check_privkey(&ecp_group1, &prvkey1));
+
+    size_t pubkey1_decoded_bytes_length;
+    unsigned char pubkey1_decoded_bytes[113];
+
+    cecies_hexstr2bin(keypair1.public_key.hexstring, sizeof(keypair1.public_key.hexstring), pubkey1_decoded_bytes, sizeof(pubkey1_decoded_bytes), &pubkey1_decoded_bytes_length);
+    pubkey1_decoded_bytes[0] = 1;
+    assert_int_not_equal(0, mbedtls_ecp_point_read_binary(&ecp_group1, &pubkey1, pubkey1_decoded_bytes, 113));
+    assert_int_not_equal(0, mbedtls_ecp_check_pubkey(&ecp_group1, &pubkey1));
+
+    mbedtls_mpi_free(&prvkey1);
+    mbedtls_ecp_point_free(&pubkey1);
+    mbedtls_ecp_group_free(&ecp_group1);
+}
 
 static void cecies_encrypt_raw_binary_decrypts_successfully(void** state)
 {
@@ -904,6 +944,7 @@ int main(void)
         cmocka_unit_test(cecies_generate_curve448_keypair_NULL_args_return_CECIES_KEYGEN_ERROR_CODE_NULL_ARG),
         cmocka_unit_test(cecies_generate_curve448_keypair_generated_keys_are_valid),
         cmocka_unit_test(cecies_generate_curve448_keypair_generated_keys_are_invalid),
+        cmocka_unit_test(cecies_generate_curve448_keypair_with_way_too_much_additional_entropy_successful_nonetheless),
         cmocka_unit_test(cecies_encrypt_raw_binary_decrypts_successfully),
         cmocka_unit_test(cecies_encrypt_base64_decrypts_successfully),
         cmocka_unit_test(cecies_encrypt_bin_decrypt_with_public_key_fails),
