@@ -20,7 +20,7 @@ More useful information also accessible [here](https://asecuritysite.com/encrypt
 Just add CECIES as a git submodule to your project (e.g. into some `lib/` or `deps/` folder inside your project's repo; `{repo_root}/lib/` is used here in the following example).
 
 ```
-git submodule add https://github.com/GlitchedPolygons/cecies.git lib/
+git submodule add https://github.com/GlitchedPolygons/cecies.git lib/cecies
 git submodule update --init --recursive
 ```
 
