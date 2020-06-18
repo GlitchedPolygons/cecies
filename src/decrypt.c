@@ -88,6 +88,7 @@ int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_le
     size_t private_key_bytes_length, S_bytes_length;
 
     memset(iv, 0x00, 16);
+    memset(tag, 0x00, 16);
     memset(salt, 0x00, 32);
     memset(aes_key, 0x00, 32);
     memset(R_bytes, 0x00, sizeof(R_bytes));
