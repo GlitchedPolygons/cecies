@@ -64,7 +64,7 @@ if (UNIX AND NOT APPLE)
 endif ()
 
 if (WIN32)
-    target_link_libraries(${PROJECT_NAME} PRIVATE -lbcrypt)
+    target_link_libraries(${PROJECT_NAME} PUBLIC bcrypt)
 endif ()
 
 target_include_directories(${PROJECT_NAME}
