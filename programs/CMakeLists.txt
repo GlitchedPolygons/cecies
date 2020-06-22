@@ -18,3 +18,9 @@ project(cecies_programs C)
 
 add_executable(curve448_keygen ${CMAKE_CURRENT_LIST_DIR}/curve448_keygen.c)
 target_link_libraries(curve448_keygen PRIVATE cecies)
+
+add_executable(cecies_encrypt ${CMAKE_CURRENT_LIST_DIR}/cecies_encrypt.c)
+target_link_libraries(cecies_encrypt PRIVATE cecies)
+
+add_executable(cecies_decrypt ${CMAKE_CURRENT_LIST_DIR}/cecies_decrypt.c)
+target_link_libraries(cecies_decrypt PRIVATE cecies)
