@@ -27,3 +27,9 @@ target_link_libraries(cecies_encrypt PRIVATE cecies)
 
 add_executable(cecies_decrypt ${CMAKE_CURRENT_LIST_DIR}/cecies_decrypt.c)
 target_link_libraries(cecies_decrypt PRIVATE cecies)
+
+add_executable(ecdsa_sha256_secp256k1_sign ${CMAKE_CURRENT_LIST_DIR}/ecdsa_sha256_secp256k1_sign.c)
+target_link_libraries(ecdsa_sha256_secp256k1_sign PRIVATE cecies)
+
+add_executable(ecdsa_sha256_secp256k1_verify ${CMAKE_CURRENT_LIST_DIR}/ecdsa_sha256_secp256k1_verify.c)
+target_link_libraries(ecdsa_sha256_secp256k1_verify PRIVATE cecies)
