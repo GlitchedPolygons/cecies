@@ -4,3 +4,4 @@ ignore:
   - ".idea"
   - ".github"
   - "examples"
+  - "programs"

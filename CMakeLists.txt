@@ -19,7 +19,9 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 option(CECIES_ENABLE_TESTS "Build CECIES tests." OFF)
+option(CECIES_ENABLE_PROGRAMS "Build qryptext CLI programs." OFF)
 option(CECIES_ENABLE_EXAMPLES "Build CECIES example programs." OFF)
+
 option(ENABLE_TESTING "Build MbedTLS tests." OFF)
 option(ENABLE_PROGRAMS "Build MbedTLS example programs." OFF)
 
@@ -76,6 +78,10 @@ get_target_property(${PROJECT_NAME}_DEPS_TARGETS ${PROJECT_NAME} LINK_LIBRARIES)
 
 if (CECIES_ENABLE_EXAMPLES)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/examples examples)
+endif ()
+
+if (CECIES_ENABLE_PROGRAMS)
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/programs programs)
 endif ()
 
 if (CECIES_ENABLE_TESTS)
