@@ -25,14 +25,14 @@ int main(int argc, const char* argv[])
 {
     cecies_curve448_keypair keypair;
 
-    unsigned char additional_entropy[4096];
-    size_t rem = 4096;
+    unsigned char additional_entropy[128];
+    size_t rem = sizeof(additional_entropy);
 
     for (int i = 1; i < argc && rem > 0; i++)
     {
         const char* istr = argv[i];
-        const size_t ilen = CECIES_MIN(4096, strlen(istr));
-        snprintf((char*)additional_entropy, ilen, "%s", istr);
+        const size_t ilen = CECIES_MIN(rem, strlen(istr));
+        snprintf((char*)(additional_entropy + (128 - rem)), ilen, "%s", istr);
         rem -= ilen;
     }
 
