@@ -23,6 +23,8 @@
 
 int main(int argc, const char* argv[])
 {
+    cecies_enable_fprintf();
+
     cecies_curve448_keypair keypair;
 
     unsigned char additional_entropy[128];
