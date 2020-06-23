@@ -97,7 +97,7 @@ int main(int argc, const char* argv[])
         fprintf(stdout, "%02x", public_key[i]);
     }
 
-    fprintf(stdout, "\"}");
+    fprintf(stdout, "\"}\n");
 
 exit:
     // Cleanup:

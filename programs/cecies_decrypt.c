@@ -72,7 +72,7 @@ int main(const int argc, const char* argv[])
         return -4;
     }
 
-    fprintf(stdout, "%s", o);
+    fprintf(stdout, "%s\n", o);
 
     memset(o, 0x00, message_len);
     memset(&private_key, 0x00, sizeof(cecies_curve448_key));

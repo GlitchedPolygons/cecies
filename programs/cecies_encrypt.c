@@ -69,7 +69,7 @@ int main(const int argc, const char* argv[])
         return -4;
     }
 
-    fprintf(stdout, "%s", o);
+    fprintf(stdout, "%s\n", o);
 
     free(o);
     return 0;

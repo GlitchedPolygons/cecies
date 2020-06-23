@@ -44,7 +44,7 @@ int main(int argc, const char* argv[])
         return r;
     }
 
-    fprintf(stdout, "{\"curve448_private_key\":\"%s\",\"curve448_public_key\":\"%s\"}", keypair.private_key.hexstring, keypair.public_key.hexstring);
+    fprintf(stdout, "{\"curve448_private_key\":\"%s\",\"curve448_public_key\":\"%s\"}\n", keypair.private_key.hexstring, keypair.public_key.hexstring);
 
     // Cleanup:
     memset(&keypair, 0x00, sizeof(cecies_curve448_keypair));

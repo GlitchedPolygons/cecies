@@ -119,6 +119,8 @@ int main(int argc, const char* argv[])
         fprintf(stdout, "%02x", signature[i]);
     }
 
+    fprintf(stdout, "\n");
+
 exit:
     // Cleanup:
     mbedtls_ecdsa_free(&ecdsa);
