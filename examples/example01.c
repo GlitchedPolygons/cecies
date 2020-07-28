@@ -48,7 +48,7 @@ int main(void)
     // Just keep in mind that if you choose to base64-encode too, allocate cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(size_t))
     // bytes, because base64-encoding always needs more space. See example04 for more details about this scenario.
 
-    s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, TEST_PUBLIC_KEY, encrypted_string, sizeof(encrypted_string), &encrypted_string_length, true);
+    s = cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, TEST_PUBLIC_KEY, encrypted_string, sizeof(encrypted_string), &encrypted_string_length, true);
 
     printf("Encrypted string >>> base64:\n\n%s\n\nStatus code: %d\n\n", encrypted_string, s);
 
@@ -56,7 +56,7 @@ int main(void)
     char decrypted_string[1024];
     memset(decrypted_string, 0x00, sizeof(decrypted_string));
 
-    s = cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, (unsigned char*)decrypted_string, sizeof(decrypted_string), &decrypted_string_length);
+    s = cecies_curve448_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, (unsigned char*)decrypted_string, sizeof(decrypted_string), &decrypted_string_length);
 
     printf("Decrypted string:\n\n%s\n\nStatus code: %d\n\n", decrypted_string, s);
 

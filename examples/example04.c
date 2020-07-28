@@ -44,12 +44,12 @@ int main(void)
     // using the cecies_calc_output_buffer_needed_size()
     // function to allocate the exactly right amount of bytes.
 
-    encrypted_string_length = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH));
+    encrypted_string_length = cecies_calc_base64_length(cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH));
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
     // You can pass NULL to the output_length pointer argument, since you already calculated the size above.
-    s = cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, true);
+    s = cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, true);
 
     printf("Status code: %d\n\n", s);
 
@@ -64,7 +64,7 @@ int main(void)
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
 
-    s = cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length);
+    s = cecies_curve448_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length);
 
     printf("Status code: %d\n\n", s);
 
