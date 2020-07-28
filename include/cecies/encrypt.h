@@ -17,7 +17,7 @@
 /**
  *  @file encrypt.h
  *  @author Raphael Beck
- *  @brief ECIES encryption implementation using Curve448, AES256-GCM and MbedTLS.
+ *  @brief ECIES encryption implementation using Curve25516 or Curve448, AES256-GCM and MbedTLS.
  */
 
 #ifndef CECIES_ENCRYPT_H
