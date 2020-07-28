@@ -62,7 +62,7 @@ int main(const int argc, const char* argv[])
         return -3;
     }
 
-    int r = cecies_curve448_encrypt((unsigned char*)message, message_len, public_key, o, olen, NULL, true);
+    int r = cecies_curve25519_encrypt((unsigned char*)message, message_len, public_key, o, olen, NULL, true);
     if (r != 0)
     {
         free(o);
