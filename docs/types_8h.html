@@ -80,10 +80,11 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="types_8h__dep__incl.png" border="0" usemap="#include_2cecies_2types_8hdep" alt=""/></div>
 <map name="include_2cecies_2types_8hdep" id="include_2cecies_2types_8hdep">
-<area shape="rect" title="CECIES types." alt="" coords="197,5,349,32"/>
+<area shape="rect" title="CECIES types." alt="" coords="285,5,437,32"/>
 <area shape="rect" href="decrypt_8h.html" title="ECIES decryption implementation using Curve448, AES256&#45;GCM and MbedTLS." alt="" coords="5,80,168,107"/>
 <area shape="rect" href="encrypt_8h.html" title="ECIES encryption implementation using Curve448, AES256&#45;GCM and MbedTLS." alt="" coords="192,80,355,107"/>
-<area shape="rect" href="keygen_8h.html" title="Curve448 key&#45;pair generator (exports into NUL&#45;terminated, hex&#45;encoded strings)." alt="" coords="379,80,541,107"/>
+<area shape="rect" href="guid_8h.html" title="Mh! The smell of fresh GUIDs.." alt="" coords="379,80,523,107"/>
+<area shape="rect" href="keygen_8h.html" title="Curve448 key&#45;pair generator (exports into NUL&#45;terminated, hex&#45;encoded strings)." alt="" coords="547,80,709,107"/>
 </map>
 </div>
 </div>
@@ -91,22 +92,66 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcecies__curve25519__key.html">cecies_curve25519_key</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcecies__curve25519__keypair.html">cecies_curve25519_keypair</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcecies__curve448__key.html">cecies_curve448_key</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcecies__curve448__keypair.html">cecies_curve448_keypair</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcecies__guid.html">cecies_guid</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct containing the output from a call to the <a class="el" href="guid_8h.html#aa92ec1e1560a820319c11aa85572cd9a">cecies_new_guid()</a> function.  <a href="structcecies__guid.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
+<tr class="memitem:adf244bee9df1091834dbda5c0f18e2a0"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structcecies__curve25519__key.html">cecies_curve25519_key</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#adf244bee9df1091834dbda5c0f18e2a0">cecies_curve25519_key</a></td></tr>
+<tr class="separator:adf244bee9df1091834dbda5c0f18e2a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:addd1c911ce5a833022358ae17cdc7c75"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structcecies__curve25519__keypair.html">cecies_curve25519_keypair</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#addd1c911ce5a833022358ae17cdc7c75">cecies_curve25519_keypair</a></td></tr>
+<tr class="separator:addd1c911ce5a833022358ae17cdc7c75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c786571c60119510497e27e5836a533"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structcecies__curve448__key.html">cecies_curve448_key</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#a6c786571c60119510497e27e5836a533">cecies_curve448_key</a></td></tr>
 <tr class="separator:a6c786571c60119510497e27e5836a533"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a8e8a6e53174f4b812a2dfb5c25adc2"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structcecies__curve448__keypair.html">cecies_curve448_keypair</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#a1a8e8a6e53174f4b812a2dfb5c25adc2">cecies_curve448_keypair</a></td></tr>
 <tr class="separator:a1a8e8a6e53174f4b812a2dfb5c25adc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2249150a13a7a273d3ff74400d931642"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structcecies__guid.html">cecies_guid</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#a2249150a13a7a273d3ff74400d931642">cecies_guid</a></td></tr>
+<tr class="memdesc:a2249150a13a7a273d3ff74400d931642"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct containing the output from a call to the <a class="el" href="guid_8h.html#aa92ec1e1560a820319c11aa85572cd9a">cecies_new_guid()</a> function.  <a href="types_8h.html#a2249150a13a7a273d3ff74400d931642">More...</a><br /></td></tr>
+<tr class="separator:a2249150a13a7a273d3ff74400d931642"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>CECIES types. </p>
 <dl class="section author"><dt>Author</dt><dd>Raphael Beck </dd></dl>
 </div><h2 class="groupheader">Typedef Documentation</h2>
+<a id="adf244bee9df1091834dbda5c0f18e2a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf244bee9df1091834dbda5c0f18e2a0">&#9670;&nbsp;</a></span>cecies_curve25519_key</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="structcecies__curve25519__key.html">cecies_curve25519_key</a>  <a class="el" href="structcecies__curve25519__key.html">cecies_curve25519_key</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Contains a Curve25519 key, encoded as a NUL-terminated hex-string. </p>
+
+</div>
+</div>
+<a id="addd1c911ce5a833022358ae17cdc7c75"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#addd1c911ce5a833022358ae17cdc7c75">&#9670;&nbsp;</a></span>cecies_curve25519_keypair</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="structcecies__curve25519__keypair.html">cecies_curve25519_keypair</a>  <a class="el" href="structcecies__curve25519__keypair.html">cecies_curve25519_keypair</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Contains a stack-allocated <a class="el" href="structcecies__curve25519__key.html">cecies_curve25519_key</a> keypair. </p>
+
+</div>
+</div>
 <a id="a6c786571c60119510497e27e5836a533"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6c786571c60119510497e27e5836a533">&#9670;&nbsp;</a></span>cecies_curve448_key</h2>
 
@@ -118,7 +163,7 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Contains a Curve448 key encoded as a NUL-terminated hex-string. </p>
+<p>Contains a Curve448 key, encoded as a NUL-terminated hex-string. </p>
 
 </div>
 </div>
@@ -134,6 +179,23 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Contains a stack-allocated Curve448 keypair. </p>
+
+</div>
+</div>
+<a id="a2249150a13a7a273d3ff74400d931642"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2249150a13a7a273d3ff74400d931642">&#9670;&nbsp;</a></span>cecies_guid</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="structcecies__guid.html">cecies_guid</a>  <a class="el" href="structcecies__guid.html">cecies_guid</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Struct containing the output from a call to the <a class="el" href="guid_8h.html#aa92ec1e1560a820319c11aa85572cd9a">cecies_new_guid()</a> function. </p>
+<p>36 characters (only 32 if you chose to omit the hyphens) + 1 NUL terminator. </p>
 
 </div>
 </div>

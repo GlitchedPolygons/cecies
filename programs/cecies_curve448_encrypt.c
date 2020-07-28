@@ -27,13 +27,13 @@ int main(const int argc, const char* argv[])
 
     if (argc == 1 || (argc == 2 && strcmp(argv[1], "--help") == 0))
     {
-        fprintf(stdout, "cecies_encrypt:  Encrypt a string using a Curve448 public key. Call this program using exactly 2 arguments;  the first one being the public key (hex-string) and the second the string to encrypt.\n");
+        fprintf(stdout, "cecies_curve448_encrypt:  Encrypt a string using a Curve448 public key. Call this program using exactly 2 arguments;  the first one being the public key (hex-string) and the second the string to encrypt.\n");
         return 0;
     }
 
     if (argc != 3)
     {
-        fprintf(stderr, "cecies_encrypt: wrong argument count. Check out \"cecies_encrypt --help\" for more details about how to use this!\n");
+        fprintf(stderr, "cecies_curve448_encrypt: wrong argument count. Check out \"cecies_curve448_encrypt --help\" for more details about how to use this!\n");
         return -1;
     }
 
@@ -45,7 +45,7 @@ int main(const int argc, const char* argv[])
 
     if (public_key_hexstr_len != 112)
     {
-        fprintf(stderr, "cecies_encrypt: Invalid public key format/length!\n");
+        fprintf(stderr, "cecies_curve448_encrypt: Invalid public key format/length!\n");
         return -2;
     }
 
@@ -53,16 +53,16 @@ int main(const int argc, const char* argv[])
     memset(&public_key, 0x00, sizeof(cecies_curve448_key));
     memcpy(public_key.hexstring, public_key_hexstr, public_key_hexstr_len);
 
-    size_t olen = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(message_len));
+    size_t olen = cecies_calc_base64_length(cecies_curve448_calc_output_buffer_needed_size(message_len));
     unsigned char* o = calloc(olen, sizeof(unsigned char));
 
     if (o == NULL)
     {
-        fprintf(stderr, "cecies_encrypt: OUT OF MEMORY!\n");
+        fprintf(stderr, "cecies_curve448_encrypt: OUT OF MEMORY!\n");
         return -3;
     }
 
-    int r = cecies_encrypt((unsigned char*)message, message_len, public_key, o, olen, NULL, true);
+    int r = cecies_curve448_encrypt((unsigned char*)message, message_len, public_key, o, olen, NULL, true);
     if (r != 0)
     {
         free(o);

@@ -38,7 +38,16 @@ extern "C" {
 #define CECIES_KEYGEN_ERROR_CODE_INVALID_ARG 7001
 
 /**
- * Generates a CECIES keypair (currently using Curve448) and writes it into the specified output buffers.
+ * Generates a CECIES Curve25519 keypair and writes it into the specified output buffers.
+ * @param output The cecies_curve25519_keypair instance into which to write the generated key-pair.
+ * @param additional_entropy [OPTIONAL] Additional entropy bytes for the CSPRNG. Can be set to <c>NULL</c> if you wish not to add custom entropy.
+ * @param additional_entropy_length [OPTIONAL] Length of the \p additional_entropy array. If \p additional_entropy is <c>NULL</c>, this value is ignored.
+ * @return <c>0</c> if key generation succeeded; error codes as defined inside the header file or MbedTLS otherwise.
+ */
+int cecies_generate_curve25519_keypair(cecies_curve25519_keypair* output, const unsigned char* additional_entropy, size_t additional_entropy_length);
+
+/**
+ * Generates a CECIES Curve448 keypairand writes it into the specified output buffers.
  * @param output The cecies_curve448_keypair instance into which to write the generated key-pair.
  * @param additional_entropy [OPTIONAL] Additional entropy bytes for the CSPRNG. Can be set to <c>NULL</c> if you wish not to add custom entropy.
  * @param additional_entropy_length [OPTIONAL] Length of the \p additional_entropy array. If \p additional_entropy is <c>NULL</c>, this value is ignored.
