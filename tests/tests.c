@@ -338,7 +338,7 @@ static void cecies_generate_curve448_keypair_with_way_too_much_additional_entrop
     mbedtls_ecp_group_free(&ecp_group1);
 }
 
-static void cecies_encrypt_raw_binary_decrypts_successfully(void** state)
+static void cecies_curve448_encrypt_raw_binary_decrypts_successfully(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -347,16 +347,16 @@ static void cecies_encrypt_raw_binary_decrypts_successfully(void** state)
 
     //
 
-    encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
+    encrypted_string_length = cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false));
 
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_equal(0, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
     assert_int_equal(0, memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
     //
 
@@ -364,7 +364,7 @@ static void cecies_encrypt_raw_binary_decrypts_successfully(void** state)
     free(decrypted_string);
 }
 
-static void cecies_encrypt_base64_decrypts_successfully(void** state)
+static void cecies_curve448_encrypt_base64_decrypts_successfully(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -373,16 +373,16 @@ static void cecies_encrypt_base64_decrypts_successfully(void** state)
 
     //
 
-    encrypted_string_length = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
+    encrypted_string_length = cecies_calc_base64_length(cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, true));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, true));
 
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_equal(0, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
     assert_int_equal(0, memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
     //
 
@@ -390,7 +390,7 @@ static void cecies_encrypt_base64_decrypts_successfully(void** state)
     free(decrypted_string);
 }
 
-static void cecies_encrypt_bin_decrypt_with_public_key_fails(void** state)
+static void cecies_curve448_encrypt_bin_decrypt_with_public_key_fails(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -399,16 +399,16 @@ static void cecies_encrypt_bin_decrypt_with_public_key_fails(void** state)
 
     //
 
-    encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
+    encrypted_string_length = cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false));
 
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_not_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PUBLIC_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_not_equal(0, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, TEST_PUBLIC_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
     assert_int_not_equal(0, memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
     //
 
@@ -418,7 +418,7 @@ static void cecies_encrypt_bin_decrypt_with_public_key_fails(void** state)
 
 static const cecies_curve448_key INVALID_KEY = { .hexstring = "Just something that isn't quite a key..." };
 
-static void cecies_encrypt_bin_decrypt_with_invalid_key_fails(void** state)
+static void cecies_curve448_encrypt_bin_decrypt_with_invalid_key_fails(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -427,16 +427,16 @@ static void cecies_encrypt_bin_decrypt_with_invalid_key_fails(void** state)
 
     //
 
-    encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
+    encrypted_string_length = cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false));
 
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_not_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, false, INVALID_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_not_equal(0, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, INVALID_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
     assert_int_not_equal(0, memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
     //
 
@@ -446,7 +446,7 @@ static void cecies_encrypt_bin_decrypt_with_invalid_key_fails(void** state)
 
 static const cecies_curve448_key INVALID_KEY2 = { .hexstring = "Just something that isn't quite a key... At least this one has the same length as a key would be of this size ;D" };
 
-static void cecies_encrypt_bin_decrypt_with_invalid_key_2_fails(void** state)
+static void cecies_curve448_encrypt_bin_decrypt_with_invalid_key_2_fails(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -455,16 +455,16 @@ static void cecies_encrypt_bin_decrypt_with_invalid_key_2_fails(void** state)
 
     //
 
-    encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
+    encrypted_string_length = cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false));
 
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_not_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, false, INVALID_KEY2, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_not_equal(0, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, INVALID_KEY2, decrypted_string, encrypted_string_length, &decrypted_string_length));
     assert_int_not_equal(0, memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
     //
 
@@ -476,7 +476,7 @@ static const cecies_curve448_key TEST_PUBLIC_KEY2 = { .hexstring = "50430325551e
 
 static const cecies_curve448_key TEST_PRIVATE_KEY2 = { .hexstring = "f5c2351c941cbba29313771c84693dacb80f21be8bcb07406217ee3a07143e2a8fdbccd083d045a2818858c2faf72e58ec7e006a1386361c" };
 
-static void cecies_encrypt_bin_decrypt_with_wrong_key_fails(void** state)
+static void cecies_curve448_encrypt_bin_decrypt_with_wrong_key_fails(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -485,16 +485,16 @@ static void cecies_encrypt_bin_decrypt_with_wrong_key_fails(void** state)
 
     //
 
-    encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
+    encrypted_string_length = cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false));
 
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_not_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY2, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_not_equal(0, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY2, decrypted_string, encrypted_string_length, &decrypted_string_length));
     assert_int_not_equal(0, memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
     //
 
@@ -502,7 +502,7 @@ static void cecies_encrypt_bin_decrypt_with_wrong_key_fails(void** state)
     free(decrypted_string);
 }
 
-static void cecies_encrypt_bin_decrypt_with_NULL_args_fails_returns_CECIES_DECRYPT_ERROR_CODE_NULL_ARG(void** state)
+static void cecies_curve448_encrypt_bin_decrypt_with_NULL_args_fails_returns_CECIES_DECRYPT_ERROR_CODE_NULL_ARG(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -511,19 +511,19 @@ static void cecies_encrypt_bin_decrypt_with_NULL_args_fails_returns_CECIES_DECRY
 
     //
 
-    encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
+    encrypted_string_length = cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, false));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, false));
 
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    assert_int_equal(CECIES_DECRYPT_ERROR_CODE_NULL_ARG, cecies_decrypt(NULL, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    assert_int_equal(CECIES_DECRYPT_ERROR_CODE_NULL_ARG, cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, NULL, encrypted_string_length, &decrypted_string_length));
-    assert_int_equal(CECIES_DECRYPT_ERROR_CODE_NULL_ARG, cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, NULL));
+    assert_int_equal(0, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_equal(CECIES_DECRYPT_ERROR_CODE_NULL_ARG, cecies_curve448_decrypt(NULL, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_equal(CECIES_DECRYPT_ERROR_CODE_NULL_ARG, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, NULL, encrypted_string_length, &decrypted_string_length));
+    assert_int_equal(CECIES_DECRYPT_ERROR_CODE_NULL_ARG, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, NULL));
 
     //
 
@@ -531,7 +531,7 @@ static void cecies_encrypt_bin_decrypt_with_NULL_args_fails_returns_CECIES_DECRY
     free(decrypted_string);
 }
 
-static void cecies_encrypt_bin_decrypt_with_INVALID_args_fails_returns_CECIES_DECRYPT_ERROR_CODE_INVALID_ARG(void** state)
+static void cecies_curve448_encrypt_bin_decrypt_with_INVALID_args_fails_returns_CECIES_DECRYPT_ERROR_CODE_INVALID_ARG(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -540,16 +540,16 @@ static void cecies_encrypt_bin_decrypt_with_INVALID_args_fails_returns_CECIES_DE
 
     //
 
-    encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
+    encrypted_string_length = cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, false));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, false));
 
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(CECIES_DECRYPT_ERROR_CODE_INVALID_ARG, cecies_decrypt(encrypted_string, 58, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_equal(CECIES_DECRYPT_ERROR_CODE_INVALID_ARG, cecies_curve448_decrypt(encrypted_string, 58, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
 
     //
 
@@ -557,7 +557,7 @@ static void cecies_encrypt_bin_decrypt_with_INVALID_args_fails_returns_CECIES_DE
     free(decrypted_string);
 }
 
-static void cecies_encrypt_base64_decrypt_with_insufficient_output_buffer_size_fails_returns_CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE(void** state)
+static void cecies_curve448_encrypt_base64_decrypt_with_insufficient_output_buffer_size_fails_returns_CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -566,16 +566,16 @@ static void cecies_encrypt_base64_decrypt_with_insufficient_output_buffer_size_f
 
     //
 
-    encrypted_string_length = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
+    encrypted_string_length = cecies_calc_base64_length(cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
 
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE, cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, 32, &decrypted_string_length));
+    assert_int_equal(CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, 32, &decrypted_string_length));
 
     //
 
@@ -583,7 +583,7 @@ static void cecies_encrypt_base64_decrypt_with_insufficient_output_buffer_size_f
     free(decrypted_string);
 }
 
-static void cecies_encrypt_base64_decrypt_invalid_base64_str_returns_CECIES_DECRYPT_ERROR_CODE_INVALID_ARG(void** state)
+static void cecies_curve448_encrypt_base64_decrypt_invalid_base64_str_returns_CECIES_DECRYPT_ERROR_CODE_INVALID_ARG(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -592,17 +592,17 @@ static void cecies_encrypt_base64_decrypt_invalid_base64_str_returns_CECIES_DECR
 
     //
 
-    encrypted_string_length = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
+    encrypted_string_length = cecies_calc_base64_length(cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
 
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    assert_int_equal(CECIES_DECRYPT_ERROR_CODE_INVALID_ARG, cecies_decrypt((unsigned char*)"Definitively not a valid base64-encoded string! HJAB37GSVG37HJBSH83JBSH836TVSIV3663T7UV6TVSIV3663T7UVWGS87JBSH836TVSIV3663T7UV368736368", 135, true, TEST_PRIVATE_KEY, decrypted_string, 32, &decrypted_string_length));
+    assert_int_equal(0, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_equal(CECIES_DECRYPT_ERROR_CODE_INVALID_ARG, cecies_curve448_decrypt((unsigned char*)"Definitively not a valid base64-encoded string! HJAB37GSVG37HJBSH83JBSH836TVSIV3663T7UV6TVSIV3663T7UVWGS87JBSH836TVSIV3663T7UV368736368", 135, true, TEST_PRIVATE_KEY, decrypted_string, 32, &decrypted_string_length));
 
     //
 
@@ -610,7 +610,7 @@ static void cecies_encrypt_base64_decrypt_invalid_base64_str_returns_CECIES_DECR
     free(decrypted_string);
 }
 
-static void cecies_encrypt_base64_decrypt_base64_with_or_without_NUL_terminator_both_succeeds(void** state)
+static void cecies_curve448_encrypt_base64_decrypt_base64_with_or_without_NUL_terminator_both_succeeds(void** state)
 {
     unsigned char encrypted_string[2048];
     unsigned char decrypted_string[2048];
@@ -619,17 +619,17 @@ static void cecies_encrypt_base64_decrypt_base64_with_or_without_NUL_terminator_
 
     //
 
-    encrypted_string_length = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
+    encrypted_string_length = cecies_calc_base64_length(cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
     memset(encrypted_string, 0x00, sizeof(encrypted_string));
 
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
     assert_int_equal(encrypted_string_length, strlen((char*)encrypted_string));
 
     memset(decrypted_string, 0x00, sizeof(decrypted_string));
 
     assert_int_equal(encrypted_string[encrypted_string_length], '\0');
-    assert_int_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    assert_int_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length + 1, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_equal(0, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_equal(0, cecies_curve448_decrypt(encrypted_string, encrypted_string_length + 1, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
 
     //
 
@@ -637,7 +637,7 @@ static void cecies_encrypt_base64_decrypt_base64_with_or_without_NUL_terminator_
     // free(decrypted_string);
 }
 
-static void cecies_encrypt_null_args_fails_returns_CECIES_ENCRYPT_ERROR_CODE_NULL_ARG(void** state)
+static void cecies_curve448_encrypt_null_args_fails_returns_CECIES_ENCRYPT_ERROR_CODE_NULL_ARG(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -646,12 +646,12 @@ static void cecies_encrypt_null_args_fails_returns_CECIES_ENCRYPT_ERROR_CODE_NUL
 
     //
 
-    encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
+    encrypted_string_length = cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(CECIES_ENCRYPT_ERROR_CODE_NULL_ARG, cecies_encrypt(NULL, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false));
-    assert_int_equal(CECIES_ENCRYPT_ERROR_CODE_NULL_ARG, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, NULL, encrypted_string_length, NULL, false));
+    assert_int_equal(CECIES_ENCRYPT_ERROR_CODE_NULL_ARG, cecies_curve448_encrypt(NULL, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false));
+    assert_int_equal(CECIES_ENCRYPT_ERROR_CODE_NULL_ARG, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, NULL, encrypted_string_length, NULL, false));
 
     //
 
@@ -659,7 +659,7 @@ static void cecies_encrypt_null_args_fails_returns_CECIES_ENCRYPT_ERROR_CODE_NUL
     free(decrypted_string);
 }
 
-static void cecies_encrypt_invalid_args_fails_returns_CECIES_ENCRYPT_ERROR_CODE_INVALID_ARG(void** state)
+static void cecies_curve448_encrypt_invalid_args_fails_returns_CECIES_ENCRYPT_ERROR_CODE_INVALID_ARG(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -668,12 +668,12 @@ static void cecies_encrypt_invalid_args_fails_returns_CECIES_ENCRYPT_ERROR_CODE_
 
     //
 
-    encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
+    encrypted_string_length = cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(CECIES_ENCRYPT_ERROR_CODE_INVALID_ARG, cecies_encrypt((unsigned char*)TEST_STRING, 0, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false));
-    assert_int_equal(CECIES_ENCRYPT_ERROR_CODE_INVALID_ARG, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, 0, NULL, false));
+    assert_int_equal(CECIES_ENCRYPT_ERROR_CODE_INVALID_ARG, cecies_curve448_encrypt((unsigned char*)TEST_STRING, 0, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false));
+    assert_int_equal(CECIES_ENCRYPT_ERROR_CODE_INVALID_ARG, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, 0, NULL, false));
 
     //
 
@@ -681,7 +681,7 @@ static void cecies_encrypt_invalid_args_fails_returns_CECIES_ENCRYPT_ERROR_CODE_
     free(decrypted_string);
 }
 
-static void cecies_encrypt_insufficient_output_buffer_size_fails_returns_CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE(void** state)
+static void cecies_curve448_encrypt_insufficient_output_buffer_size_fails_returns_CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -690,17 +690,17 @@ static void cecies_encrypt_insufficient_output_buffer_size_fails_returns_CECIES_
 
     //
 
-    encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
+    encrypted_string_length = cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, 32, NULL, false));
+    assert_int_equal(CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, 32, NULL, false));
 
     // Take care with the NUL-terminators and choose how to handle those and STICK TO IT consistently. Look at how mixing it up can end up in a failure:
-    assert_int_equal(CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, TEST_STRING_LENGTH_WITHOUT_NUL_TERMINATOR, NULL, false));
+    assert_int_equal(CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, TEST_STRING_LENGTH_WITHOUT_NUL_TERMINATOR, NULL, false));
 
     // Also: when tired, worn out and/or not careful, it can happen that you use sizeof(some_pointer) because you thought it was an array/stack-allocated but instead you're just returning the size of the pointer. Happens all the time! Careful though, it causes a failure:
-    assert_int_equal(CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, sizeof(encrypted_string), NULL, false));
+    assert_int_equal(CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, sizeof(encrypted_string), NULL, false));
 
     //
 
@@ -708,7 +708,7 @@ static void cecies_encrypt_insufficient_output_buffer_size_fails_returns_CECIES_
     free(decrypted_string);
 }
 
-static void cecies_encrypt_base64_decrypt_base64_with_invalid_private_key_hex_format_fails(void** state)
+static void cecies_curve448_encrypt_base64_decrypt_base64_with_invalid_private_key_hex_format_fails(void** state)
 {
     unsigned char encrypted_string[2048];
     unsigned char decrypted_string[2048];
@@ -717,20 +717,20 @@ static void cecies_encrypt_base64_decrypt_base64_with_invalid_private_key_hex_fo
 
     //
 
-    encrypted_string_length = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
+    encrypted_string_length = cecies_calc_base64_length(cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
     memset(encrypted_string, 0x00, sizeof(encrypted_string));
 
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
     assert_int_equal(encrypted_string_length, strlen((char*)encrypted_string));
 
     memset(decrypted_string, 0x00, sizeof(decrypted_string));
 
-    assert_int_not_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY_INVALID_HEX, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_not_equal(0, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY_INVALID_HEX, decrypted_string, encrypted_string_length, &decrypted_string_length));
 
     //
 }
 
-static void cecies_encrypt_base64_decrypt_different_key_always_fails(void** state)
+static void cecies_curve448_encrypt_base64_decrypt_different_key_always_fails(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -739,11 +739,11 @@ static void cecies_encrypt_base64_decrypt_different_key_always_fails(void** stat
 
     //
 
-    encrypted_string_length = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
+    encrypted_string_length = cecies_calc_base64_length(cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
 
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
@@ -752,7 +752,7 @@ static void cecies_encrypt_base64_decrypt_different_key_always_fails(void** stat
     {
         cecies_curve448_keypair kp;
         cecies_generate_curve448_keypair(&kp, (unsigned char*)"test test_*ç%°#@", 16);
-        assert_int_not_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, true, kp.private_key, decrypted_string, encrypted_string_length, &decrypted_string_length));
+        assert_int_not_equal(0, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, true, kp.private_key, decrypted_string, encrypted_string_length, &decrypted_string_length));
     }
 
     //
@@ -761,7 +761,7 @@ static void cecies_encrypt_base64_decrypt_different_key_always_fails(void** stat
     free(decrypted_string);
 }
 
-static void cecies_encrypt_output_length_always_identical_with_calculated_prediction(void** state)
+static void cecies_curve448_encrypt_output_length_always_identical_with_calculated_prediction(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -770,12 +770,12 @@ static void cecies_encrypt_output_length_always_identical_with_calculated_predic
 
     //
 
-    encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
+    encrypted_string_length = cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
     size_t written_bytes;
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &written_bytes, false));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &written_bytes, false));
     assert_int_equal(written_bytes, encrypted_string_length);
 
     //
@@ -784,7 +784,7 @@ static void cecies_encrypt_output_length_always_identical_with_calculated_predic
     free(decrypted_string);
 }
 
-static void cecies_encrypt_base64_decrypt_base64_tampered_ephemeral_public_key_embedded_in_ciphertext_fails(void** state)
+static void cecies_curve448_encrypt_base64_decrypt_base64_tampered_ephemeral_public_key_embedded_in_ciphertext_fails(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -793,11 +793,11 @@ static void cecies_encrypt_base64_decrypt_base64_tampered_ephemeral_public_key_e
 
     //
 
-    encrypted_string_length = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
+    encrypted_string_length = cecies_calc_base64_length(cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
 
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
@@ -806,7 +806,7 @@ static void cecies_encrypt_base64_decrypt_base64_tampered_ephemeral_public_key_e
     encrypted_string[65] = 'O';
     encrypted_string[66] = 'L';
 
-    assert_int_not_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_not_equal(0, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
 
     //
 
@@ -814,7 +814,7 @@ static void cecies_encrypt_base64_decrypt_base64_tampered_ephemeral_public_key_e
     free(decrypted_string);
 }
 
-static void cecies_encrypt_base64_decrypt_binary_fails(void** state)
+static void cecies_curve448_encrypt_base64_decrypt_binary_fails(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -823,16 +823,16 @@ static void cecies_encrypt_base64_decrypt_binary_fails(void** state)
 
     //
 
-    encrypted_string_length = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
+    encrypted_string_length = cecies_calc_base64_length(cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
 
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_not_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_not_equal(0, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
 
     //
 
@@ -840,7 +840,7 @@ static void cecies_encrypt_base64_decrypt_binary_fails(void** state)
     free(decrypted_string);
 }
 
-static void cecies_encrypt_binary_decrypt_base64_fails(void** state)
+static void cecies_curve448_encrypt_binary_decrypt_base64_fails(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -849,16 +849,16 @@ static void cecies_encrypt_binary_decrypt_base64_fails(void** state)
 
     //
 
-    encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
+    encrypted_string_length = cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, false));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, false));
 
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_not_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_not_equal(0, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
 
     //
 
@@ -866,7 +866,7 @@ static void cecies_encrypt_binary_decrypt_base64_fails(void** state)
     free(decrypted_string);
 }
 
-static void cecies_encrypt_base64_decrypt_ciphertext_was_tampered_with_fails(void** state)
+static void cecies_curve448_encrypt_base64_decrypt_ciphertext_was_tampered_with_fails(void** state)
 {
     unsigned char* encrypted_string = NULL;
     unsigned char* decrypted_string = NULL;
@@ -875,40 +875,11 @@ static void cecies_encrypt_base64_decrypt_ciphertext_was_tampered_with_fails(voi
 
     //
 
-    encrypted_string_length = cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
+    encrypted_string_length = cecies_calc_base64_length(cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR));
     encrypted_string = malloc(encrypted_string_length);
     memset(encrypted_string, 0x00, encrypted_string_length);
 
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
-
-    decrypted_string = malloc(encrypted_string_length);
-    memset(decrypted_string, 0x00, encrypted_string_length);
-
-    encrypted_string[200] = 'A';
-    encrypted_string[201] = 'B';
-    encrypted_string[202] = 'C';
-    assert_int_not_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
-
-    //
-
-    free(encrypted_string);
-    free(decrypted_string);
-}
-
-static void cecies_encrypt_binary_decrypt_ciphertext_was_tampered_with_fails(void** state)
-{
-    unsigned char* encrypted_string = NULL;
-    unsigned char* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
-
-    //
-
-    encrypted_string_length = cecies_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
-    encrypted_string = malloc(encrypted_string_length);
-    memset(encrypted_string, 0x00, encrypted_string_length);
-
-    assert_int_equal(0, cecies_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, false));
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, true));
 
     decrypted_string = malloc(encrypted_string_length);
     memset(decrypted_string, 0x00, encrypted_string_length);
@@ -916,7 +887,36 @@ static void cecies_encrypt_binary_decrypt_ciphertext_was_tampered_with_fails(voi
     encrypted_string[200] = 'A';
     encrypted_string[201] = 'B';
     encrypted_string[202] = 'C';
-    assert_int_not_equal(0, cecies_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
+    assert_int_not_equal(0, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, true, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
+
+    //
+
+    free(encrypted_string);
+    free(decrypted_string);
+}
+
+static void cecies_curve448_encrypt_binary_decrypt_ciphertext_was_tampered_with_fails(void** state)
+{
+    unsigned char* encrypted_string = NULL;
+    unsigned char* decrypted_string = NULL;
+    size_t encrypted_string_length;
+    size_t decrypted_string_length;
+
+    //
+
+    encrypted_string_length = cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
+    encrypted_string = malloc(encrypted_string_length);
+    memset(encrypted_string, 0x00, encrypted_string_length);
+
+    assert_int_equal(0, cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH_WITH_NUL_TERMINATOR, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, &encrypted_string_length, false));
+
+    decrypted_string = malloc(encrypted_string_length);
+    memset(decrypted_string, 0x00, encrypted_string_length);
+
+    encrypted_string[200] = 'A';
+    encrypted_string[201] = 'B';
+    encrypted_string[202] = 'C';
+    assert_int_not_equal(0, cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
 
     //
 
@@ -945,28 +945,28 @@ int main(void)
         cmocka_unit_test(cecies_generate_curve448_keypair_generated_keys_are_valid),
         cmocka_unit_test(cecies_generate_curve448_keypair_generated_keys_are_invalid),
         cmocka_unit_test(cecies_generate_curve448_keypair_with_way_too_much_additional_entropy_successful_nonetheless),
-        cmocka_unit_test(cecies_encrypt_raw_binary_decrypts_successfully),
-        cmocka_unit_test(cecies_encrypt_base64_decrypts_successfully),
-        cmocka_unit_test(cecies_encrypt_bin_decrypt_with_public_key_fails),
-        cmocka_unit_test(cecies_encrypt_bin_decrypt_with_invalid_key_fails),
-        cmocka_unit_test(cecies_encrypt_bin_decrypt_with_invalid_key_2_fails),
-        cmocka_unit_test(cecies_encrypt_bin_decrypt_with_wrong_key_fails),
-        cmocka_unit_test(cecies_encrypt_null_args_fails_returns_CECIES_ENCRYPT_ERROR_CODE_NULL_ARG),
-        cmocka_unit_test(cecies_encrypt_invalid_args_fails_returns_CECIES_ENCRYPT_ERROR_CODE_INVALID_ARG),
-        cmocka_unit_test(cecies_encrypt_insufficient_output_buffer_size_fails_returns_CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE),
-        cmocka_unit_test(cecies_encrypt_output_length_always_identical_with_calculated_prediction),
-        cmocka_unit_test(cecies_encrypt_bin_decrypt_with_NULL_args_fails_returns_CECIES_DECRYPT_ERROR_CODE_NULL_ARG),
-        cmocka_unit_test(cecies_encrypt_bin_decrypt_with_INVALID_args_fails_returns_CECIES_DECRYPT_ERROR_CODE_INVALID_ARG),
-        cmocka_unit_test(cecies_encrypt_base64_decrypt_with_insufficient_output_buffer_size_fails_returns_CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE),
-        cmocka_unit_test(cecies_encrypt_base64_decrypt_invalid_base64_str_returns_CECIES_DECRYPT_ERROR_CODE_INVALID_ARG),
-        cmocka_unit_test(cecies_encrypt_base64_decrypt_base64_with_or_without_NUL_terminator_both_succeeds),
-        cmocka_unit_test(cecies_encrypt_base64_decrypt_base64_with_invalid_private_key_hex_format_fails),
-        cmocka_unit_test(cecies_encrypt_base64_decrypt_base64_tampered_ephemeral_public_key_embedded_in_ciphertext_fails),
-        cmocka_unit_test(cecies_encrypt_base64_decrypt_binary_fails),
-        cmocka_unit_test(cecies_encrypt_binary_decrypt_base64_fails),
-        cmocka_unit_test(cecies_encrypt_base64_decrypt_ciphertext_was_tampered_with_fails),
-        cmocka_unit_test(cecies_encrypt_binary_decrypt_ciphertext_was_tampered_with_fails),
-        cmocka_unit_test(cecies_encrypt_base64_decrypt_different_key_always_fails),
+        cmocka_unit_test(cecies_curve448_encrypt_raw_binary_decrypts_successfully),
+        cmocka_unit_test(cecies_curve448_encrypt_base64_decrypts_successfully),
+        cmocka_unit_test(cecies_curve448_encrypt_bin_decrypt_with_public_key_fails),
+        cmocka_unit_test(cecies_curve448_encrypt_bin_decrypt_with_invalid_key_fails),
+        cmocka_unit_test(cecies_curve448_encrypt_bin_decrypt_with_invalid_key_2_fails),
+        cmocka_unit_test(cecies_curve448_encrypt_bin_decrypt_with_wrong_key_fails),
+        cmocka_unit_test(cecies_curve448_encrypt_null_args_fails_returns_CECIES_ENCRYPT_ERROR_CODE_NULL_ARG),
+        cmocka_unit_test(cecies_curve448_encrypt_invalid_args_fails_returns_CECIES_ENCRYPT_ERROR_CODE_INVALID_ARG),
+        cmocka_unit_test(cecies_curve448_encrypt_insufficient_output_buffer_size_fails_returns_CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE),
+        cmocka_unit_test(cecies_curve448_encrypt_output_length_always_identical_with_calculated_prediction),
+        cmocka_unit_test(cecies_curve448_encrypt_bin_decrypt_with_NULL_args_fails_returns_CECIES_DECRYPT_ERROR_CODE_NULL_ARG),
+        cmocka_unit_test(cecies_curve448_encrypt_bin_decrypt_with_INVALID_args_fails_returns_CECIES_DECRYPT_ERROR_CODE_INVALID_ARG),
+        cmocka_unit_test(cecies_curve448_encrypt_base64_decrypt_with_insufficient_output_buffer_size_fails_returns_CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE),
+        cmocka_unit_test(cecies_curve448_encrypt_base64_decrypt_invalid_base64_str_returns_CECIES_DECRYPT_ERROR_CODE_INVALID_ARG),
+        cmocka_unit_test(cecies_curve448_encrypt_base64_decrypt_base64_with_or_without_NUL_terminator_both_succeeds),
+        cmocka_unit_test(cecies_curve448_encrypt_base64_decrypt_base64_with_invalid_private_key_hex_format_fails),
+        cmocka_unit_test(cecies_curve448_encrypt_base64_decrypt_base64_tampered_ephemeral_public_key_embedded_in_ciphertext_fails),
+        cmocka_unit_test(cecies_curve448_encrypt_base64_decrypt_binary_fails),
+        cmocka_unit_test(cecies_curve448_encrypt_binary_decrypt_base64_fails),
+        cmocka_unit_test(cecies_curve448_encrypt_base64_decrypt_ciphertext_was_tampered_with_fails),
+        cmocka_unit_test(cecies_curve448_encrypt_binary_decrypt_ciphertext_was_tampered_with_fails),
+        cmocka_unit_test(cecies_curve448_encrypt_base64_decrypt_different_key_always_fails),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
