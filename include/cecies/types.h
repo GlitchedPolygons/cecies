@@ -47,10 +47,7 @@ typedef struct cecies_curve25519_keypair
 {
     /**
      * The public key (formatted as a hex string). <p>
-     * 64 bytes of hex string + 1 NUL-terminator. <p>
-     * The <c>0x04</c> prefix byte that's required by the
-     * EC key encoding standard is omitted:
-     * add it back in again yourself when parsing!
+     * 64 bytes of hex string + 1 NUL-terminator.
      */
     cecies_curve25519_key public_key;
 
@@ -83,8 +80,7 @@ typedef struct cecies_curve448_keypair
      * The public key (formatted as a hex string). <p>
      * 112 bytes of hex string + 1 NUL-terminator. <p>
      * The <c>0x04</c> prefix byte that's required by the
-     * EC key encoding standard is omitted:
-     * add it back in again yourself when parsing!
+     * EC key encoding standard is omitted in this implementation!
      */
     cecies_curve448_key public_key;
 

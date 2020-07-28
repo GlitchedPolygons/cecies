@@ -37,7 +37,7 @@ int cecies_curve25519_decrypt(unsigned char* encrypted_data, const size_t encryp
         return CECIES_DECRYPT_ERROR_CODE_NULL_ARG;
     }
 
-    if (encrypted_data_length < 98 || output_bufsize == 0)
+    if (encrypted_data_length < 97 || output_bufsize == 0)
     {
         cecies_fprintf(stderr, "CECIES: decryption failed: one or more invalid arguments.\n");
         return CECIES_DECRYPT_ERROR_CODE_INVALID_ARG;
@@ -70,7 +70,7 @@ int cecies_curve25519_decrypt(unsigned char* encrypted_data, const size_t encryp
         }
     }
 
-    const size_t olen = input_length - 16 - 32 - 33 - 16;
+    const size_t olen = input_length - 16 - 32 - 32 - 16;
 
     if (output_bufsize < olen)
     {
@@ -82,8 +82,8 @@ int cecies_curve25519_decrypt(unsigned char* encrypted_data, const size_t encryp
     unsigned char tag[16];
     unsigned char salt[32];
     unsigned char aes_key[32];
-    unsigned char R_bytes[65];
-    unsigned char S_bytes[65];
+    unsigned char R_bytes[32];
+    unsigned char S_bytes[32];
     unsigned char private_key_bytes[32 + 1];
     size_t private_key_bytes_length, S_bytes_length;
 
@@ -135,10 +135,10 @@ int cecies_curve25519_decrypt(unsigned char* encrypted_data, const size_t encryp
 
     memcpy(iv, input, 16);
     memcpy(salt, input + 16, 32);
-    memcpy(R_bytes, input + 16 + 32, 33);
-    memcpy(tag, input + 16 + 32 + 33, 16);
+    memcpy(R_bytes, input + 16 + 32, 32);
+    memcpy(tag, input + 16 + 32 + 32, 16);
 
-    const unsigned char* ciphertext = input + (16 + 32 + 33 + 16);
+    const unsigned char* ciphertext = input + (16 + 32 + 32 + 16);
 
     ret = cecies_hexstr2bin(private_key.hexstring, 64, private_key_bytes, sizeof(private_key_bytes), &private_key_bytes_length);
     if (ret != 0 || private_key_bytes_length != 32)
@@ -162,7 +162,7 @@ int cecies_curve25519_decrypt(unsigned char* encrypted_data, const size_t encryp
         goto exit;
     }
 
-    ret = mbedtls_ecp_point_read_binary(&ecp_group, &R, R_bytes, 65);
+    ret = mbedtls_ecp_point_read_binary(&ecp_group, &R, R_bytes, sizeof(R_bytes));
     if (ret != 0)
     {
         cecies_fprintf(stderr, "CECIES: Parsing ephemeral public key failed! mbedtls_ecp_point_read_binary returned %d\n", ret);
@@ -184,7 +184,7 @@ int cecies_curve25519_decrypt(unsigned char* encrypted_data, const size_t encryp
     }
 
     ret = mbedtls_ecp_point_write_binary(&ecp_group, &S, MBEDTLS_ECP_PF_UNCOMPRESSED, &S_bytes_length, S_bytes, sizeof(S_bytes));
-    if (ret != 0 || S_bytes_length != 65)
+    if (ret != 0 || S_bytes_length != sizeof(S_bytes))
     {
         cecies_fprintf(stderr, "CECIES: decryption failed! Invalid ECP point; mbedtls_ecp_point_write_binary returned %d\n", ret);
         goto exit;
@@ -197,7 +197,7 @@ int cecies_curve25519_decrypt(unsigned char* encrypted_data, const size_t encryp
         goto exit;
     }
 
-    ret = mbedtls_hkdf(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512), salt, 32, S_bytes, 33, NULL, 0, aes_key, 32);
+    ret = mbedtls_hkdf(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512), salt, 32, S_bytes, S_bytes_length, NULL, 0, aes_key, 32);
     if (ret != 0 || memcmp(aes_key, empty32, 32) == 0)
     {
         cecies_fprintf(stderr, "CECIES: HKDF failed! mbedtls_hkdf returned %d\n", ret);
@@ -255,7 +255,7 @@ int cecies_curve448_decrypt(unsigned char* encrypted_data, const size_t encrypte
         return CECIES_DECRYPT_ERROR_CODE_NULL_ARG;
     }
 
-    if (encrypted_data_length < 122 || output_bufsize == 0)
+    if (encrypted_data_length < 121 || output_bufsize == 0)
     {
         cecies_fprintf(stderr, "CECIES: decryption failed: one or more invalid arguments.\n");
         return CECIES_DECRYPT_ERROR_CODE_INVALID_ARG;
@@ -288,7 +288,7 @@ int cecies_curve448_decrypt(unsigned char* encrypted_data, const size_t encrypte
         }
     }
 
-    const size_t olen = input_length - 16 - 32 - 57 - 16;
+    const size_t olen = input_length - 16 - 32 - 56 - 16;
 
     if (output_bufsize < olen)
     {
@@ -300,8 +300,8 @@ int cecies_curve448_decrypt(unsigned char* encrypted_data, const size_t encrypte
     unsigned char tag[16];
     unsigned char salt[32];
     unsigned char aes_key[32];
-    unsigned char R_bytes[113];
-    unsigned char S_bytes[113];
+    unsigned char R_bytes[56];
+    unsigned char S_bytes[56];
     unsigned char private_key_bytes[56 + 1];
     size_t private_key_bytes_length, S_bytes_length;
 
@@ -353,10 +353,10 @@ int cecies_curve448_decrypt(unsigned char* encrypted_data, const size_t encrypte
 
     memcpy(iv, input, 16);
     memcpy(salt, input + 16, 32);
-    memcpy(R_bytes, input + 16 + 32, 57);
-    memcpy(tag, input + 16 + 32 + 57, 16);
+    memcpy(R_bytes, input + 16 + 32, 56);
+    memcpy(tag, input + 16 + 32 + 56, 16);
 
-    const unsigned char* ciphertext = input + (16 + 32 + 57 + 16);
+    const unsigned char* ciphertext = input + (16 + 32 + 56 + 16);
 
     ret = cecies_hexstr2bin(private_key.hexstring, 112, private_key_bytes, sizeof(private_key_bytes), &private_key_bytes_length);
     if (ret != 0 || private_key_bytes_length != 56)
@@ -380,7 +380,7 @@ int cecies_curve448_decrypt(unsigned char* encrypted_data, const size_t encrypte
         goto exit;
     }
 
-    ret = mbedtls_ecp_point_read_binary(&ecp_group, &R, R_bytes, 113);
+    ret = mbedtls_ecp_point_read_binary(&ecp_group, &R, R_bytes, sizeof(R_bytes));
     if (ret != 0)
     {
         cecies_fprintf(stderr, "CECIES: Parsing ephemeral public key failed! mbedtls_ecp_point_read_binary returned %d\n", ret);
@@ -402,7 +402,7 @@ int cecies_curve448_decrypt(unsigned char* encrypted_data, const size_t encrypte
     }
 
     ret = mbedtls_ecp_point_write_binary(&ecp_group, &S, MBEDTLS_ECP_PF_UNCOMPRESSED, &S_bytes_length, S_bytes, sizeof(S_bytes));
-    if (ret != 0 || S_bytes_length != 113)
+    if (ret != 0 || S_bytes_length != sizeof(S_bytes))
     {
         cecies_fprintf(stderr, "CECIES: decryption failed! Invalid ECP point; mbedtls_ecp_point_write_binary returned %d\n", ret);
         goto exit;
@@ -415,7 +415,7 @@ int cecies_curve448_decrypt(unsigned char* encrypted_data, const size_t encrypte
         goto exit;
     }
 
-    ret = mbedtls_hkdf(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512), salt, 32, S_bytes, 57, NULL, 0, aes_key, 32);
+    ret = mbedtls_hkdf(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512), salt, 32, S_bytes, S_bytes_length, NULL, 0, aes_key, 32);
     if (ret != 0 || memcmp(aes_key, empty32, 32) == 0)
     {
         cecies_fprintf(stderr, "CECIES: HKDF failed! mbedtls_hkdf returned %d\n", ret);
