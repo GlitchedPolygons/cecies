@@ -23,9 +23,11 @@ REPO=$(dirname "$0")
 rm -rf "$REPO"/out
 rm -rf "$REPO"/build
 mkdir -p "$REPO"/build && cd "$REPO"/build || exit
-cmake -DBUILD_SHARED_LIBS=On -DUSE_SHARED_MBEDTLS_LIBRARY=On -DCMAKE_BUILD_TYPE=Release ..
+cmake -DBUILD_SHARED_LIBS=Off -DUSE_SHARED_MBEDTLS_LIBRARY=Off -DCECIES_ENABLE_PROGRAMS=On -DCMAKE_BUILD_TYPE=Release ..
 make
-tar -czvf cecies.tar.gz *.so *.lib *.dll *.dylib *.a
+cp mbedtls/library/*.a ./
+cp -r ../include ./
+tar -czvf cecies.tar.gz *.so *.lib *.dll *.dylib *.a programs/*_keygen programs/*_encrypt programs/*_decrypt programs/*_sign programs/*_verify include/**/*
 cd "$REPO" || exit
 echo "  Done. Exported build into $REPO/build"
 echo "  Check out the cecies.tar.gz file in there! "
