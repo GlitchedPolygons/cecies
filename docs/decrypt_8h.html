@@ -109,15 +109,15 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:adbc3541f069cd599acb3010af433dfab"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="decrypt_8h.html#adbc3541f069cd599acb3010af433dfab">cecies_curve448_decrypt</a> (unsigned char *encrypted_data, size_t encrypted_data_length, bool encrypted_data_base64, <a class="el" href="structcecies__curve448__key.html">cecies_curve448_key</a> private_key, unsigned char *output, size_t output_bufsize, size_t *output_length)</td></tr>
-<tr class="separator:adbc3541f069cd599acb3010af433dfab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69c0c9e8358d6fa7e15d288455b79d39"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="decrypt_8h.html#a69c0c9e8358d6fa7e15d288455b79d39">cecies_curve448_decrypt</a> (unsigned char *encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, <a class="el" href="structcecies__curve448__key.html">cecies_curve448_key</a> private_key, unsigned char *output, const size_t output_bufsize, size_t *output_length)</td></tr>
+<tr class="separator:a69c0c9e8358d6fa7e15d288455b79d39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>ECIES decryption implementation using Curve448, AES256-GCM and MbedTLS. </p>
 <dl class="section author"><dt>Author</dt><dd>Raphael Beck </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="adbc3541f069cd599acb3010af433dfab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adbc3541f069cd599acb3010af433dfab">&#9670;&nbsp;</a></span>cecies_curve448_decrypt()</h2>
+<a id="a69c0c9e8358d6fa7e15d288455b79d39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69c0c9e8358d6fa7e15d288455b79d39">&#9670;&nbsp;</a></span>cecies_curve448_decrypt()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -131,13 +131,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
+          <td class="paramtype">const size_t&#160;</td>
           <td class="paramname"><em>encrypted_data_length</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool&#160;</td>
+          <td class="paramtype">const bool&#160;</td>
           <td class="paramname"><em>encrypted_data_base64</em>, </td>
         </tr>
         <tr>
@@ -155,7 +155,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
+          <td class="paramtype">const size_t&#160;</td>
           <td class="paramname"><em>output_bufsize</em>, </td>
         </tr>
         <tr>
@@ -176,7 +176,7 @@ Functions</h2></td></tr>
     <tr><td class="paramname">encrypted_data</td><td>The data to decrypt. </td></tr>
     <tr><td class="paramname">encrypted_data_length</td><td>The length of the data array. </td></tr>
     <tr><td class="paramname">encrypted_data_base64</td><td>Is the input <code>encrypted_data</code> base64-encoded? </td></tr>
-    <tr><td class="paramname">private_key</td><td>The private key to decrypt the data with (hex-string, as is the output of <a class="el" href="keygen_8h.html#a7f8a8b95f7d22fd84c3c8e8871232242">cecies_generate_curve448_keypair()</a>). </td></tr>
+    <tr><td class="paramname">private_key</td><td>The private key to decrypt the data with (hex-string, as is the output of <a class="el" href="keygen_8h.html#a0ad96b949f15609546999780dbc484a2">cecies_generate_curve448_keypair()</a>). </td></tr>
     <tr><td class="paramname">output</td><td>Where to write the decrypted output into (please pre-allocate this big enough; if unsure, allocate <code>encrypted_data_length</code> bytes!). </td></tr>
     <tr><td class="paramname">output_bufsize</td><td>How big the output buffer is. Please allocate at least <code>encrypted_data_length</code> bytes! </td></tr>
     <tr><td class="paramname">output_length</td><td>Where to write the output buffer length into (how many bytes were written into it). </td></tr>

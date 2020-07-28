@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cecies: cecies_curve448_key Struct Reference</title>
+<title>cecies: cecies_curve25519_keypair Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,36 +63,63 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structcecies__curve448__key-members.html">List of all members</a>  </div>
+<a href="structcecies__curve25519__keypair-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">cecies_curve448_key Struct Reference</div>  </div>
+<div class="title">cecies_curve25519_keypair Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="types_8h_source.html">types.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for cecies_curve25519_keypair:</div>
+<div class="dyncontent">
+<div class="center"><img src="structcecies__curve25519__keypair__coll__graph.png" border="0" usemap="#cecies__curve25519__keypair_coll__map" alt="Collaboration graph"/></div>
+<map name="cecies__curve25519__keypair_coll__map" id="cecies__curve25519__keypair_coll__map">
+<area shape="rect" title=" " alt="" coords="5,109,187,136"/>
+<area shape="rect" href="structcecies__curve25519__key.html" title=" " alt="" coords="16,5,176,32"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a97ad4b93f4ae3f1ee51e0ec9d30b310d"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcecies__curve448__key.html#a97ad4b93f4ae3f1ee51e0ec9d30b310d">hexstring</a> [112+1]</td></tr>
-<tr class="separator:a97ad4b93f4ae3f1ee51e0ec9d30b310d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a156721930b32d486d90284611d98f891"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcecies__curve25519__key.html">cecies_curve25519_key</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcecies__curve25519__keypair.html#a156721930b32d486d90284611d98f891">public_key</a></td></tr>
+<tr class="separator:a156721930b32d486d90284611d98f891"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac72f7a88ed2dc2c24d10f19db50664ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcecies__curve25519__key.html">cecies_curve25519_key</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcecies__curve25519__keypair.html#ac72f7a88ed2dc2c24d10f19db50664ce">private_key</a></td></tr>
+<tr class="separator:ac72f7a88ed2dc2c24d10f19db50664ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Contains a Curve448 key, encoded as a NUL-terminated hex-string. </p>
+<div class="textblock"><p>Contains a stack-allocated <a class="el" href="structcecies__curve25519__key.html">cecies_curve25519_key</a> keypair. </p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
-<a id="a97ad4b93f4ae3f1ee51e0ec9d30b310d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a97ad4b93f4ae3f1ee51e0ec9d30b310d">&#9670;&nbsp;</a></span>hexstring</h2>
+<a id="ac72f7a88ed2dc2c24d10f19db50664ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac72f7a88ed2dc2c24d10f19db50664ce">&#9670;&nbsp;</a></span>private_key</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char cecies_curve448_key::hexstring[112+1]</td>
+          <td class="memname"><a class="el" href="structcecies__curve25519__key.html">cecies_curve25519_key</a> cecies_curve25519_keypair::private_key</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Hex-encoded string of a 56-byte Curve448 key. </p>
-<p>For public keys, the 0x04 byte prefix is omitted. </p>
-<p>The 113th character is the NUL-terminator. </p>
+<p>The private key (formatted as a hex string). </p>
+<p>64 bytes of hex string + 1 NUL-terminator. </p>
+
+</div>
+</div>
+<a id="a156721930b32d486d90284611d98f891"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a156721930b32d486d90284611d98f891">&#9670;&nbsp;</a></span>public_key</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structcecies__curve25519__key.html">cecies_curve25519_key</a> cecies_curve25519_keypair::public_key</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The public key (formatted as a hex string). </p>
+<p>64 bytes of hex string + 1 NUL-terminator. </p>
+<p>The <code>0x04</code> prefix byte that's required by the EC key encoding standard is omitted: add it back in again yourself when parsing! </p>
 
 </div>
 </div>
