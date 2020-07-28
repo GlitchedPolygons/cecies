@@ -179,6 +179,169 @@ static void cecies_bin2hexstr_success_returns_0(void** state)
     assert_int_equal(sizeof(bin) * 2, hexstr_length);
 }
 
+// -----------------------------------------------------------------------------------------------------------------------     CURVE 25519
+
+static void cecies_generate_curve25519_keypair_NULL_args_return_CECIES_KEYGEN_ERROR_CODE_NULL_ARG(void** state)
+{
+    assert_int_equal(CECIES_KEYGEN_ERROR_CODE_NULL_ARG, cecies_generate_curve25519_keypair(NULL, (unsigned char*)"test", 4));
+}
+
+static void cecies_generate_curve25519_keypair_generated_keys_are_valid(void** state)
+{
+    cecies_curve25519_keypair keypair1;
+    assert_int_equal(0, cecies_generate_curve25519_keypair(&keypair1, (unsigned char*)"testtesttest", 12));
+
+    mbedtls_mpi prvkey1;
+    mbedtls_mpi_init(&prvkey1);
+
+    mbedtls_ecp_group ecp_group1;
+    mbedtls_ecp_group_init(&ecp_group1);
+    mbedtls_ecp_group_load(&ecp_group1, MBEDTLS_ECP_DP_CURVE25519);
+
+    mbedtls_ecp_point pubkey1;
+    mbedtls_ecp_point_init(&pubkey1);
+
+    size_t prvkey1_decoded_bytes_length;
+    unsigned char prvkey1_decoded_bytes[256];
+
+    cecies_hexstr2bin(keypair1.private_key.hexstring, sizeof(keypair1.private_key.hexstring), prvkey1_decoded_bytes, sizeof(prvkey1_decoded_bytes), &prvkey1_decoded_bytes_length);
+
+    assert_int_equal(0, mbedtls_mpi_read_binary(&prvkey1, prvkey1_decoded_bytes, prvkey1_decoded_bytes_length));
+    assert_int_equal(0, mbedtls_ecp_check_privkey(&ecp_group1, &prvkey1));
+
+    size_t pubkey1_decoded_bytes_length;
+    unsigned char pubkey1_decoded_bytes[65];
+    pubkey1_decoded_bytes[0] = 0x04;
+    memset(pubkey1_decoded_bytes + 1, 0x00, sizeof(pubkey1_decoded_bytes) - 1);
+
+    cecies_hexstr2bin(keypair1.public_key.hexstring, sizeof(keypair1.public_key.hexstring), pubkey1_decoded_bytes + 1, sizeof(pubkey1_decoded_bytes) - 1, &pubkey1_decoded_bytes_length);
+
+    assert_int_equal(32, pubkey1_decoded_bytes_length);
+    assert_int_equal(0, mbedtls_ecp_point_read_binary(&ecp_group1, &pubkey1, pubkey1_decoded_bytes, 65));
+    assert_int_equal(0, mbedtls_ecp_check_pubkey(&ecp_group1, &pubkey1));
+
+    mbedtls_mpi_free(&prvkey1);
+    mbedtls_ecp_point_free(&pubkey1);
+    mbedtls_ecp_group_free(&ecp_group1);
+
+    // Test without additional entropy.
+
+    cecies_curve25519_keypair keypair2;
+    assert_int_equal(0, cecies_generate_curve25519_keypair(&keypair2, NULL, 0));
+
+    mbedtls_mpi prvkey2;
+    mbedtls_mpi_init(&prvkey2);
+
+    mbedtls_ecp_group ecp_group2;
+    mbedtls_ecp_group_init(&ecp_group2);
+    mbedtls_ecp_group_load(&ecp_group2, MBEDTLS_ECP_DP_CURVE25519);
+
+    mbedtls_ecp_point pubkey2;
+    mbedtls_ecp_point_init(&pubkey2);
+
+    size_t prvkey2_decoded_bytes_length;
+    unsigned char prvkey2_decoded_bytes[256];
+
+    cecies_hexstr2bin(keypair2.private_key.hexstring, sizeof(keypair2.private_key.hexstring), prvkey2_decoded_bytes, sizeof(prvkey2_decoded_bytes), &prvkey2_decoded_bytes_length);
+
+    assert_int_equal(0, mbedtls_mpi_read_binary(&prvkey2, prvkey2_decoded_bytes, prvkey2_decoded_bytes_length));
+    assert_int_equal(0, mbedtls_ecp_check_privkey(&ecp_group2, &prvkey2));
+
+    size_t pubkey2_decoded_bytes_length;
+    unsigned char pubkey2_decoded_bytes[65];
+    pubkey2_decoded_bytes[0] = 0x04;
+    cecies_hexstr2bin(keypair2.public_key.hexstring, sizeof(keypair2.public_key.hexstring), pubkey2_decoded_bytes + 1, sizeof(pubkey2_decoded_bytes) - 1, &pubkey2_decoded_bytes_length);
+
+    assert_int_equal(32, pubkey2_decoded_bytes_length);
+    assert_int_equal(0, mbedtls_ecp_point_read_binary(&ecp_group2, &pubkey2, pubkey2_decoded_bytes, 65));
+    assert_int_equal(0, mbedtls_ecp_check_pubkey(&ecp_group2, &pubkey2));
+
+    mbedtls_mpi_free(&prvkey2);
+    mbedtls_ecp_point_free(&pubkey2);
+    mbedtls_ecp_group_free(&ecp_group2);
+}
+
+static void cecies_generate_curve25519_keypair_generated_keys_are_invalid(void** state)
+{
+    cecies_curve25519_keypair keypair1;
+    assert_int_equal(0, cecies_generate_curve25519_keypair(&keypair1, (unsigned char*)"test test test", 14));
+
+    mbedtls_mpi prvkey1;
+    mbedtls_mpi_init(&prvkey1);
+
+    mbedtls_ecp_group ecp_group1;
+    mbedtls_ecp_group_init(&ecp_group1);
+    mbedtls_ecp_group_load(&ecp_group1, MBEDTLS_ECP_DP_CURVE25519);
+
+    mbedtls_ecp_point pubkey1;
+    mbedtls_ecp_point_init(&pubkey1);
+
+    size_t prvkey1_decoded_bytes_length;
+    unsigned char prvkey1_decoded_bytes[256];
+
+    cecies_hexstr2bin(keypair1.private_key.hexstring, sizeof(keypair1.private_key.hexstring), prvkey1_decoded_bytes, sizeof(prvkey1_decoded_bytes), &prvkey1_decoded_bytes_length);
+    prvkey1_decoded_bytes[0] = 0x9;
+    prvkey1_decoded_bytes[1] = 13;
+
+    mbedtls_mpi_read_binary(&prvkey1, prvkey1_decoded_bytes, prvkey1_decoded_bytes_length);
+
+    assert_int_not_equal(0, mbedtls_ecp_check_privkey(&ecp_group1, &prvkey1));
+
+    size_t pubkey1_decoded_bytes_length;
+    unsigned char pubkey1_decoded_bytes[65];
+
+    cecies_hexstr2bin(keypair1.public_key.hexstring, sizeof(keypair1.public_key.hexstring), pubkey1_decoded_bytes, sizeof(pubkey1_decoded_bytes), &pubkey1_decoded_bytes_length);
+    pubkey1_decoded_bytes[0] = 1;
+    assert_int_not_equal(0, mbedtls_ecp_point_read_binary(&ecp_group1, &pubkey1, pubkey1_decoded_bytes, 65));
+    assert_int_not_equal(0, mbedtls_ecp_check_pubkey(&ecp_group1, &pubkey1));
+
+    mbedtls_mpi_free(&prvkey1);
+    mbedtls_ecp_point_free(&pubkey1);
+    mbedtls_ecp_group_free(&ecp_group1);
+}
+
+static void cecies_generate_curve25519_keypair_with_way_too_much_additional_entropy_successful_nonetheless(void** state)
+{
+    cecies_curve25519_keypair keypair1;
+    const char* additional_entropy = TEST_STRING;
+    assert_int_equal(0, cecies_generate_curve25519_keypair(&keypair1, (unsigned char*)additional_entropy, strlen(additional_entropy)));
+
+    mbedtls_mpi prvkey1;
+    mbedtls_mpi_init(&prvkey1);
+
+    mbedtls_ecp_group ecp_group1;
+    mbedtls_ecp_group_init(&ecp_group1);
+    mbedtls_ecp_group_load(&ecp_group1, MBEDTLS_ECP_DP_CURVE25519);
+
+    mbedtls_ecp_point pubkey1;
+    mbedtls_ecp_point_init(&pubkey1);
+
+    size_t prvkey1_decoded_bytes_length;
+    unsigned char prvkey1_decoded_bytes[256];
+
+    cecies_hexstr2bin(keypair1.private_key.hexstring, sizeof(keypair1.private_key.hexstring), prvkey1_decoded_bytes, sizeof(prvkey1_decoded_bytes), &prvkey1_decoded_bytes_length);
+    prvkey1_decoded_bytes[0] = 0x9;
+    prvkey1_decoded_bytes[1] = 13;
+
+    mbedtls_mpi_read_binary(&prvkey1, prvkey1_decoded_bytes, prvkey1_decoded_bytes_length);
+
+    assert_int_not_equal(0, mbedtls_ecp_check_privkey(&ecp_group1, &prvkey1));
+
+    size_t pubkey1_decoded_bytes_length;
+    unsigned char pubkey1_decoded_bytes[65];
+
+    cecies_hexstr2bin(keypair1.public_key.hexstring, sizeof(keypair1.public_key.hexstring), pubkey1_decoded_bytes, sizeof(pubkey1_decoded_bytes), &pubkey1_decoded_bytes_length);
+    pubkey1_decoded_bytes[0] = 1;
+    assert_int_not_equal(0, mbedtls_ecp_point_read_binary(&ecp_group1, &pubkey1, pubkey1_decoded_bytes, 65));
+    assert_int_not_equal(0, mbedtls_ecp_check_pubkey(&ecp_group1, &pubkey1));
+
+    mbedtls_mpi_free(&prvkey1);
+    mbedtls_ecp_point_free(&pubkey1);
+    mbedtls_ecp_group_free(&ecp_group1);
+}
+
+// -----------------------------------------------------------------------------------------------------------------------     CURVE 448
+
 static void cecies_generate_curve448_keypair_NULL_args_return_CECIES_KEYGEN_ERROR_CODE_NULL_ARG(void** state)
 {
     assert_int_equal(CECIES_KEYGEN_ERROR_CODE_NULL_ARG, cecies_generate_curve448_keypair(NULL, (unsigned char*)"test", 4));
@@ -941,6 +1104,12 @@ int main(void)
         cmocka_unit_test(cecies_bin2hexstr_null_or_invalid_args_fails_returns_1),
         cmocka_unit_test(cecies_bin2hexstr_insufficient_output_buffer_size_returns_2),
         cmocka_unit_test(cecies_bin2hexstr_success_returns_0),
+        // ------------------------------------------------------    Curve25519
+        cmocka_unit_test(cecies_generate_curve25519_keypair_NULL_args_return_CECIES_KEYGEN_ERROR_CODE_NULL_ARG),
+        cmocka_unit_test(cecies_generate_curve25519_keypair_generated_keys_are_valid),
+        cmocka_unit_test(cecies_generate_curve25519_keypair_generated_keys_are_invalid),
+        cmocka_unit_test(cecies_generate_curve25519_keypair_with_way_too_much_additional_entropy_successful_nonetheless),
+        // ------------------------------------------------------    Curve448
         cmocka_unit_test(cecies_generate_curve448_keypair_NULL_args_return_CECIES_KEYGEN_ERROR_CODE_NULL_ARG),
         cmocka_unit_test(cecies_generate_curve448_keypair_generated_keys_are_valid),
         cmocka_unit_test(cecies_generate_curve448_keypair_generated_keys_are_invalid),
