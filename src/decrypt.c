@@ -29,7 +29,7 @@
 #include "cecies/util.h"
 #include "cecies/decrypt.h"
 
-int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, cecies_curve448_key private_key, unsigned char* output, const size_t output_bufsize, size_t* output_length)
+int cecies_curve448_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, cecies_curve448_key private_key, unsigned char* output, const size_t output_bufsize, size_t* output_length)
 {
     if (encrypted_data == NULL || output == NULL || output_length == NULL)
     {

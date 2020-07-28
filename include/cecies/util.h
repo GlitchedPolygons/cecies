@@ -62,11 +62,27 @@ static inline size_t cecies_calc_aes_cbc_ciphertext_length(const size_t plaintex
 }
 
 /**
- * Gets the minimum amount of needed buffer size for a given encryption with a given plaintext data length.
+ * Gets the minimum amount of needed buffer size for a given Curve25519 encryption with a given plaintext data length.
  * @param input_buffer_length The amount of bytes to encrypt.
  * @return The min. buffer size for encrypting \p input_buffer_length bytes of data.
  */
-static inline size_t cecies_calc_output_buffer_needed_size(const size_t input_buffer_length)
+static inline size_t cecies_curve25519_calc_output_buffer_needed_size(const size_t input_buffer_length)
+{
+    //     1    2    3     4
+    return 16 + 32 + 33 + 16 + input_buffer_length;
+
+    // 1:  IV (AES initialization vector)
+    // 2:  Salt (for HKDF)
+    // 3:  R (ephemeral public key)
+    // 4:  Tag (from AES-GCM)
+}
+
+/**
+ * Gets the minimum amount of needed buffer size for a given Curve448 encryption with a given plaintext data length.
+ * @param input_buffer_length The amount of bytes to encrypt.
+ * @return The min. buffer size for encrypting \p input_buffer_length bytes of data.
+ */
+static inline size_t cecies_curve448_calc_output_buffer_needed_size(const size_t input_buffer_length)
 {
     //     1    2    3     4
     return 16 + 32 + 57 + 16 + input_buffer_length;

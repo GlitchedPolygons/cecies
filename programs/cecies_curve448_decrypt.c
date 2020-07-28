@@ -27,13 +27,13 @@ int main(const int argc, const char* argv[])
 
     if (argc == 1 || (argc == 2 && strcmp(argv[1], "--help") == 0))
     {
-        fprintf(stdout, "cecies_decrypt:  Decrypt a string using a Curve448 private key. Call this program using exactly 2 arguments;  the first one being the private key (hex-string) and the second the string to decrypt.\n");
+        fprintf(stdout, "cecies_curve448_decrypt:  Decrypt a string using a Curve448 private key. Call this program using exactly 2 arguments;  the first one being the private key (hex-string) and the second the string to decrypt.\n");
         return 0;
     }
 
     if (argc != 3)
     {
-        fprintf(stderr, "cecies_decrypt: wrong argument count. Check out \"cecies_decrypt --help\" for more details about how to use this!\n");
+        fprintf(stderr, "cecies_curve448_decrypt: wrong argument count. Check out \"cecies_curve448_decrypt --help\" for more details about how to use this!\n");
         return -1;
     }
 
@@ -45,7 +45,7 @@ int main(const int argc, const char* argv[])
 
     if (private_key_hexstr_len != 112)
     {
-        fprintf(stderr, "cecies_decrypt: Invalid private key format/length!\n");
+        fprintf(stderr, "cecies_curve448_decrypt: Invalid private key format/length!\n");
         return -2;
     }
 
@@ -58,12 +58,12 @@ int main(const int argc, const char* argv[])
 
     if (o == NULL)
     {
-        fprintf(stderr, "cecies_decrypt: OUT OF MEMORY!\n");
+        fprintf(stderr, "cecies_curve448_decrypt: OUT OF MEMORY!\n");
         memset(&private_key, 0x00, sizeof(cecies_curve448_key));
         return -3;
     }
 
-    int r = cecies_decrypt((unsigned char*)message, message_len, true, private_key, o, message_len, &olen);
+    int r = cecies_curve448_decrypt((unsigned char*)message, message_len, true, private_key, o, message_len, &olen);
     if (r != 0)
     {
         memset(o, 0x00, message_len);

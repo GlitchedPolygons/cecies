@@ -26,7 +26,7 @@
 #include "cecies/util.h"
 #include "cecies/encrypt.h"
 
-int cecies_encrypt(const unsigned char* data, const size_t data_length, const cecies_curve448_key public_key, unsigned char* output, const size_t output_bufsize, size_t* output_length, const bool output_base64)
+int cecies_curve448_encrypt(const unsigned char* data, const size_t data_length, const cecies_curve448_key public_key, unsigned char* output, const size_t output_bufsize, size_t* output_length, const bool output_base64)
 {
     if (data == NULL || output == NULL)
     {
@@ -40,7 +40,7 @@ int cecies_encrypt(const unsigned char* data, const size_t data_length, const ce
 
     int ret = 1;
 
-    size_t olen = cecies_calc_output_buffer_needed_size(data_length);
+    size_t olen = cecies_curve448_calc_output_buffer_needed_size(data_length);
     size_t total_output_length = output_base64 ? cecies_calc_base64_length(olen) : olen;
 
     if (output_bufsize < total_output_length)

@@ -36,7 +36,7 @@ int main(int argc, const char* argv[])
 
     if (argc != 3)
     {
-        fprintf(stderr, "ecdsa_sha256_secp256k1_sign failed: wrong argument count. Check out \"cecies_encrypt --help\" for more details about how to use this!\n");
+        fprintf(stderr, "ecdsa_sha256_secp256k1_sign failed: wrong argument count. Check out \"cecies_curve448_encrypt --help\" for more details about how to use this!\n");
         return -1;
     }
 
