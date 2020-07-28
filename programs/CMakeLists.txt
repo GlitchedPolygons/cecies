@@ -25,6 +25,12 @@ target_link_libraries(curve448_keygen PRIVATE cecies)
 add_executable(secp256k1_keygen ${CMAKE_CURRENT_LIST_DIR}/secp256k1_keygen.c)
 target_link_libraries(secp256k1_keygen PRIVATE cecies)
 
+add_executable(cecies_curve25519_encrypt ${CMAKE_CURRENT_LIST_DIR}/cecies_curve25519_encrypt.c)
+target_link_libraries(cecies_curve25519_encrypt PRIVATE cecies)
+
+add_executable(cecies_curve25519_decrypt ${CMAKE_CURRENT_LIST_DIR}/cecies_curve25519_decrypt.c)
+target_link_libraries(cecies_curve25519_decrypt PRIVATE cecies)
+
 add_executable(cecies_curve448_encrypt ${CMAKE_CURRENT_LIST_DIR}/cecies_curve448_encrypt.c)
 target_link_libraries(cecies_curve448_encrypt PRIVATE cecies)
 

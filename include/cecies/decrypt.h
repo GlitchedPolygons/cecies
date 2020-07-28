@@ -37,6 +37,19 @@ extern "C" {
 #define CECIES_DECRYPT_ERROR_CODE_OUT_OF_MEMORY 2003
 
 /**
+ * Decrypts the given data using ECIES, Curve25519 and AES256-GCM.
+ * @param encrypted_data The data to decrypt.
+ * @param encrypted_data_length The length of the data array.
+ * @param encrypted_data_base64 Is the input \p encrypted_data base64-encoded?
+ * @param private_key The private key to decrypt the data with (hex-string, as is the output of cecies_generate_curve25519_keypair()).
+ * @param output Where to write the decrypted output into (please pre-allocate this big enough; if unsure, allocate \p encrypted_data_length bytes!).
+ * @param output_bufsize How big the output buffer is. Please allocate at least \p encrypted_data_length bytes!
+ * @param output_length Where to write the output buffer length into (how many bytes were written into it).
+ * @return <c>0</c> if decryption succeeded; error codes as defined inside the header file or MbedTLS otherwise.
+ */
+int cecies_curve25519_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, cecies_curve25519_key private_key, unsigned char* output, const size_t output_bufsize, size_t* output_length);
+
+/**
  * Decrypts the given data using ECIES, Curve448 and AES256-GCM.
  * @param encrypted_data The data to decrypt.
  * @param encrypted_data_length The length of the data array.
