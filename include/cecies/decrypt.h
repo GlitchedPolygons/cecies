@@ -31,11 +31,6 @@ extern "C" {
 #include <stdint.h>
 #include "cecies/types.h"
 
-#define CECIES_DECRYPT_ERROR_CODE_NULL_ARG 2000
-#define CECIES_DECRYPT_ERROR_CODE_INVALID_ARG 2001
-#define CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE 2002
-#define CECIES_DECRYPT_ERROR_CODE_OUT_OF_MEMORY 2003
-
 /**
  * Decrypts the given data using ECIES, Curve25519 and AES256-GCM.
  * @param encrypted_data The data to decrypt.

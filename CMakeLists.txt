@@ -30,6 +30,7 @@ set(${PROJECT_NAME}_INCLUDE_DIR
         )
 
 set(${PROJECT_NAME}_HEADERS
+        ${CMAKE_CURRENT_LIST_DIR}/include/cecies/constants.h
         ${CMAKE_CURRENT_LIST_DIR}/include/cecies/util.h
         ${CMAKE_CURRENT_LIST_DIR}/include/cecies/guid.h
         ${CMAKE_CURRENT_LIST_DIR}/include/cecies/types.h

@@ -34,9 +34,6 @@ extern "C" {
 #include "cecies/util.h"
 #include "cecies/types.h"
 
-#define CECIES_KEYGEN_ERROR_CODE_NULL_ARG 7000
-#define CECIES_KEYGEN_ERROR_CODE_INVALID_ARG 7001
-
 /**
  * Generates a CECIES Curve25519 keypair and writes it into the specified output buffers.
  * @param output The cecies_curve25519_keypair instance into which to write the generated key-pair.

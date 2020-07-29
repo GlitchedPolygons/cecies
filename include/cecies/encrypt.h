@@ -32,11 +32,6 @@ extern "C" {
 #include <stdbool.h>
 #include "cecies/types.h"
 
-#define CECIES_ENCRYPT_ERROR_CODE_NULL_ARG 1000
-#define CECIES_ENCRYPT_ERROR_CODE_INVALID_ARG 1001
-#define CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE 1002
-#define CECIES_ENCRYPT_ERROR_CODE_OUT_OF_MEMORY 1003
-
 /**
  * Encrypts the given data using ECIES over Curve25519 and AES256-GCM.
  * @param data The data to encrypt.
