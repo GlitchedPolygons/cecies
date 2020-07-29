@@ -29,6 +29,10 @@
 #include "cecies/util.h"
 #include "cecies/decrypt.h"
 
+/*
+ * This avoid code duplication between the Curve25519 and Curve448 decryption variants (only key length and a few minor things differ).
+ * The last "curve" argument determines which curve to use for decryption: pass 0 for Curve25519 and 1 for Curve448!
+ */
 static int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, const char* private_key, unsigned char* output, const size_t output_bufsize, size_t* output_length, const unsigned char curve)
 {
     const size_t min_data_len = curve == 0 ? 97 : 121;

@@ -26,6 +26,10 @@
 #include "cecies/util.h"
 #include "cecies/encrypt.h"
 
+/*
+ * This avoid code duplication between the Curve25519 and Curve448 encryption variants (only key length and a few minor things differ).
+ * The last "curve" argument determines which curve to use for encryption: pass 0 for Curve25519 and 1 for Curve448!
+ */
 static int cecies_encrypt(const unsigned char* data, const size_t data_length, const char* public_key, unsigned char* output, const size_t output_bufsize, size_t* output_length, const bool output_base64, const unsigned char curve)
 {
     if (data == NULL || output == NULL)
