@@ -67,8 +67,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#define-members">Macros</a> &#124;
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">util.h File Reference</div>  </div>
 </div><!--header-->
@@ -82,18 +81,20 @@ $(function() {
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &lt;stdbool.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="constants_8h_source.html">constants.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for util.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="util_8h__incl.png" border="0" usemap="#include_2cecies_2util_8h" alt=""/></div>
 <map name="include_2cecies_2util_8h" id="include_2cecies_2util_8h">
-<area shape="rect" title="Useful utility functions for CECIES." alt="" coords="185,5,322,32"/>
+<area shape="rect" title="Useful utility functions for CECIES." alt="" coords="230,5,367,32"/>
 <area shape="rect" title=" " alt="" coords="5,80,64,107"/>
 <area shape="rect" title=" " alt="" coords="88,80,149,107"/>
 <area shape="rect" title=" " alt="" coords="174,80,242,107"/>
 <area shape="rect" title=" " alt="" coords="267,80,331,107"/>
 <area shape="rect" title=" " alt="" coords="355,80,421,107"/>
 <area shape="rect" title=" " alt="" coords="445,80,520,107"/>
+<area shape="rect" href="constants_8h.html" title="CECIES constants." alt="" coords="544,80,635,107"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -122,6 +123,8 @@ Macros</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a335269d0e79567b20346bd39108403b0"><td class="memItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a335269d0e79567b20346bd39108403b0">cecies_calc_aes_cbc_ciphertext_length</a> (const size_t plaintext_length)</td></tr>
 <tr class="separator:a335269d0e79567b20346bd39108403b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a838f6a0f17cec65d970cb5a407c58e7e"><td class="memItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a838f6a0f17cec65d970cb5a407c58e7e">cecies_calc_output_buffer_needed_size</a> (const size_t input_buffer_length, const size_t key_size)</td></tr>
+<tr class="separator:a838f6a0f17cec65d970cb5a407c58e7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3b8cd9fc39f89ca430a1e5f084d055c"><td class="memItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#af3b8cd9fc39f89ca430a1e5f084d055c">cecies_curve25519_calc_output_buffer_needed_size</a> (const size_t input_buffer_length)</td></tr>
 <tr class="separator:af3b8cd9fc39f89ca430a1e5f084d055c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72712b76d6f0872e29095599bb166259"><td class="memItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a72712b76d6f0872e29095599bb166259">cecies_curve448_calc_output_buffer_needed_size</a> (const size_t input_buffer_length)</td></tr>
@@ -144,16 +147,6 @@ Functions</h2></td></tr>
 <tr class="separator:afccad4d81076bc94026ff47bf99c582a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a3207be38324b7f2353cb5650157fe4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a4a3207be38324b7f2353cb5650157fe4">cecies_dev_urandom</a> (unsigned char *output_buffer, const size_t output_buffer_size)</td></tr>
 <tr class="separator:a4a3207be38324b7f2353cb5650157fe4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a6e029ca711d467cec6c1dde04be91228"><td class="memItemLeft" align="right" valign="top">static const unsigned char&#160;</td><td class="memItemRight" valign="bottom"><b>empty32</b> [32]</td></tr>
-<tr class="separator:a6e029ca711d467cec6c1dde04be91228"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a065e72301221b809831106b92143a428"><td class="memItemLeft" align="right" valign="top">static const unsigned char&#160;</td><td class="memItemRight" valign="bottom"><b>empty64</b> [64]</td></tr>
-<tr class="separator:a065e72301221b809831106b92143a428"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3af06471acf8ae0d71b8cacfaa64b722"><td class="memItemLeft" align="right" valign="top"><a id="a3af06471acf8ae0d71b8cacfaa64b722"></a>
-static const unsigned char&#160;</td><td class="memItemRight" valign="bottom"><b>empty256</b> [256]</td></tr>
-<tr class="separator:a3af06471acf8ae0d71b8cacfaa64b722"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Useful utility functions for CECIES. </p>
@@ -346,6 +339,50 @@ static const unsigned char&#160;</td><td class="memItemRight" valign="bottom"><b
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>((4 * data_length / 3 + 3) &amp; ~3) + 1</code> </dd></dl>
+
+</div>
+</div>
+<a id="a838f6a0f17cec65d970cb5a407c58e7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a838f6a0f17cec65d970cb5a407c58e7e">&#9670;&nbsp;</a></span>cecies_calc_output_buffer_needed_size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static size_t cecies_calc_output_buffer_needed_size </td>
+          <td>(</td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>input_buffer_length</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>key_size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Gets the minimum amount of needed buffer size for an encryption with a given plaintext data length. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">input_buffer_length</td><td>The amount of bytes to encrypt. </td></tr>
+    <tr><td class="paramname">key_size</td><td>Size in bytes of the used ephemeral key (X448 keys are slightly bigger than X25519). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The min. buffer size for encrypting <code>input_buffer_length</code> bytes of data. </dd></dl>
 
 </div>
 </div>
@@ -647,81 +684,6 @@ static const unsigned char&#160;</td><td class="memItemRight" valign="bottom"><b
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>0</code> </dd></dl>
 
-</div>
-</div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="a6e029ca711d467cec6c1dde04be91228"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6e029ca711d467cec6c1dde04be91228">&#9670;&nbsp;</a></span>empty32</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const unsigned char empty32[32]</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
-<div class="line">    </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">}</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a065e72301221b809831106b92143a428"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a065e72301221b809831106b92143a428">&#9670;&nbsp;</a></span>empty64</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const unsigned char empty64[64]</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
-<div class="line">    </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">    0x00, 0x00, 0x00, 0x00, </div>
-<div class="line">}</div>
-</div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->
