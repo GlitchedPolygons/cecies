@@ -322,8 +322,8 @@ int cecies_curve448_encrypt(const unsigned char* data, const size_t data_length,
     unsigned char iv[16];
     unsigned char salt[32];
     unsigned char aes_key[32];
-    unsigned char S_bytes[256];
-    unsigned char R_bytes[256];
+    unsigned char S_bytes[128];
+    unsigned char R_bytes[128];
 
     size_t R_bytes_length = 0, S_bytes_length = 0;
 
