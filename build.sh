@@ -14,7 +14,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-if [ "$EUID" -e 0 ]
+if [ "$(id -u)" = 0 ]
   then echo "  Please don't run as root/using sudo..."
   exit
 fi
