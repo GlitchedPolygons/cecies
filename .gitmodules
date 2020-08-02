@@ -4,3 +4,6 @@
 [submodule "lib/cmocka"]
 	path = lib/cmocka
 	url = https://gitlab.com/cmocka/cmocka
+[submodule "lib/ed25519"]
+	path = lib/ed25519
+	url = git@github.com:orlp/ed25519.git
