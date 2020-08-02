@@ -95,10 +95,12 @@ int main(int argc, char* argv[])
 
 exit:
     memset(msg, 0x00, msg_len);
+
     memset(signature, 0x00, sizeof(signature));
+    memset(signature_hexstr, 0x00, signature_hexstr_len);
+
     memset(public_key, 0x00, sizeof(public_key));
     memset(public_key_hexstr, 0x00, public_key_hexstr_len);
-    memset(signature_hexstr, 0x00, signature_hexstr_len);
 
     msg_len = public_key_hexstr_len = signature_hexstr_len = 0;
 
