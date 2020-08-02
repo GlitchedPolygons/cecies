@@ -22,7 +22,7 @@
 #include <ed25519.h>
 #include <cecies/util.h>
 
-int main(int argc, const char* argv[])
+int main(int argc, char* argv[])
 {
     if (argc == 1 || (argc == 2 && strcmp(argv[1], "--help") == 0))
     {
@@ -33,13 +33,74 @@ int main(int argc, const char* argv[])
     if (argc != 4)
     {
         fprintf(stderr, "ed25519_verify: wrong argument count. Check out \"ed25519_verify --help\" for more details about how to use this!\n");
-        return -1;
+        return 1;
+    }
+
+    char* msg = argv[3];
+    size_t msg_len = strlen(msg);
+
+    if (msg_len == 0)
+    {
+        fprintf(stderr, "ed25519_verify: Failed! Message to verify is empty...\n");
+        return 2;
     }
 
     int r = -1;
+    unsigned char signature[64 + 1];
+    unsigned char public_key[32 + 1];
 
-    // TODO: impl. asap!
+    char* public_key_hexstr = argv[1];
+    size_t public_key_hexstr_len = strlen(public_key_hexstr);
+
+    char* signature_hexstr = argv[2];
+    size_t signature_hexstr_len = strlen(signature_hexstr);
+
+    if (public_key_hexstr_len != 64)
+    {
+        fprintf(stderr, "ed25519_verify: Invalid public key format/length!\n");
+        r = 3;
+        goto exit;
+    }
+
+    if (cecies_hexstr2bin(public_key_hexstr, public_key_hexstr_len, public_key, sizeof(public_key), NULL) != 0)
+    {
+        fprintf(stderr, "ed25519_verify: Invalid public key format/length!\n");
+        r = 3;
+        goto exit;
+    }
+
+    if (signature_hexstr_len != 128)
+    {
+        fprintf(stderr, "ed25519_verify: Invalid signature!\n");
+        r = 4;
+        goto exit;
+    }
+
+    if (cecies_hexstr2bin(signature_hexstr, signature_hexstr_len, signature, sizeof(signature), NULL) != 0)
+    {
+        fprintf(stderr, "ed25519_verify: Invalid signature!\n");
+        r = 4;
+        goto exit;
+    }
+
+    if (ed25519_verify(signature, (const unsigned char*)msg, msg_len, public_key) != 1)
+    {
+        fprintf(stderr, "ed25519_verify: Invalid signature!\n");
+        r = 4;
+        goto exit;
+    }
+
+    r = 0;
+    fprintf(stderr, "ed25519_verify: Signature valid!\n");
 
 exit:
+    memset(msg, 0x00, msg_len);
+    memset(signature, 0x00, sizeof(signature));
+    memset(public_key, 0x00, sizeof(public_key));
+    memset(public_key_hexstr, 0x00, public_key_hexstr_len);
+    memset(signature_hexstr, 0x00, signature_hexstr_len);
+
+    msg_len = public_key_hexstr_len = signature_hexstr_len = 0;
+
     return r;
 }
