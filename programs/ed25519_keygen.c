@@ -16,11 +16,10 @@
 
 #include <stdio.h>
 #include <stddef.h>
-#include <stdint.h>
 #include <string.h>
-#include <sha512.h>
 #include <ed25519.h>
 #include <cecies/util.h>
+#include <mbedtls/sha256.h>
 
 int main(int argc, const char* argv[])
 {
@@ -36,7 +35,7 @@ int main(int argc, const char* argv[])
         rem -= ilen;
     }
 
-    unsigned char seed[64];
+    unsigned char seed[32];
     unsigned char public_key[32];
     unsigned char private_key[64];
 
@@ -44,7 +43,7 @@ int main(int argc, const char* argv[])
     memset(public_key, 0x00, sizeof(public_key));
     memset(private_key, 0x00, sizeof(private_key));
 
-    if (sha512(additional_entropy, 256, seed) != 0)
+    if (mbedtls_sha256_ret(additional_entropy, sizeof(additional_entropy), seed, 0) != 0)
     {
         fprintf(stderr, "ed25519_keygen.c: Key generation failed while hashing additional entropy using SHA2-512...");
         return 1;
