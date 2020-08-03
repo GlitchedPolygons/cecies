@@ -5,3 +5,6 @@
 	path = lib/cmocka
 	url = https://gitlab.com/cmocka/cmocka
 
+[submodule "lib/libsodium"]
+	path = lib/libsodium
+	url = https://github.com/GlitchedPolygons/libsodium
