@@ -7,3 +7,6 @@
 [submodule "lib/ed25519"]
 	path = lib/ed25519
 	url = https://github.com/orlp/ed25519
+[submodule "lib/libsodium"]
+	path = lib/libsodium
+	url = https://github.com/jedisct1/libsodium

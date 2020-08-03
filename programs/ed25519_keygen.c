@@ -17,21 +17,21 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
-#include <ed25519.h>
 #include <cecies/util.h>
 #include <mbedtls/sha256.h>
+#include <sodium.h>
 
 int main(int argc, const char* argv[])
 {
-    unsigned char additional_entropy[256];
-    cecies_dev_urandom(additional_entropy, 128);
+    unsigned char additional_entropy[512];
+    cecies_dev_urandom(additional_entropy, 256);
 
-    size_t rem = 128;
+    size_t rem = 256;
     for (int i = 1; i < argc && rem > 0; i++)
     {
         const char* istr = argv[i];
         const size_t ilen = CECIES_MIN(rem, strlen(istr));
-        snprintf((char*)(additional_entropy + (256 - rem)), ilen, "%s", istr);
+        snprintf((char*)(additional_entropy + (512 - rem)), ilen, "%s", istr);
         rem -= ilen;
     }
 
@@ -49,7 +49,7 @@ int main(int argc, const char* argv[])
         return 1;
     }
 
-    ed25519_create_keypair(public_key, private_key, seed);
+    crypto_sign_ed25519_seed_keypair(public_key, private_key, seed);
 
     fprintf(stdout, "{\"ed25519_private_key\":\"");
     for (int i = 0; i < sizeof(private_key); ++i)

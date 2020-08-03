@@ -16,11 +16,9 @@
 
 #include <stdio.h>
 #include <stddef.h>
-#include <stdint.h>
 #include <string.h>
-#include <sha512.h>
-#include <ed25519.h>
 #include <cecies/util.h>
+#include <sodium.h>
 
 int main(int argc, char* argv[])
 {
@@ -66,8 +64,19 @@ int main(int argc, char* argv[])
         goto exit;
     }
 
-    // TODO: what to do with that public key arg?!
-    ed25519_sign(signature, (const unsigned char*)msg, msg_len, NULL, private_key);
+    if (crypto_sign_ed25519_detached(signature, NULL, (const unsigned char*)msg, msg_len, private_key) != 0)
+    {
+        fprintf(stderr, "ed25519_sign: The generated signature is invalid!\n");
+        r = 4;
+        goto exit;
+    }
+
+    for (int i = 0; i < sizeof(signature); ++i)
+    {
+        fprintf(stdout, "%02x", signature[i]);
+    }
+
+    fprintf(stdout, "\n");
 
     r = 0;
 

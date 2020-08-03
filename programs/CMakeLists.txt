@@ -43,26 +43,12 @@ target_link_libraries(ecdsa_sha256_secp256k1_sign PRIVATE cecies)
 add_executable(ecdsa_sha256_secp256k1_verify ${CMAKE_CURRENT_LIST_DIR}/ecdsa_sha256_secp256k1_verify.c)
 target_link_libraries(ecdsa_sha256_secp256k1_verify PRIVATE cecies)
 
-set(ED25519_INC ${CMAKE_CURRENT_LIST_DIR}/../lib/ed25519/src)
-set(ED25519_SRC
-        ${ED25519_INC}/sha512.h
-        ${ED25519_INC}/sc.h
-        ${ED25519_INC}/precomp_data.h
-        ${ED25519_INC}/ge.h
-        ${ED25519_INC}/fixedint.h
-        ${ED25519_INC}/fe.h
-        ${ED25519_INC}/ed25519.h
-        ${ED25519_INC}/verify.c
-        ${ED25519_INC}/sign.c
-        ${ED25519_INC}/sha512.c
-        ${ED25519_INC}/seed.c
-        ${ED25519_INC}/sc.c
-        ${ED25519_INC}/keypair.c
-        ${ED25519_INC}/key_exchange.c
-        ${ED25519_INC}/ge.c
-        ${ED25519_INC}/fe.c
-        ${ED25519_INC}/add_scalar.c
-        )
+set(ED25519_INC ${CMAKE_CURRENT_LIST_DIR}/../lib/libsodium/src/libsodium/include ${CMAKE_CURRENT_LIST_DIR}/../lib/libsodium/src/libsodium/include/sodium)
+file(GLOB_RECURSE ED25519_SRC ${CMAKE_CURRENT_LIST_DIR}/../lib/libsodium/src/libsodium/*.c)
+file(GLOB_RECURSE ED25519_HEADERS ${CMAKE_CURRENT_LIST_DIR}/../lib/libsodium/src/libsodium/*.h)
+
+message(STATUS ${ED25519_SRC})
+message(STATUS ${ED25519_HEADERS})
 
 add_executable(ed25519_keygen ${CMAKE_CURRENT_LIST_DIR}/ed25519_keygen.c ${ED25519_SRC})
 target_link_libraries(ed25519_keygen PRIVATE cecies)

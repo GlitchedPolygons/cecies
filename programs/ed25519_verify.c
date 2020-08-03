@@ -16,11 +16,9 @@
 
 #include <stdio.h>
 #include <stddef.h>
-#include <stdint.h>
 #include <string.h>
-#include <sha512.h>
-#include <ed25519.h>
 #include <cecies/util.h>
+#include <sodium.h>
 
 int main(int argc, char* argv[])
 {
@@ -83,7 +81,7 @@ int main(int argc, char* argv[])
         goto exit;
     }
 
-    if (ed25519_verify(signature, (const unsigned char*)msg, msg_len, public_key) != 1)
+    if (crypto_sign_ed25519_verify_detached(signature, (const unsigned char*)msg, msg_len, public_key) != 0)
     {
         fprintf(stderr, "ed25519_verify: Invalid signature!\n");
         r = 4;
