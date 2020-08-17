@@ -20,6 +20,7 @@
 #include <mbedtls/base64.h>
 #include <mbedtls/entropy.h>
 #include <mbedtls/ctr_drbg.h>
+#include <mbedtls/platform_util.h>
 
 #include "cecies/guid.h"
 #include "cecies/keygen.h"
@@ -50,8 +51,8 @@ int cecies_generate_curve25519_keypair(cecies_curve25519_keypair* output, const 
     unsigned char pubkeybuf[32];
     size_t prvkeybuflen = 0, pubkeybuflen = 0;
 
-    memset(prvkeybuf, 0x00, sizeof(prvkeybuf));
-    memset(pubkeybuf, 0x00, sizeof(pubkeybuf));
+    mbedtls_platform_zeroize(prvkeybuf, sizeof(prvkeybuf));
+    mbedtls_platform_zeroize(pubkeybuf, sizeof(pubkeybuf));
 
     unsigned char pers[256];
     cecies_dev_urandom(pers, 128);
@@ -145,9 +146,9 @@ exit:
     mbedtls_mpi_free(&r);
     mbedtls_ecp_point_free(&R);
 
-    memset(pers, 0x00, sizeof(pers));
-    memset(prvkeybuf, 0x00, sizeof(prvkeybuf));
-    memset(pubkeybuf, 0x00, sizeof(pubkeybuf));
+    mbedtls_platform_zeroize(pers, sizeof(pers));
+    mbedtls_platform_zeroize(prvkeybuf, sizeof(prvkeybuf));
+    mbedtls_platform_zeroize(pubkeybuf, sizeof(pubkeybuf));
 
     return (ret);
 }
@@ -178,8 +179,8 @@ int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, const unsi
     unsigned char pubkeybuf[56];
     size_t prvkeybuflen = 0, pubkeybuflen = 0;
 
-    memset(prvkeybuf, 0x00, sizeof(prvkeybuf));
-    memset(pubkeybuf, 0x00, sizeof(pubkeybuf));
+    mbedtls_platform_zeroize(prvkeybuf, sizeof(prvkeybuf));
+    mbedtls_platform_zeroize(pubkeybuf, sizeof(pubkeybuf));
 
     unsigned char pers[256];
     cecies_dev_urandom(pers, 128);
@@ -273,9 +274,9 @@ exit:
     mbedtls_mpi_free(&r);
     mbedtls_ecp_point_free(&R);
 
-    memset(pers, 0x00, sizeof(pers));
-    memset(prvkeybuf, 0x00, sizeof(prvkeybuf));
-    memset(pubkeybuf, 0x00, sizeof(pubkeybuf));
+    mbedtls_platform_zeroize(pers, sizeof(pers));
+    mbedtls_platform_zeroize(prvkeybuf, sizeof(prvkeybuf));
+    mbedtls_platform_zeroize(pubkeybuf, sizeof(pubkeybuf));
 
     return (ret);
 }

@@ -270,12 +270,12 @@ exit:
     mbedtls_ecp_point_free(&S);
     mbedtls_ecp_point_free(&QA);
 
-    memset(iv, 0x00, sizeof(iv));
-    memset(salt, 0x00, sizeof(salt));
-    memset(pers, 0x00, sizeof(pers));
-    memset(aes_key, 0x00, sizeof(aes_key));
-    memset(S_bytes, 0x00, sizeof(S_bytes));
-    memset(R_bytes, 0x00, sizeof(R_bytes));
+    mbedtls_platform_zeroize(iv, sizeof(iv));
+    mbedtls_platform_zeroize(salt, sizeof(salt));
+    mbedtls_platform_zeroize(pers, sizeof(pers));
+    mbedtls_platform_zeroize(aes_key, sizeof(aes_key));
+    mbedtls_platform_zeroize(S_bytes, sizeof(S_bytes));
+    mbedtls_platform_zeroize(R_bytes, sizeof(R_bytes));
 
     return (ret);
 }

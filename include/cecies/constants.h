@@ -30,7 +30,12 @@ extern "C" {
 /**
  * The version number of this CECIES implementation.
  */
-#define CECIES_VERSION 211
+#define CECIES_VERSION 212
+
+/**
+ * The version number of this CECIES implementation (nicely-formatted string).
+ */
+#define CECIES_VERSION_STR "2.1.2"
 
 /**
  * Key size (in bytes) of an X25519 key (both public and private key have the same length).

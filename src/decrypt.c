@@ -238,13 +238,13 @@ exit:
     mbedtls_ecp_point_free(&R);
     mbedtls_ecp_point_free(&S);
 
-    memset(iv, 0x00, 16);
-    memset(salt, 0x00, 32);
-    memset(aes_key, 0x00, 32);
-    memset(R_bytes, 0x00, sizeof(R_bytes));
-    memset(S_bytes, 0x00, sizeof(S_bytes));
-    memset(&private_key, 0x00, sizeof(private_key));
-    memset(private_key_bytes, 0x00, sizeof(private_key_bytes));
+    mbedtls_platform_zeroize(iv, 16);
+    mbedtls_platform_zeroize(salt, 32);
+    mbedtls_platform_zeroize(aes_key, 32);
+    mbedtls_platform_zeroize(R_bytes, sizeof(R_bytes));
+    mbedtls_platform_zeroize(S_bytes, sizeof(S_bytes));
+    mbedtls_platform_zeroize(&private_key, sizeof(private_key));
+    mbedtls_platform_zeroize(private_key_bytes, sizeof(private_key_bytes));
 
     if (encrypted_data_base64)
     {
