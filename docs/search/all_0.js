@@ -29,7 +29,8 @@ var searchData=
   ['cecies_5fnew_5fguid_26',['cecies_new_guid',['../guid_8h.html#aa92ec1e1560a820319c11aa85572cd9a',1,'guid.h']]],
   ['cecies_5fprintvoid_27',['cecies_printvoid',['../util_8h.html#a289a1479fbe884b60dd256c2cfecc735',1,'util.h']]],
   ['cecies_5fversion_28',['CECIES_VERSION',['../constants_8h.html#a392b1067fbca2a5590a28a51a22b85d6',1,'constants.h']]],
-  ['cecies_5fx25519_5fkey_5fsize_29',['CECIES_X25519_KEY_SIZE',['../constants_8h.html#ad71e4756e3bc5a1125ca086587286600',1,'constants.h']]],
-  ['cecies_5fx448_5fkey_5fsize_30',['CECIES_X448_KEY_SIZE',['../constants_8h.html#a038c483a06eaff1b607b5720d51cd7ca',1,'constants.h']]],
-  ['constants_2eh_31',['constants.h',['../constants_8h.html',1,'']]]
+  ['cecies_5fversion_5fstr_29',['CECIES_VERSION_STR',['../constants_8h.html#a394343a1795e3bf75f587f69f6e09787',1,'constants.h']]],
+  ['cecies_5fx25519_5fkey_5fsize_30',['CECIES_X25519_KEY_SIZE',['../constants_8h.html#ad71e4756e3bc5a1125ca086587286600',1,'constants.h']]],
+  ['cecies_5fx448_5fkey_5fsize_31',['CECIES_X448_KEY_SIZE',['../constants_8h.html#a038c483a06eaff1b607b5720d51cd7ca',1,'constants.h']]],
+  ['constants_2eh_32',['constants.h',['../constants_8h.html',1,'']]]
 ];
