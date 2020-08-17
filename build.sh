@@ -14,8 +14,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-if [ "$(id -u)" = 0 ]
-  then echo "  Please don't run as root/using sudo..."
+if [ "$(whoami)" == "root" ]; then
+  echo "  Please don't run as root/using sudo..."
   exit
 fi
 
@@ -25,7 +25,6 @@ rm -rf "$REPO"/build
 mkdir -p "$REPO"/build && cd "$REPO"/build || exit
 cmake -DBUILD_SHARED_LIBS=Off -DUSE_SHARED_MBEDTLS_LIBRARY=Off -DCECIES_ENABLE_PROGRAMS=On -DCMAKE_BUILD_TYPE=Release ..
 make
-cp mbedtls/library/*.a ./
 cp -r ../include ./
 tar -czvf cecies.tar.gz *.so *.lib *.dll *.dylib *.a programs/*_keygen programs/*_encrypt programs/*_decrypt programs/*_sign programs/*_verify include/**/*
 cd "$REPO" || exit
