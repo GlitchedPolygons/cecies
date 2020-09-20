@@ -19,6 +19,13 @@ if [ "$(whoami)" = "root" ]; then
   exit
 fi
 
+PREVCC="$CC"
+if command -v clang >/dev/null 2>&1
+then
+    echo "-- Clang found on system, great! Long live LLVM! :D"
+    export CC=clang
+fi
+
 REPO=$(dirname "$0")
 rm -rf "$REPO"/out
 rm -rf "$REPO"/build
@@ -37,5 +44,6 @@ make || exit
 cd .. || exit
 tar -czvf cecies.tar.gz include/**/* shared/*.dll shared/*.dylib shared/*.dylib* shared/*.so shared/*.so* static/*.a static/*.lib programs/*_keygen programs/*_encrypt programs/*_decrypt programs/*_sign programs/*_verify
 cd "$REPO" || exit
+export CC="$PREVCC"
 echo "  Done. Exported build into $REPO/build"
 echo "  Check out the cecies.tar.gz file in there! "
