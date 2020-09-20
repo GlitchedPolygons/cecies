@@ -14,9 +14,11 @@ More useful information also accessible [here](https://asecuritysite.com/encrypt
 ---
 
 ### How to clone
+
 `git clone --recursive https://github.com/GlitchedPolygons/cecies.git`
 
 ### How to use
+
 Just add CECIES as a git submodule to your project (e.g. into some `lib/` or `deps/` folder inside your project's repo; `{repo_root}/lib/` is used here in the following example).
 
 ```
@@ -28,9 +30,34 @@ If you don't want to use git submodules, you can also start vendoring a specific
 
 **Never expose your private keys, take extra care when handling them and always clean up after doing crypto ops in C (don't leave private key buffers lying around in RAM at any point when they are not needed!).**
 
+### Compiling
+
+There are pre-built binaries for every major platform for you to download inside the [GitHub Releases page](https://github.com/GlitchedPolygons/cecies/releases). Thanks for downloading, and I hope you enjoy!
+
+Oh, you're still here :) You really want to compile it yourself, huh. 
+There is a [build.bat](https://github.com/GlitchedPolygons/cecies/blob/master/build.bat) for Windows and [build.sh](https://github.com/GlitchedPolygons/cecies/blob/master/build.sh) for Linux & Mac available for easy Release-build compilation. 
+
 ### Linking
 
-If you use [CMake](https://cmake.org) you can just `add_subdirectory(path_to_submodule)` and then `target_link_libraries(your_project PRIVATE cecies)` inside your CMakeLists.txt file.
+#### CMake
+
+If you use [CMake](https://cmake.org) you can just `add_subdirectory(path_to_submodule)` and then `target_link_libraries(your_project PRIVATE cecies)` inside your CMakeLists.txt file. Done! You can now include CECIES headers in your code and be done with it.
+This is equivalent to static linking by default, but much more pleasant than the manual variant.
+
+#### Dynamic linking
+
+* To dynamically link CECIES into your application, you need to `#define CECIES_DLL` before including any of the CECIES headers in your code! (Or, alternatively, add the `CECIES_DLL` pre-processor definition inside your build script/solution config)
+* If you didn't grab the pre-built DLL, you need to define/pass the pre-processor macro `CECIES_BUILD_DLL` before compiling CECIES!
+* Always have the CECIES shared library reachable inside your `$PATH`, or copy it into the same directory where your application's executable resides.
+
+**Note:** the default setting for building CECIES as a shared library compiles the MbedTLS dependency targets as [position-independent code](https://en.wikipedia.org/wiki/Position-independent_code) and statically links them into the CECIES shared library, so that you only need to include one `cecies.dll` file (or `.so`/`.dylib` file, whatever) with your application.
+
+If this is not what you want, you are free to manually compile [MbedTLS](https://github.com/ARMmbed/mbedtls) as a DLL too and modify the [CMakeLists.txt](https://github.com/GlitchedPolygons/cecies/blob/master/CMakeLists.txt) file accordingly.
+
+#### Static linking
+
+Linking statically feels best when done directly via CMake's `add_subdirectory(path_to_submodule)` command as seen above, but if you still want to build CECIES as a static lib
+yourself and link statically against it, you need to remember to also link your consuming application against `mbedx509`, `mbedtls` and `mbedcrypto` besides `cecies`!
 
 ### Examples
 
