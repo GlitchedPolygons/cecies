@@ -95,17 +95,17 @@ Include dependency graph for encrypt.h:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:acb7402775cdfde5b135100779f095a5b"><td class="memItemLeft" align="right" valign="top">CECIES_API int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="encrypt_8h.html#acb7402775cdfde5b135100779f095a5b">cecies_curve25519_encrypt</a> (const unsigned char *data, const size_t data_length, const <a class="el" href="structcecies__curve25519__key.html">cecies_curve25519_key</a> public_key, unsigned char *output, const size_t output_bufsize, size_t *output_length, const bool output_base64)</td></tr>
-<tr class="separator:acb7402775cdfde5b135100779f095a5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98bb6ce90bb96c69fda491fb2b4e98df"><td class="memItemLeft" align="right" valign="top">CECIES_API int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="encrypt_8h.html#a98bb6ce90bb96c69fda491fb2b4e98df">cecies_curve448_encrypt</a> (const unsigned char *data, const size_t data_length, const <a class="el" href="structcecies__curve448__key.html">cecies_curve448_key</a> public_key, unsigned char *output, const size_t output_bufsize, size_t *output_length, const bool output_base64)</td></tr>
-<tr class="separator:a98bb6ce90bb96c69fda491fb2b4e98df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a65f7c212f151f39bf9b4e79a0b2ef8"><td class="memItemLeft" align="right" valign="top">CECIES_API int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="encrypt_8h.html#a8a65f7c212f151f39bf9b4e79a0b2ef8">cecies_curve25519_encrypt</a> (const unsigned char *data, size_t data_length, <a class="el" href="structcecies__curve25519__key.html">cecies_curve25519_key</a> public_key, unsigned char *output, size_t output_bufsize, size_t *output_length, bool output_base64)</td></tr>
+<tr class="separator:a8a65f7c212f151f39bf9b4e79a0b2ef8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e44e0662732904b0c155c60a1efc54a"><td class="memItemLeft" align="right" valign="top">CECIES_API int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="encrypt_8h.html#a8e44e0662732904b0c155c60a1efc54a">cecies_curve448_encrypt</a> (const unsigned char *data, size_t data_length, <a class="el" href="structcecies__curve448__key.html">cecies_curve448_key</a> public_key, unsigned char *output, size_t output_bufsize, size_t *output_length, bool output_base64)</td></tr>
+<tr class="separator:a8e44e0662732904b0c155c60a1efc54a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>ECIES encryption implementation using Curve25516 or Curve448, AES256-GCM and MbedTLS. </p>
 <dl class="section author"><dt>Author</dt><dd>Raphael Beck </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="acb7402775cdfde5b135100779f095a5b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acb7402775cdfde5b135100779f095a5b">&#9670;&nbsp;</a></span>cecies_curve25519_encrypt()</h2>
+<a id="a8a65f7c212f151f39bf9b4e79a0b2ef8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a65f7c212f151f39bf9b4e79a0b2ef8">&#9670;&nbsp;</a></span>cecies_curve25519_encrypt()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -119,13 +119,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>data_length</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="structcecies__curve25519__key.html">cecies_curve25519_key</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="structcecies__curve25519__key.html">cecies_curve25519_key</a>&#160;</td>
           <td class="paramname"><em>public_key</em>, </td>
         </tr>
         <tr>
@@ -137,7 +137,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>output_bufsize</em>, </td>
         </tr>
         <tr>
@@ -149,7 +149,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const bool&#160;</td>
+          <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>output_base64</em>&#160;</td>
         </tr>
         <tr>
@@ -175,8 +175,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a98bb6ce90bb96c69fda491fb2b4e98df"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a98bb6ce90bb96c69fda491fb2b4e98df">&#9670;&nbsp;</a></span>cecies_curve448_encrypt()</h2>
+<a id="a8e44e0662732904b0c155c60a1efc54a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e44e0662732904b0c155c60a1efc54a">&#9670;&nbsp;</a></span>cecies_curve448_encrypt()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -190,13 +190,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>data_length</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="structcecies__curve448__key.html">cecies_curve448_key</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="structcecies__curve448__key.html">cecies_curve448_key</a>&#160;</td>
           <td class="paramname"><em>public_key</em>, </td>
         </tr>
         <tr>
@@ -208,7 +208,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>output_bufsize</em>, </td>
         </tr>
         <tr>
@@ -220,7 +220,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const bool&#160;</td>
+          <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>output_base64</em>&#160;</td>
         </tr>
         <tr>

@@ -162,7 +162,7 @@ $(function() {
 <div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
 <div class="line"><a name="l00185"></a><span class="lineno"><a class="line" href="util_8h.html#afccad4d81076bc94026ff47bf99c582a">  185</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> <span class="keywordtype">int</span> <a class="code" href="util_8h.html#afccad4d81076bc94026ff47bf99c582a">cecies_get_random_big_integer</a>()</div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;{</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    srand(time(NULL) * time(NULL));</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    srand((<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)time(NULL) * (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)time(NULL));</div>
 <div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    <span class="keywordflow">return</span> rand() * rand() * rand() * rand();</div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;}</div>
 <div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
