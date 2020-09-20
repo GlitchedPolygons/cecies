@@ -31,16 +31,16 @@ rm -rf "$REPO"/out
 rm -rf "$REPO"/build
 mkdir -p "$REPO"/build/shared && cd "$REPO"/build || exit
 cmake -DBUILD_SHARED_LIBS=Off -DUSE_SHARED_MBEDTLS_LIBRARY=Off -DCECIES_ENABLE_PROGRAMS=On -DCECIES_ENABLE_TESTS=Off -DCMAKE_BUILD_TYPE=Release .. || exit
-make || exit
+cmake --build . --config Release || exit
 cp -r ../include ./
 cd shared || exit
 cmake -DBUILD_SHARED_LIBS=On -DUSE_SHARED_MBEDTLS_LIBRARY=Off -DCECIES_BUILD_DLL=On -DCECIES_ENABLE_PROGRAMS=Off -DCECIES_ENABLE_TESTS=Off -DCMAKE_BUILD_TYPE=Release ../.. || exit
-make || exit
+cmake --build . --config Release || exit
 cd .. || exit
 mkdir static || exit
 cd static || exit
 cmake -DBUILD_SHARED_LIBS=Off -DUSE_SHARED_MBEDTLS_LIBRARY=Off -DCECIES_BUILD_DLL=Off -DCECIES_ENABLE_PROGRAMS=Off -DCECIES_ENABLE_TESTS=Off -DCMAKE_BUILD_TYPE=Release ../.. || exit
-make || exit
+cmake --build . --config Release || exit
 cd .. || exit
 tar -czvf cecies.tar.gz include/**/* shared/*.dll shared/*.dylib shared/*.dylib* shared/*.so shared/*.so* static/*.a static/*.lib programs/*_keygen programs/*_encrypt programs/*_decrypt programs/*_sign programs/*_verify
 cd "$REPO" || exit
