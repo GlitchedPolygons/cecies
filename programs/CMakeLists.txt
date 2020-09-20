@@ -16,6 +16,8 @@ cmake_minimum_required(VERSION 3.1)
 set(CMAKE_C_STANDARD 11)
 project(cecies_programs C)
 
+add_compile_definitions(SODIUM_STATIC=1)
+
 add_executable(curve25519_keygen ${CMAKE_CURRENT_LIST_DIR}/curve25519_keygen.c)
 target_link_libraries(curve25519_keygen PRIVATE cecies)
 

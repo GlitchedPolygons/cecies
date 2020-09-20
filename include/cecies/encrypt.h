@@ -43,7 +43,7 @@ extern "C" {
  * @param output_base64 Should the encrypted output bytes be base64-encoded for easy transmission over e.g. email? If you decide to base64-encode the encrypted data buffer, please be aware that a NUL-terminator is appended at the end to allow usage as a C-string but it will not be counted in \p output_length.
  * @return <c>0</c> if encryption succeeded;  error codes as defined inside the header file or MbedTLS otherwise.
  */
-CECIES_API int cecies_curve25519_encrypt(const unsigned char* data, const size_t data_length, const cecies_curve25519_key public_key, unsigned char* output, const size_t output_bufsize, size_t* output_length, const bool output_base64);
+CECIES_API int cecies_curve25519_encrypt(const unsigned char* data, size_t data_length, cecies_curve25519_key public_key, unsigned char* output, size_t output_bufsize, size_t* output_length, bool output_base64);
 
 /**
  * Encrypts the given data using ECIES over Curve448 and AES256-GCM.
@@ -56,7 +56,7 @@ CECIES_API int cecies_curve25519_encrypt(const unsigned char* data, const size_t
  * @param output_base64 Should the encrypted output bytes be base64-encoded for easy transmission over e.g. email? If you decide to base64-encode the encrypted data buffer, please be aware that a NUL-terminator is appended at the end to allow usage as a C-string but it will not be counted in \p output_length.
  * @return <c>0</c> if encryption succeeded;  error codes as defined inside the header file or MbedTLS otherwise.
  */
-CECIES_API int cecies_curve448_encrypt(const unsigned char* data, const size_t data_length, const cecies_curve448_key public_key, unsigned char* output, const size_t output_bufsize, size_t* output_length, const bool output_base64);
+CECIES_API int cecies_curve448_encrypt(const unsigned char* data, size_t data_length, cecies_curve448_key public_key, unsigned char* output, size_t output_bufsize, size_t* output_length, bool output_base64);
 
 #ifdef __cplusplus
 } // extern "C"

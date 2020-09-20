@@ -27,14 +27,14 @@
 extern "C" {
 #endif
 
-#define CECIES_API
-
 #if defined(_WIN32) && defined(CECIES_DLL)
 #ifdef CECIES_BUILD_DLL
 #define CECIES_API __declspec(dllexport)
 #else
 #define CECIES_API __declspec(dllimport)
 #endif
+#else
+#define CECIES_API
 #endif
 
 

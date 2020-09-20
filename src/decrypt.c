@@ -33,7 +33,7 @@
  * This avoids code duplication between the Curve25519 and Curve448 decryption variants (only key length and a few minor things differ).
  * The last "curve" argument determines which curve to use for decryption: pass 0 for Curve25519 and 1 for Curve448!
  */
-static int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, const char* private_key, unsigned char* output, const size_t output_bufsize, size_t* output_length, const unsigned char curve)
+static int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, char* private_key, unsigned char* output, const size_t output_bufsize, size_t* output_length, const unsigned char curve)
 {
     const size_t min_data_len = curve == 0 ? 97 : 121;
     const size_t key_length = curve == 0 ? CECIES_X25519_KEY_SIZE : CECIES_X448_KEY_SIZE;
@@ -51,7 +51,7 @@ static int cecies_decrypt(unsigned char* encrypted_data, const size_t encrypted_
     }
 
     int ret = 1;
-    unsigned char* input = encrypted_data;
+    unsigned char* input = (unsigned char*)encrypted_data;
     size_t input_length = encrypted_data_length;
 
     if (encrypted_data_base64)
@@ -254,12 +254,12 @@ exit:
     return (ret);
 }
 
-int cecies_curve25519_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, cecies_curve25519_key private_key, unsigned char* output, const size_t output_bufsize, size_t* output_length)
+int cecies_curve25519_decrypt(const unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, cecies_curve25519_key private_key, unsigned char* output, const size_t output_bufsize, size_t* output_length)
 {
     return cecies_decrypt(encrypted_data, encrypted_data_length, encrypted_data_base64, private_key.hexstring, output, output_bufsize, output_length, 0);
 }
 
-int cecies_curve448_decrypt(unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, cecies_curve448_key private_key, unsigned char* output, const size_t output_bufsize, size_t* output_length)
+int cecies_curve448_decrypt(const unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, cecies_curve448_key private_key, unsigned char* output, const size_t output_bufsize, size_t* output_length)
 {
     return cecies_decrypt(encrypted_data, encrypted_data_length, encrypted_data_base64, private_key.hexstring, output, output_bufsize, output_length, 1);
 }

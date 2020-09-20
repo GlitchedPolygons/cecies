@@ -184,7 +184,7 @@ CECIES_API void cecies_disable_fprintf();
  */
 static inline unsigned long long int cecies_get_random_big_integer()
 {
-    srand(time(NULL) * time(NULL));
+    srand((unsigned int)time(NULL) * (unsigned int)time(NULL));
     return rand() * rand() * rand() * rand();
 }
 
