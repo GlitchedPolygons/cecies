@@ -81,20 +81,22 @@ $(function() {
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &lt;stdbool.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="types_8h_source.html">types.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="constants_8h_source.html">constants.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for util.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="util_8h__incl.png" border="0" usemap="#include_2cecies_2util_8h" alt=""/></div>
 <map name="include_2cecies_2util_8h" id="include_2cecies_2util_8h">
-<area shape="rect" title="Useful utility functions for CECIES." alt="" coords="230,5,367,32"/>
+<area shape="rect" title="Useful utility functions for CECIES." alt="" coords="274,5,411,32"/>
 <area shape="rect" title=" " alt="" coords="5,80,64,107"/>
 <area shape="rect" title=" " alt="" coords="88,80,149,107"/>
 <area shape="rect" title=" " alt="" coords="174,80,242,107"/>
 <area shape="rect" title=" " alt="" coords="267,80,331,107"/>
 <area shape="rect" title=" " alt="" coords="355,80,421,107"/>
 <area shape="rect" title=" " alt="" coords="445,80,520,107"/>
-<area shape="rect" href="constants_8h.html" title="CECIES constants." alt="" coords="544,80,635,107"/>
+<area shape="rect" href="types_8h.html" title="CECIES types." alt="" coords="545,80,610,107"/>
+<area shape="rect" href="constants_8h.html" title="CECIES constants." alt="" coords="635,80,725,107"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -131,22 +133,26 @@ Functions</h2></td></tr>
 <tr class="separator:a72712b76d6f0872e29095599bb166259"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6f12030d84b957f37ae69c27d70c497"><td class="memItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#ab6f12030d84b957f37ae69c27d70c497">cecies_calc_base64_length</a> (const size_t data_length)</td></tr>
 <tr class="separator:ab6f12030d84b957f37ae69c27d70c497"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac695d2e7f1fccadc0f74f274d9bd6ca9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#ac695d2e7f1fccadc0f74f274d9bd6ca9">cecies_hexstr2bin</a> (const char *hexstr, size_t hexstr_length, unsigned char *output, size_t output_size, size_t *output_length)</td></tr>
-<tr class="separator:ac695d2e7f1fccadc0f74f274d9bd6ca9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afccb537b6e0242c4582b4aca9d2294b9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#afccb537b6e0242c4582b4aca9d2294b9">cecies_bin2hexstr</a> (const unsigned char *bin, size_t bin_length, char *output, size_t output_size, size_t *output_length, bool uppercase)</td></tr>
-<tr class="separator:afccb537b6e0242c4582b4aca9d2294b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc3a7b97b407414fca63eb019a9e7116"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#afc3a7b97b407414fca63eb019a9e7116">cecies_is_fprintf_enabled</a> ()</td></tr>
-<tr class="separator:afc3a7b97b407414fca63eb019a9e7116"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac40019ac20cabddb5ee7685c02464435"><td class="memItemLeft" align="right" valign="top">CECIES_API int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#ac40019ac20cabddb5ee7685c02464435">cecies_hexstr2bin</a> (const char *hexstr, size_t hexstr_length, unsigned char *output, size_t output_size, size_t *output_length)</td></tr>
+<tr class="separator:ac40019ac20cabddb5ee7685c02464435"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a221e3bd40697100842dfa1fd5fe5e421"><td class="memItemLeft" align="right" valign="top">CECIES_API int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a221e3bd40697100842dfa1fd5fe5e421">cecies_bin2hexstr</a> (const unsigned char *bin, size_t bin_length, char *output, size_t output_size, size_t *output_length, bool uppercase)</td></tr>
+<tr class="separator:a221e3bd40697100842dfa1fd5fe5e421"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8e3ea8c14230ae9f1519e49291bd871"><td class="memItemLeft" align="right" valign="top">CECIES_API char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#ac8e3ea8c14230ae9f1519e49291bd871">cecies_get_version_str</a> ()</td></tr>
+<tr class="separator:ac8e3ea8c14230ae9f1519e49291bd871"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa79983982686a5be66789ca19d303113"><td class="memItemLeft" align="right" valign="top">CECIES_API uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#aa79983982686a5be66789ca19d303113">cecies_get_version_nr</a> ()</td></tr>
+<tr class="separator:aa79983982686a5be66789ca19d303113"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a563a44461fb1c1e9d242cf47f7524259"><td class="memItemLeft" align="right" valign="top">CECIES_API bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a563a44461fb1c1e9d242cf47f7524259">cecies_is_fprintf_enabled</a> ()</td></tr>
+<tr class="separator:a563a44461fb1c1e9d242cf47f7524259"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a289a1479fbe884b60dd256c2cfecc735"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a289a1479fbe884b60dd256c2cfecc735">cecies_printvoid</a> (FILE *stream, const char *format,...)</td></tr>
 <tr class="separator:a289a1479fbe884b60dd256c2cfecc735"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f90dc04b65495517eef75f9fe6b5eba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a5f90dc04b65495517eef75f9fe6b5eba">cecies_enable_fprintf</a> ()</td></tr>
-<tr class="separator:a5f90dc04b65495517eef75f9fe6b5eba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac18593b2c57aefd5682a3ca2167e6918"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#ac18593b2c57aefd5682a3ca2167e6918">cecies_disable_fprintf</a> ()</td></tr>
-<tr class="separator:ac18593b2c57aefd5682a3ca2167e6918"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d9122bb205f577d0d6225ed2771795b"><td class="memItemLeft" align="right" valign="top">CECIES_API void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a0d9122bb205f577d0d6225ed2771795b">cecies_enable_fprintf</a> ()</td></tr>
+<tr class="separator:a0d9122bb205f577d0d6225ed2771795b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54ee58fdf0965aa02f7bb74dd8b20d94"><td class="memItemLeft" align="right" valign="top">CECIES_API void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a54ee58fdf0965aa02f7bb74dd8b20d94">cecies_disable_fprintf</a> ()</td></tr>
+<tr class="separator:a54ee58fdf0965aa02f7bb74dd8b20d94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afccad4d81076bc94026ff47bf99c582a"><td class="memItemLeft" align="right" valign="top">static unsigned long long int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#afccad4d81076bc94026ff47bf99c582a">cecies_get_random_big_integer</a> ()</td></tr>
 <tr class="separator:afccad4d81076bc94026ff47bf99c582a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a3207be38324b7f2353cb5650157fe4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a4a3207be38324b7f2353cb5650157fe4">cecies_dev_urandom</a> (unsigned char *output_buffer, const size_t output_buffer_size)</td></tr>
-<tr class="separator:a4a3207be38324b7f2353cb5650157fe4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a653a1020a00b9e36a20efc386622e441"><td class="memItemLeft" align="right" valign="top">CECIES_API void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a653a1020a00b9e36a20efc386622e441">cecies_dev_urandom</a> (unsigned char *output_buffer, size_t output_buffer_size)</td></tr>
+<tr class="separator:a653a1020a00b9e36a20efc386622e441"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Useful utility functions for CECIES. </p>
@@ -211,14 +217,14 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="afccb537b6e0242c4582b4aca9d2294b9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afccb537b6e0242c4582b4aca9d2294b9">&#9670;&nbsp;</a></span>cecies_bin2hexstr()</h2>
+<a id="a221e3bd40697100842dfa1fd5fe5e421"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a221e3bd40697100842dfa1fd5fe5e421">&#9670;&nbsp;</a></span>cecies_bin2hexstr()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int cecies_bin2hexstr </td>
+          <td class="memname">CECIES_API int cecies_bin2hexstr </td>
           <td>(</td>
           <td class="paramtype">const unsigned char *&#160;</td>
           <td class="paramname"><em>bin</em>, </td>
@@ -452,17 +458,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a4a3207be38324b7f2353cb5650157fe4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4a3207be38324b7f2353cb5650157fe4">&#9670;&nbsp;</a></span>cecies_dev_urandom()</h2>
+<a id="a653a1020a00b9e36a20efc386622e441"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a653a1020a00b9e36a20efc386622e441">&#9670;&nbsp;</a></span>cecies_dev_urandom()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static void cecies_dev_urandom </td>
+          <td class="memname">CECIES_API void cecies_dev_urandom </td>
           <td>(</td>
           <td class="paramtype">unsigned char *&#160;</td>
           <td class="paramname"><em>output_buffer</em>, </td>
@@ -470,7 +473,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>output_buffer_size</em>&#160;</td>
         </tr>
         <tr>
@@ -479,11 +482,6 @@ Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 <p>(Tries to) read from <code>/dev/urandom</code> (or Windows equivalent, yeah...) filling the given <code>output_buffer</code> with <code>output_buffer_size</code> random bytes. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -495,14 +493,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ac18593b2c57aefd5682a3ca2167e6918"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac18593b2c57aefd5682a3ca2167e6918">&#9670;&nbsp;</a></span>cecies_disable_fprintf()</h2>
+<a id="a54ee58fdf0965aa02f7bb74dd8b20d94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54ee58fdf0965aa02f7bb74dd8b20d94">&#9670;&nbsp;</a></span>cecies_disable_fprintf()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void cecies_disable_fprintf </td>
+          <td class="memname">CECIES_API void cecies_disable_fprintf </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -513,14 +511,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a5f90dc04b65495517eef75f9fe6b5eba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5f90dc04b65495517eef75f9fe6b5eba">&#9670;&nbsp;</a></span>cecies_enable_fprintf()</h2>
+<a id="a0d9122bb205f577d0d6225ed2771795b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d9122bb205f577d0d6225ed2771795b">&#9670;&nbsp;</a></span>cecies_enable_fprintf()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void cecies_enable_fprintf </td>
+          <td class="memname">CECIES_API void cecies_enable_fprintf </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -559,14 +557,50 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ac695d2e7f1fccadc0f74f274d9bd6ca9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac695d2e7f1fccadc0f74f274d9bd6ca9">&#9670;&nbsp;</a></span>cecies_hexstr2bin()</h2>
+<a id="aa79983982686a5be66789ca19d303113"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa79983982686a5be66789ca19d303113">&#9670;&nbsp;</a></span>cecies_get_version_nr()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int cecies_hexstr2bin </td>
+          <td class="memname">CECIES_API uint64_t cecies_get_version_nr </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the current CECIES version number as an unsigned integer (e.g. version <code>"2.1.2"</code> would return <code>212</code>). </p><dl class="section return"><dt>Returns</dt><dd>The current CECIES version number. </dd></dl>
+
+</div>
+</div>
+<a id="ac8e3ea8c14230ae9f1519e49291bd871"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8e3ea8c14230ae9f1519e49291bd871">&#9670;&nbsp;</a></span>cecies_get_version_str()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">CECIES_API char* cecies_get_version_str </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the current CECIES version number as a human-readable string (e.g. <code>"2.1.2"</code>). </p><dl class="section return"><dt>Returns</dt><dd>The stringified current CECIES version number. </dd></dl>
+
+</div>
+</div>
+<a id="ac40019ac20cabddb5ee7685c02464435"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac40019ac20cabddb5ee7685c02464435">&#9670;&nbsp;</a></span>cecies_hexstr2bin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">CECIES_API int cecies_hexstr2bin </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>hexstr</em>, </td>
@@ -617,14 +651,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="afc3a7b97b407414fca63eb019a9e7116"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afc3a7b97b407414fca63eb019a9e7116">&#9670;&nbsp;</a></span>cecies_is_fprintf_enabled()</h2>
+<a id="a563a44461fb1c1e9d242cf47f7524259"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a563a44461fb1c1e9d242cf47f7524259">&#9670;&nbsp;</a></span>cecies_is_fprintf_enabled()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool cecies_is_fprintf_enabled </td>
+          <td class="memname">CECIES_API bool cecies_is_fprintf_enabled </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
