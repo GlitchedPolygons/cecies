@@ -75,7 +75,7 @@ if (CECIES_BUILD_DLL OR BUILD_SHARED_LIBS)
     set_target_properties(${PROJECT_NAME} PROPERTIES
             VERSION ${CECIES_MAJOR}.${CECIES_MINOR}.${CECIES_PATCH}
             SOVERSION ${CECIES_MAJOR}
-    )
+            )
 endif ()
 
 target_link_libraries(${PROJECT_NAME}
@@ -84,8 +84,13 @@ target_link_libraries(${PROJECT_NAME}
         PUBLIC mbedcrypto
         )
 
-if (UNIX AND NOT APPLE)
-    target_link_libraries(${PROJECT_NAME} PRIVATE -luuid -lm)
+if (UNIX)
+    set_property(TARGET mbedtls PROPERTY POSITION_INDEPENDENT_CODE ON)
+    set_property(TARGET mbedx509 PROPERTY POSITION_INDEPENDENT_CODE ON)
+    set_property(TARGET mbedcrypto PROPERTY POSITION_INDEPENDENT_CODE ON)
+    if (NOT APPLE)
+        target_link_libraries(${PROJECT_NAME} PRIVATE -luuid -lm)
+    endif ()
 endif ()
 
 if (WIN32)
