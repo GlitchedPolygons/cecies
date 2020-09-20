@@ -34,13 +34,7 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 
-#ifdef _WIN32
-#define WIN32_NO_STATUS
-#include <windows.h>
-#undef WIN32_NO_STATUS
-#include <bcrypt.h>
-#endif
-
+#include "types.h"
 #include "constants.h"
 
 /**
@@ -120,7 +114,7 @@ static inline size_t cecies_calc_base64_length(const size_t data_length)
  * @param output_length [OPTIONAL] Where to write the output array length into. This is always gonna be <c>hexstr_length / 2</c>, but you can still choose to write it out just to be sure. If you want to omit this: no problem.. just pass <c>NULL</c>!
  * @return <c>0</c> if conversion succeeded. <c>1</c> if one or more required arguments were <c>NULL</c> or invalid. <c>2</c> if the hexadecimal string is in an invalid format (e.g. not divisible by 2). <c>3</c> if output buffer size was insufficient (needs to be at least <c>(hexstr_length / 2) + 1</c> bytes).
  */
-int cecies_hexstr2bin(const char* hexstr, size_t hexstr_length, unsigned char* output, size_t output_size, size_t* output_length);
+CECIES_API int cecies_hexstr2bin(const char* hexstr, size_t hexstr_length, unsigned char* output, size_t output_size, size_t* output_length);
 
 /**
  * Converts a byte array to a hex string. <p>
@@ -133,13 +127,25 @@ int cecies_hexstr2bin(const char* hexstr, size_t hexstr_length, unsigned char* o
  * @param uppercase Should the \p output string characters be UPPER- or lowercase?
  * @return <c>0</c> if conversion succeeded. <c>1</c> if one or more required arguments were <c>NULL</c> or invalid. <c>2</c> if the output buffer size is insufficient: please allocate at least <c>(bin_length * 2) + 1</c> bytes!
  */
-int cecies_bin2hexstr(const unsigned char* bin, size_t bin_length, char* output, size_t output_size, size_t* output_length, bool uppercase);
+CECIES_API int cecies_bin2hexstr(const unsigned char* bin, size_t bin_length, char* output, size_t output_size, size_t* output_length, bool uppercase);
+
+/**
+ * Gets the current CECIES version number as a human-readable string (e.g. <c>"2.1.2"</c>).
+ * @return The stringified current CECIES version number.
+ */
+CECIES_API char* cecies_get_version_str();
+
+/**
+ * Gets the current CECIES version number as an unsigned integer (e.g. version <c>"2.1.2"</c> would return <c>212</c>).
+ * @return The current CECIES version number.
+ */
+CECIES_API uint64_t cecies_get_version_nr();
 
 /**
  * Checks whether CECIES fprintf is enabled (whether errors are fprintfed into stderr).
  * @return Whether errors are fprintfed into stderr or not.
  */
-bool cecies_is_fprintf_enabled();
+CECIES_API bool cecies_is_fprintf_enabled();
 
 /**
  * Like fprintf() except it doesn't do anything. Like printing into <c>/dev/null</c> :D lots of fun!
@@ -154,17 +160,17 @@ static inline int cecies_printvoid(FILE* stream, const char* format, ...)
 }
 
 /** @private */
-extern int (*_cecies_fprintf_fptr)(FILE* stream, const char* format, ...);
+CECIES_API extern int (*_cecies_fprintf_fptr)(FILE* stream, const char* format, ...);
 
 /**
  * Enables CECIES' use of fprintf().
  */
-void cecies_enable_fprintf();
+CECIES_API void cecies_enable_fprintf();
 
 /**
  * Disables CECIES' use of fprintf().
  */
-void cecies_disable_fprintf();
+CECIES_API void cecies_disable_fprintf();
 
 /** @private */
 #define cecies_fprintf _cecies_fprintf_fptr
@@ -187,22 +193,7 @@ static inline unsigned long long int cecies_get_random_big_integer()
  * @param output_buffer Where to write the random bytes into.
  * @param output_buffer_size How many random bytes to write into \p output_buffer
  */
-static inline void cecies_dev_urandom(unsigned char* output_buffer, const size_t output_buffer_size)
-{
-    if (output_buffer != NULL && output_buffer_size > 0)
-    {
-#ifdef _WIN32
-        BCryptGenRandom(NULL, output_buffer, output_buffer_size, BCRYPT_USE_SYSTEM_PREFERRED_RNG);
-#else
-        FILE* rnd = fopen("/dev/urandom", "r");
-        if (rnd != NULL)
-        {
-            fread(output_buffer, sizeof(unsigned char), output_buffer_size, rnd);
-            fclose(rnd);
-        }
-#endif
-    }
-}
+CECIES_API void cecies_dev_urandom(unsigned char* output_buffer, size_t output_buffer_size);
 
 #ifdef __cplusplus
 } // extern "C"

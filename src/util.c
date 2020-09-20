@@ -16,6 +16,13 @@
 
 #include "cecies/util.h"
 
+#ifdef _WIN32
+#define WIN32_NO_STATUS
+#include <windows.h>
+#undef WIN32_NO_STATUS
+#include <bcrypt.h>
+#endif
+
 int cecies_hexstr2bin(const char* hexstr, const size_t hexstr_length, unsigned char* output, const size_t output_size, size_t* output_length)
 {
     if (hexstr == NULL || output == NULL || hexstr_length == 0)
@@ -81,6 +88,33 @@ int cecies_bin2hexstr(const unsigned char* bin, const size_t bin_length, char* o
     }
 
     return 0;
+}
+
+void cecies_dev_urandom(unsigned char* output_buffer, const size_t output_buffer_size)
+{
+    if (output_buffer != NULL && output_buffer_size > 0)
+    {
+#ifdef _WIN32
+        BCryptGenRandom(NULL, output_buffer, output_buffer_size, BCRYPT_USE_SYSTEM_PREFERRED_RNG);
+#else
+        FILE* rnd = fopen("/dev/urandom", "r");
+        if (rnd != NULL)
+        {
+            fread(output_buffer, sizeof(unsigned char), output_buffer_size, rnd);
+            fclose(rnd);
+        }
+#endif
+    }
+}
+
+char* cecies_get_version_str()
+{
+    return CECIES_VERSION_STR;
+}
+
+uint64_t cecies_get_version_nr()
+{
+    return CECIES_VERSION;
 }
 
 static bool _cecies_fprintf_enabled = true;

@@ -52,7 +52,7 @@ static inline cecies_guid cecies_empty_guid()
  * @param hyphens Should the GUID contain hyphen separators?
  * @return The cecies_guid
  */
-cecies_guid cecies_new_guid(bool lowercase, bool hyphens);
+CECIES_API cecies_guid cecies_new_guid(bool lowercase, bool hyphens);
 
 #ifdef __cplusplus
 } // extern "C"

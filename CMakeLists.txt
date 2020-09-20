@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.12)
 project(cecies C)
 
 set(CMAKE_C_STANDARD 11)
@@ -21,6 +21,17 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake" ${CMAKE_MODULE_PATH})
 option(CECIES_ENABLE_TESTS "Build CECIES tests." OFF)
 option(CECIES_ENABLE_PROGRAMS "Build CECIES CLI programs." OFF)
 option(CECIES_ENABLE_EXAMPLES "Build CECIES example programs." OFF)
+option(CECIES_DLL "Use CECIES as a DLL." OFF)
+option(CECIES_BUILD_DLL "Build CECIES as a DLL." OFF)
+
+if (CECIES_BUILD_DLL)
+    add_compile_definitions("CECIES_BUILD_DLL=1")
+    set(CECIES_DLL ON)
+endif ()
+
+if (CECIES_DLL)
+    add_compile_definitions("CECIES_DLL=1")
+endif ()
 
 option(ENABLE_TESTING "Build MbedTLS tests." OFF)
 option(ENABLE_PROGRAMS "Build MbedTLS example programs." OFF)

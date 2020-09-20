@@ -27,16 +27,27 @@
 extern "C" {
 #endif
 
+#define CECIES_API
+
+#if defined(_WIN32) && defined(CECIES_DLL)
+#ifdef CECIES_BUILD_DLL
+#define CECIES_API __declspec(dllexport)
+#else
+#define CECIES_API __declspec(dllimport)
+#endif
+#endif
+
+
 /**
  * Contains a Curve25519 key, encoded as a NUL-terminated hex-string.
  */
 typedef struct cecies_curve25519_key
 {
     /**
-    * Hex-encoded string of a 32-byte Curve25519 key. <p>
-    * For public keys, the 0x04 byte prefix is omitted. <p>
-    * The 65th character is the NUL-terminator.
-    */
+     * Hex-encoded string of a 32-byte Curve25519 key. <p>
+     * For public keys, the 0x04 byte prefix is omitted. <p>
+     * The 65th character is the NUL-terminator.
+     */
     char hexstring[64 + 1];
 } cecies_curve25519_key;
 
