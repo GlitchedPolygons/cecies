@@ -22,11 +22,15 @@ fi
 REPO=$(dirname "$0")
 rm -rf "$REPO"/out
 rm -rf "$REPO"/build
-mkdir -p "$REPO"/build && cd "$REPO"/build || exit
-cmake -DBUILD_SHARED_LIBS=Off -DUSE_SHARED_MBEDTLS_LIBRARY=Off -DCECIES_ENABLE_PROGRAMS=On -DCMAKE_BUILD_TYPE=Release ..
+mkdir -p "$REPO"/build/shared && cd "$REPO"/build || exit
+cmake -DBUILD_SHARED_LIBS=Off -DUSE_SHARED_MBEDTLS_LIBRARY=Off -DCECIES_ENABLE_PROGRAMS=On -DCECIES_ENABLE_TESTS=Off -DCMAKE_BUILD_TYPE=Release ..
 make
 cp -r ../include ./
-tar -czvf cecies.tar.gz *.so *.lib *.dll *.dylib *.a programs/*_keygen programs/*_encrypt programs/*_decrypt programs/*_sign programs/*_verify include/**/*
+cd "$REPO"/build/shared || exit
+cmake -DBUILD_SHARED_LIBS=On -DUSE_SHARED_MBEDTLS_LIBRARY=Off -DCECIES_BUILD_DLL=On -DCECIES_ENABLE_PROGRAMS=Off -DCECIES_ENABLE_TESTS=Off -DCMAKE_BUILD_TYPE=Release ../..
+make
+cd "$REPO"/build || exit
+tar -czvf cecies.tar.gz *.lib *.a programs/*_keygen programs/*_encrypt programs/*_decrypt programs/*_sign programs/*_verify shared/*.dll shared/*.dylib shared/*.so include/**/*
 cd "$REPO" || exit
 echo "  Done. Exported build into $REPO/build"
 echo "  Check out the cecies.tar.gz file in there! "
