@@ -18,6 +18,10 @@ project(cecies C)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
+set(CECIES_MAJOR 2)
+set(CECIES_MINOR 1)
+set(CECIES_PATCH 3)
+
 option(CECIES_ENABLE_TESTS "Build CECIES tests." OFF)
 option(CECIES_ENABLE_PROGRAMS "Build CECIES CLI programs." OFF)
 option(CECIES_ENABLE_EXAMPLES "Build CECIES example programs." OFF)
@@ -66,6 +70,13 @@ add_library(${PROJECT_NAME}
         ${${PROJECT_NAME}_HEADERS}
         ${${PROJECT_NAME}_SOURCES}
         )
+
+if (CECIES_BUILD_DLL OR BUILD_SHARED_LIBS)
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+            VERSION ${CECIES_MAJOR}.${CECIES_MINOR}.${CECIES_PATCH}
+            SOVERSION ${CECIES_MAJOR}
+    )
+endif ()
 
 target_link_libraries(${PROJECT_NAME}
         PUBLIC mbedtls

@@ -35,7 +35,7 @@ cd static || exit
 cmake -DBUILD_SHARED_LIBS=Off -DUSE_SHARED_MBEDTLS_LIBRARY=Off -DCECIES_BUILD_DLL=Off -DCECIES_ENABLE_PROGRAMS=Off -DCECIES_ENABLE_TESTS=Off -DCMAKE_BUILD_TYPE=Release ../.. || exit
 make || exit
 cd .. || exit
-tar -czvf cecies.tar.gz programs/*_keygen programs/*_encrypt programs/*_decrypt programs/*_sign programs/*_verify shared/*.dll shared/*.dylib shared/*.so static/*.a static/*.lib include/**/*
+tar -czvf cecies.tar.gz include/**/* shared/*.dll shared/*.dylib shared/*.dylib* shared/*.so shared/*.so* static/*.a static/*.lib programs/*_keygen programs/*_encrypt programs/*_decrypt programs/*_sign programs/*_verify
 cd "$REPO" || exit
 echo "  Done. Exported build into $REPO/build"
 echo "  Check out the cecies.tar.gz file in there! "
