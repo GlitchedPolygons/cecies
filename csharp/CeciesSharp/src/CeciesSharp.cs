@@ -11,6 +11,8 @@ namespace GlitchedPolygons.CeciesSharp
     /// </summary>
     public class CeciesSharpContext : IDisposable
     {
+        #region Shared library loaders (per platform implementations)
+
         private interface ISharedLibLoadUtils
         {
             IntPtr LoadLibrary(string fileName);
@@ -124,6 +126,8 @@ namespace GlitchedPolygons.CeciesSharp
                 return res;
             }
         }
+
+        #endregion
 
         #region Struct mapping
 
