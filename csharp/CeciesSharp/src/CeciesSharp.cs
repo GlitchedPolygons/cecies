@@ -236,6 +236,9 @@ namespace GlitchedPolygons.CeciesSharp
         private IntPtr lib;
         private ISharedLibLoadUtils loadUtils = null;
 
+        /// <summary>
+        /// Absolute path to the CECIES shared library that is currently loaded into memory for CeciesSharp.
+        /// </summary>
         public string LoadedLibraryPath { get; }
 
         /// <summary>
@@ -265,7 +268,7 @@ namespace GlitchedPolygons.CeciesSharp
 
             if (!Directory.Exists(pathBuilder.ToString()))
             {
-                throw new PlatformNotSupportedException($"CECIES shared library not found in {pathBuilder.ToString()} or unsupported CPU architecture");
+                throw new PlatformNotSupportedException($"CECIES shared library not found in {pathBuilder.ToString()} and/or unsupported CPU architecture");
             }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -378,6 +381,9 @@ namespace GlitchedPolygons.CeciesSharp
             throw new Exception($"Failed to load one or more functions from the CECIES shared library \"{LoadedLibraryPath}\"!");
         }
 
+        /// <summary>
+        /// Frees unmanaged resources (unloads the CECIES shared lib/dll).
+        /// </summary>
         public void Dispose()
         {
             DisableConsoleLogging();

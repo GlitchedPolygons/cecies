@@ -10,36 +10,35 @@
         <PackageTags>c# cryptographcy ecies cecies ecc elliptic curve curves curve25519 curve448 encryption decryption</PackageTags>
         <PackageProjectUrl>https://github.com/GlitchedPolygons/cecies</PackageProjectUrl>
         <RepositoryUrl>https://github.com/GlitchedPolygons/cecies</RepositoryUrl>
-        <PackageVersion>2.1.3.3</PackageVersion>
+        <PackageVersion>2.1.3.5</PackageVersion>
         <Authors>Glitched Polygons</Authors>
-        <AssemblyVersion>2.1.3.3</AssemblyVersion>
-        <FileVersion>2.1.3.3</FileVersion>
+        <AssemblyVersion>2.1.3.5</AssemblyVersion>
+        <FileVersion>2.1.3.5</FileVersion>
         <LangVersion>8</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-      <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\GlitchedPolygons.CeciesSharp.xml</DocumentationFile>
+        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\GlitchedPolygons.CeciesSharp.xml</DocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="lib\x64\linux\libcecies.so.2.1.3" />
-      <None Remove="lib\x64\mac\libcecies.2.1.3.dylib" />
-      <None Remove="lib\x64\windows\cecies.dll" />
-      <None Remove="bin\$(Configuration)\$(TargetFramework)\GlitchedPolygons.CeciesSharp.xml"/>
+        <None Remove="lib\x64\linux\libcecies.so.2.1.3"/>
+        <None Remove="lib\x64\mac\libcecies.2.1.3.dylib"/>
+        <None Remove="lib\x64\windows\cecies.dll"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="lib\x64\linux\libcecies.so.2.1.3">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-      <Content Include="lib\x64\mac\libcecies.2.1.3.dylib">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-      <Content Include="lib\x64\windows\cecies.dll">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-      <Content Include="bin\$(Configuration)\$(TargetFramework)\GlitchedPolygons.CeciesSharp.xml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
+        <Content Include="lib\x64\linux\libcecies.so.2.1.3">
+            <PackageCopyToOutput>true</PackageCopyToOutput>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="lib\x64\mac\libcecies.2.1.3.dylib">
+            <PackageCopyToOutput>true</PackageCopyToOutput>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="lib\x64\windows\cecies.dll">
+            <PackageCopyToOutput>true</PackageCopyToOutput>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 </Project>
