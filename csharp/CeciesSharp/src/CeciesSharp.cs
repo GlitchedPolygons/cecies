@@ -413,6 +413,11 @@ namespace GlitchedPolygons.CeciesSharp
             get => ceciesIsFprintfEnabledDelegate();
         }
 
+        /// <summary>
+        /// Generates a Curve25519 key-pair for encrypting/decrypting via ECIES.
+        /// </summary>
+        /// <param name="additionalEntropy">[OPTIONAL] Additional entropy for the key generation.</param>
+        /// <returns><c>(null,null)</c> if key generation failed; a <c>(publicKey,privateKey)</c> tuple if the operation succeeded.</returns>
         public ValueTuple<string, string> GenerateKeypairCurve25519(string additionalEntropy)
         {
             if (string.IsNullOrEmpty(additionalEntropy))
@@ -428,6 +433,13 @@ namespace GlitchedPolygons.CeciesSharp
             return r == 0 ? (kp.publicKey.hexString, kp.privateKey.hexString) : (null, null);
         }
 
+        /// <summary>
+        /// Encrypts a given chunk of data using a Curve25519 public key (hex-formatted).
+        /// </summary>
+        /// <param name="data">The data to encrypt.</param>
+        /// <param name="publicKey">The public key to encrypt the data with.</param>
+        /// <param name="outputBase64">Should the output be base64-encoded UTF8 bytes? (Human-readable vs just raw binary ciphertext).</param>
+        /// <returns><c>null</c> if encryption failed (check the stderr console output in this case for more details); the encrypted bytes if encryption succeeded.</returns>
         public byte[] EncryptCurve25519(byte[] data, string publicKey, bool outputBase64)
         {
             ulong olen = 0;
@@ -444,6 +456,13 @@ namespace GlitchedPolygons.CeciesSharp
             return _o;
         }
 
+        /// <summary>
+        /// Decrypts a given chunk of data using a Curve25519 private key (hex-formatted).
+        /// </summary>
+        /// <param name="encryptedData">The data to decrypt.</param>
+        /// <param name="encryptedDataBase64">Is the passed ciphertext base64-encoded or raw?.</param>
+        /// <param name="privateKey">The private key to decrypt the data with (hex-formatted).</param>
+        /// <returns><c>null</c> if decryption failed (check the stderr console output in this case for more details); the decrypted bytes if decryption succeeded.</returns>
         public byte[] DecryptCurve25519(byte[] encryptedData, bool encryptedDataBase64, string privateKey)
         {
             ulong olen = 0;
@@ -460,6 +479,11 @@ namespace GlitchedPolygons.CeciesSharp
             return _o;
         }
 
+        /// <summary>
+        /// Generates a Curve448 key-pair for encrypting/decrypting via ECIES.
+        /// </summary>
+        /// <param name="additionalEntropy">[OPTIONAL] Additional entropy for the key generation.</param>
+        /// <returns><c>(null,null)</c> if key generation failed; a <c>(publicKey,privateKey)</c> tuple if the operation succeeded.</returns>
         public ValueTuple<string, string> GenerateKeypairCurve448(string additionalEntropy)
         {
             if (string.IsNullOrEmpty(additionalEntropy))
@@ -475,6 +499,13 @@ namespace GlitchedPolygons.CeciesSharp
             return r == 0 ? (kp.publicKey.hexString, kp.privateKey.hexString) : (null, null);
         }
 
+        /// <summary>
+        /// Encrypts a given chunk of data using a Curve448 public key (hex-formatted).
+        /// </summary>
+        /// <param name="data">The data to encrypt.</param>
+        /// <param name="publicKey">The public key to encrypt the data with.</param>
+        /// <param name="outputBase64">Should the output be base64-encoded UTF8 bytes? (Human-readable vs just raw binary ciphertext).</param>
+        /// <returns><c>null</c> if encryption failed (check the stderr console output in this case for more details); the encrypted bytes if encryption succeeded.</returns>
         public byte[] EncryptCurve448(byte[] data, string publicKey, bool outputBase64)
         {
             ulong olen = 0;
@@ -490,6 +521,13 @@ namespace GlitchedPolygons.CeciesSharp
             return _o;
         }
 
+        /// <summary>
+        /// Decrypts a given chunk of data using a Curve448 private key (hex-formatted).
+        /// </summary>
+        /// <param name="encryptedData">The data to decrypt.</param>
+        /// <param name="encryptedDataBase64">Is the passed ciphertext base64-encoded or raw?.</param>
+        /// <param name="privateKey">The private key to decrypt the data with (hex-formatted).</param>
+        /// <returns><c>null</c> if decryption failed (check the stderr console output in this case for more details); the decrypted bytes if decryption succeeded.</returns>
         public byte[] DecryptCurve448(byte[] encryptedData, bool encryptedDataBase64, string privateKey)
         {
             ulong olen = 0;
@@ -504,38 +542,6 @@ namespace GlitchedPolygons.CeciesSharp
             }
 
             return _o;
-        }
-
-        static void Main(string[] args)
-        {
-            using var ceciesSharp = new CeciesSharpContext();
-            ceciesSharp.EnableConsoleLogging();
-
-            Console.WriteLine("Allow fprintf: " + ceciesSharp.IsConsoleLoggingEnabled);
-
-            (string, string) keyPair25519 = ceciesSharp.GenerateKeypairCurve25519(null);
-            Console.WriteLine($"Generated Curve25519 Key Pair:\nPub: {keyPair25519.Item1}\nPrv: {keyPair25519.Item2}");
-
-            (string, string) keyPair448 = ceciesSharp.GenerateKeypairCurve448(null);
-            Console.WriteLine($"Generated Curve448 Key Pair:\nPub: {keyPair448.Item1}\nPrv: {keyPair448.Item2}");
-
-            byte[] plaintext = Encoding.UTF8.GetBytes("Test test test FKSOGUEidbbpyqkr3dgkb 349749t43t ö ä $ _} \\ hg9\\'8gkjn ;;;");
-
-            string ciphertextCurve25519 = Encoding.UTF8.GetString(ceciesSharp.EncryptCurve25519(plaintext, keyPair25519.Item1, true));
-            string ciphertextCurve448 = Encoding.UTF8.GetString(ceciesSharp.EncryptCurve448(plaintext, keyPair448.Item1, true));
-
-            Console.WriteLine($"Encrypt Curve25519: {ciphertextCurve25519} \n Ciphertext length: {ciphertextCurve25519.Length}");
-            Console.WriteLine($"Encrypt Curve448: {ciphertextCurve448} \n Ciphertext length: {ciphertextCurve448.Length}");
-
-            string decStr25519 = Encoding.UTF8.GetString(ceciesSharp.DecryptCurve25519(Encoding.UTF8.GetBytes(ciphertextCurve25519), true, keyPair25519.Item2));
-            string decStr448 = Encoding.UTF8.GetString(ceciesSharp.DecryptCurve448(Encoding.UTF8.GetBytes(ciphertextCurve448), true, keyPair448.Item2));
-
-            Console.WriteLine($"Decrypt Curve25519: {decStr25519}");
-            Console.WriteLine($"Decrypt Curve448: {decStr448}");
-
-            ceciesSharp.DisableConsoleLogging();
-
-            Console.WriteLine("Allow fprintf: " + ceciesSharp.IsConsoleLoggingEnabled);
         }
     }
 }
