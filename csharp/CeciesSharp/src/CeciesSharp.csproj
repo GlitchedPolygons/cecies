@@ -10,10 +10,10 @@
         <PackageTags>c# cryptographcy ecies cecies ecc elliptic curve curves curve25519 curve448 encryption decryption</PackageTags>
         <PackageProjectUrl>https://github.com/GlitchedPolygons/cecies</PackageProjectUrl>
         <RepositoryUrl>https://github.com/GlitchedPolygons/cecies</RepositoryUrl>
-        <PackageVersion>2.1.3</PackageVersion>
+        <PackageVersion>2.1.3.1</PackageVersion>
         <Authors>Glitched Polygons</Authors>
-        <AssemblyVersion>2.1.3</AssemblyVersion>
-        <FileVersion>2.1.3</FileVersion>
+        <AssemblyVersion>2.1.3.1</AssemblyVersion>
+        <FileVersion>2.1.3.1</FileVersion>
         <LangVersion>8</LangVersion>
         <OutputType>Exe</OutputType>
     </PropertyGroup>
