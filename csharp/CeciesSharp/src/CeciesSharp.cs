@@ -11,6 +11,120 @@ namespace GlitchedPolygons.CeciesSharp
     /// </summary>
     public class CeciesSharpContext : IDisposable
     {
+        private interface ISharedLibLoadUtils
+        {
+            IntPtr LoadLibrary(string fileName);
+            void FreeLibrary(IntPtr handle);
+            IntPtr GetProcAddress(IntPtr handle, string name);
+        }
+
+        private class SharedLibLoadUtilsWindows : ISharedLibLoadUtils
+        {
+            [DllImport("kernel32.dll")]
+            private static extern IntPtr LoadLibrary(string fileName);
+
+            [DllImport("kernel32.dll")]
+            private static extern int FreeLibrary(IntPtr handle);
+
+            [DllImport("kernel32.dll")]
+            private static extern IntPtr GetProcAddress(IntPtr handle, string procedureName);
+
+            void ISharedLibLoadUtils.FreeLibrary(IntPtr handle)
+            {
+                FreeLibrary(handle);
+            }
+
+            IntPtr ISharedLibLoadUtils.GetProcAddress(IntPtr dllHandle, string name)
+            {
+                return GetProcAddress(dllHandle, name);
+            }
+
+            IntPtr ISharedLibLoadUtils.LoadLibrary(string fileName)
+            {
+                return LoadLibrary(fileName);
+            }
+        }
+
+        private class SharedLibLoadUtilsLinux : ISharedLibLoadUtils
+        {
+            const int RTLD_NOW = 2;
+
+            [DllImport("libdl.so")]
+            private static extern IntPtr dlopen(String fileName, int flags);
+
+            [DllImport("libdl.so")]
+            private static extern IntPtr dlsym(IntPtr handle, String symbol);
+
+            [DllImport("libdl.so")]
+            private static extern int dlclose(IntPtr handle);
+
+            [DllImport("libdl.so")]
+            private static extern IntPtr dlerror();
+
+            public IntPtr LoadLibrary(string fileName)
+            {
+                return dlopen(fileName, RTLD_NOW);
+            }
+
+            public void FreeLibrary(IntPtr handle)
+            {
+                dlclose(handle);
+            }
+
+            public IntPtr GetProcAddress(IntPtr dllHandle, string name)
+            {
+                dlerror();
+                IntPtr res = dlsym(dllHandle, name);
+                IntPtr err = dlerror();
+                if (err != IntPtr.Zero)
+                {
+                    throw new Exception("dlsym: " + Marshal.PtrToStringAnsi(err));
+                }
+
+                return res;
+            }
+        }
+
+        private class SharedLibLoadUtilsMac : ISharedLibLoadUtils
+        {
+            const int RTLD_NOW = 2;
+
+            [DllImport("libdl.dylib")]
+            private static extern IntPtr dlopen(String fileName, int flags);
+
+            [DllImport("libdl.dylib")]
+            private static extern IntPtr dlsym(IntPtr handle, String symbol);
+
+            [DllImport("libdl.dylib")]
+            private static extern int dlclose(IntPtr handle);
+
+            [DllImport("libdl.dylib")]
+            private static extern IntPtr dlerror();
+
+            public IntPtr LoadLibrary(string fileName)
+            {
+                return dlopen(fileName, RTLD_NOW);
+            }
+
+            public void FreeLibrary(IntPtr handle)
+            {
+                dlclose(handle);
+            }
+
+            public IntPtr GetProcAddress(IntPtr dllHandle, string name)
+            {
+                dlerror();
+                IntPtr res = dlsym(dllHandle, name);
+                IntPtr err = dlerror();
+                if (err != IntPtr.Zero)
+                {
+                    throw new Exception("dlsym: " + Marshal.PtrToStringAnsi(err));
+                }
+
+                return res;
+            }
+        }
+
         #region Struct mapping
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
@@ -44,15 +158,6 @@ namespace GlitchedPolygons.CeciesSharp
         #endregion
 
         #region Function mapping
-
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr LoadLibrary(string libPath);
-
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-
-        [DllImport("kernel32.dll")]
-        private static extern bool FreeLibrary(IntPtr hModule);
 
         private delegate void CeciesEnableFprintfDelegate();
 
@@ -125,6 +230,7 @@ namespace GlitchedPolygons.CeciesSharp
         #endregion
 
         private IntPtr lib;
+        private ISharedLibLoadUtils loadUtils = null;
 
         public string LoadedLibraryPath { get; }
 
@@ -160,14 +266,17 @@ namespace GlitchedPolygons.CeciesSharp
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
+                loadUtils = new SharedLibLoadUtilsWindows();
                 pathBuilder.Append("windows/");
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
+                loadUtils = new SharedLibLoadUtilsLinux();
                 pathBuilder.Append("linux/");
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
+                loadUtils = new SharedLibLoadUtilsMac();
                 pathBuilder.Append("mac/");
             }
             else
@@ -187,69 +296,69 @@ namespace GlitchedPolygons.CeciesSharp
 
             pathBuilder.Clear();
 
-            lib = LoadLibrary(LoadedLibraryPath);
+            lib = loadUtils.LoadLibrary(LoadedLibraryPath);
             if (lib == IntPtr.Zero)
             {
                 goto hell;
             }
 
-            IntPtr ceciesEnableFprintf = GetProcAddress(lib, "cecies_enable_fprintf");
-            if (ceciesEnableFprintf == IntPtr.Zero)
+            IntPtr enableFprintf = loadUtils.GetProcAddress(lib, "cecies_enable_fprintf");
+            if (enableFprintf == IntPtr.Zero)
             {
                 goto hell;
             }
 
-            IntPtr ceciesDisableFprintf = GetProcAddress(lib, "cecies_disable_fprintf");
-            if (ceciesDisableFprintf == IntPtr.Zero)
+            IntPtr disableFprintf = loadUtils.GetProcAddress(lib, "cecies_disable_fprintf");
+            if (disableFprintf == IntPtr.Zero)
             {
                 goto hell;
             }
 
-            IntPtr ceciesIsFprintfEnabled = GetProcAddress(lib, "cecies_is_fprintf_enabled");
-            if (ceciesIsFprintfEnabled == IntPtr.Zero)
+            IntPtr isFprintfEnabled = loadUtils.GetProcAddress(lib, "cecies_is_fprintf_enabled");
+            if (isFprintfEnabled == IntPtr.Zero)
             {
                 goto hell;
             }
 
-            IntPtr gen25519 = GetProcAddress(lib, "cecies_generate_curve25519_keypair");
+            IntPtr gen25519 = loadUtils.GetProcAddress(lib, "cecies_generate_curve25519_keypair");
             if (gen25519 == IntPtr.Zero)
             {
                 goto hell;
             }
 
-            IntPtr enc25519 = GetProcAddress(lib, "cecies_curve25519_encrypt");
+            IntPtr enc25519 = loadUtils.GetProcAddress(lib, "cecies_curve25519_encrypt");
             if (enc25519 == IntPtr.Zero)
             {
                 goto hell;
             }
 
-            IntPtr dec25519 = GetProcAddress(lib, "cecies_curve25519_decrypt");
+            IntPtr dec25519 = loadUtils.GetProcAddress(lib, "cecies_curve25519_decrypt");
             if (dec25519 == IntPtr.Zero)
             {
                 goto hell;
             }
 
-            IntPtr gen448 = GetProcAddress(lib, "cecies_generate_curve448_keypair");
+            IntPtr gen448 = loadUtils.GetProcAddress(lib, "cecies_generate_curve448_keypair");
             if (gen448 == IntPtr.Zero)
             {
                 goto hell;
             }
 
-            IntPtr enc448 = GetProcAddress(lib, "cecies_curve448_encrypt");
+            IntPtr enc448 = loadUtils.GetProcAddress(lib, "cecies_curve448_encrypt");
             if (enc448 == IntPtr.Zero)
             {
                 goto hell;
             }
 
-            IntPtr dec448 = GetProcAddress(lib, "cecies_curve448_decrypt");
+            IntPtr dec448 = loadUtils.GetProcAddress(lib, "cecies_curve448_decrypt");
             if (dec448 == IntPtr.Zero)
             {
                 goto hell;
             }
 
-            ceciesEnableFprintfDelegate = Marshal.GetDelegateForFunctionPointer<CeciesEnableFprintfDelegate>(ceciesEnableFprintf);
-            ceciesDisableFprintfDelegate = Marshal.GetDelegateForFunctionPointer<CeciesDisableFprintfDelegate>(ceciesDisableFprintf);
-            ceciesIsFprintfEnabledDelegate = Marshal.GetDelegateForFunctionPointer<CeciesIsFprintfEnabledDelegate>(ceciesIsFprintfEnabled);
+            ceciesEnableFprintfDelegate = Marshal.GetDelegateForFunctionPointer<CeciesEnableFprintfDelegate>(enableFprintf);
+            ceciesDisableFprintfDelegate = Marshal.GetDelegateForFunctionPointer<CeciesDisableFprintfDelegate>(disableFprintf);
+            ceciesIsFprintfEnabledDelegate = Marshal.GetDelegateForFunctionPointer<CeciesIsFprintfEnabledDelegate>(isFprintfEnabled);
             ceciesGenerateKeypairCurve25519Delegate = Marshal.GetDelegateForFunctionPointer<CeciesGenerateKeypairCurve25519Delegate>(gen25519);
             ceciesEncryptCurve25519Delegate = Marshal.GetDelegateForFunctionPointer<CeciesEncryptCurve25519Delegate>(enc25519);
             ceciesDecryptCurve25519Delegate = Marshal.GetDelegateForFunctionPointer<CeciesDecryptCurve25519Delegate>(dec25519);
@@ -268,7 +377,7 @@ namespace GlitchedPolygons.CeciesSharp
         public void Dispose()
         {
             DisableConsoleLogging();
-            FreeLibrary(lib);
+            loadUtils.FreeLibrary(lib);
         }
 
         private static long CalcOutputBufferSize(long l)
