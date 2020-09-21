@@ -268,7 +268,7 @@ namespace GlitchedPolygons.CeciesSharp
 
             if (!Directory.Exists(pathBuilder.ToString()))
             {
-                throw new PlatformNotSupportedException($"CECIES shared library not found in {pathBuilder.ToString()} and/or unsupported CPU architecture");
+                throw new PlatformNotSupportedException($"CECIES shared library not found in {pathBuilder.ToString()} and/or unsupported CPU architecture. Please don't forget to copy the CECIES shared libraries/DLL into the 'lib/{{CPU_ARCHITECTURE}}/{{OS}}/{{SHARED_LIB_FILE}}' folder of your output build directory.  https://github.com/GlitchedPolygons/cecies/tree/master/csharp/CeciesSharp/src");
             }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -548,6 +548,41 @@ namespace GlitchedPolygons.CeciesSharp
             }
 
             return _o;
+        }
+        
+        // DEMO
+        // This is an example Main method that shows how the various CeciesSharp wrapper functionalities can be used.
+        // Don't forget to copy the CeciesSharp/src/lib folder into your output build directory, otherwise CeciesSharp doesn't know from where to load the DLL/shared lib!
+        static void Main(string[] args)
+        {
+            using var cecies = new CeciesSharpContext();
+            cecies.EnableConsoleLogging();
+
+            Console.WriteLine("Allow fprintf: " + cecies.IsConsoleLoggingEnabled);
+
+            (string, string) keyPair25519 = cecies.GenerateKeypairCurve25519(null);
+            Console.WriteLine($"Generated Curve25519 Key Pair:\nPub: {keyPair25519.Item1}\nPrv: {keyPair25519.Item2}");
+
+            (string, string) keyPair448 = cecies.GenerateKeypairCurve448(null);
+            Console.WriteLine($"Generated Curve448 Key Pair:\nPub: {keyPair448.Item1}\nPrv: {keyPair448.Item2}");
+
+            byte[] plaintext = Encoding.UTF8.GetBytes("Test test test FKSOGUEidbbpyqkr3dgkb 349749t43t ö ä $ _} \\ hg9\\'8gkjn ;;;");
+
+            string ciphertextCurve25519 = Encoding.UTF8.GetString(cecies.EncryptCurve25519(plaintext, keyPair25519.Item1, true));
+            string ciphertextCurve448 = Encoding.UTF8.GetString(cecies.EncryptCurve448(plaintext, keyPair448.Item1, true));
+
+            Console.WriteLine($"Encrypt Curve25519: {ciphertextCurve25519} \n Ciphertext length: {ciphertextCurve25519.Length}");
+            Console.WriteLine($"Encrypt Curve448: {ciphertextCurve448} \n Ciphertext length: {ciphertextCurve448.Length}");
+
+            string decStr25519 = Encoding.UTF8.GetString(cecies.DecryptCurve25519(Encoding.UTF8.GetBytes(ciphertextCurve25519), true, keyPair25519.Item2));
+            string decStr448 = Encoding.UTF8.GetString(cecies.DecryptCurve448(Encoding.UTF8.GetBytes(ciphertextCurve448), true, keyPair448.Item2));
+
+            Console.WriteLine($"Decrypt Curve25519: {decStr25519}");
+            Console.WriteLine($"Decrypt Curve448: {decStr448}");
+
+            cecies.DisableConsoleLogging();
+
+            Console.WriteLine("Allow fprintf: " + cecies.IsConsoleLoggingEnabled);
         }
     }
 }
