@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <Title>GlitchedPolygons.CeciesSharp</Title>
+        <AssemblyName>GlitchedPolygons.CeciesSharp</AssemblyName>
+        <RootNamespace>GlitchedPolygons.CeciesSharp</RootNamespace>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageTags>c# cryptographcy ecies cecies ecc elliptic curve curves curve25519 curve448 encryption decryption</PackageTags>
+        <PackageProjectUrl>https://github.com/GlitchedPolygons/cecies</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/GlitchedPolygons/cecies</RepositoryUrl>
+        <PackageVersion>2.1.3</PackageVersion>
+        <Authors>Glitched Polygons</Authors>
+        <AssemblyVersion>2.1.3</AssemblyVersion>
+        <FileVersion>2.1.3</FileVersion>
+        <LangVersion>8</LangVersion>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Update="lib\x64\linux\libcecies.so.2.1.3">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="lib\x64\mac\libcecies.2.1.3.dylib">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="lib\x64\windows\cecies.dll">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+</Project>
