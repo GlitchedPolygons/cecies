@@ -265,7 +265,7 @@ namespace GlitchedPolygons.CeciesSharp
 
             if (!Directory.Exists(pathBuilder.ToString()))
             {
-                throw new PlatformNotSupportedException("Unsupported CPU architecture");
+                throw new PlatformNotSupportedException($"CECIES shared library not found in {pathBuilder.ToString()} or unsupported CPU architecture");
             }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
