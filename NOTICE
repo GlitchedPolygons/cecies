@@ -1,0 +1,25 @@
+CECIES Notice
+
+---
+
+This project makes use of the following components, 
+which are, at the time of writing, open-source and
+freely available under their respective licenses:
+
+---
+
+* [MbedTLS](https://github.com/ARMmbed/mbedtls)
+* * License: Apache-2.0
+* * Copyright: ARM and the MbedTLS Contributors
+
+* [Cmocka](https://gitlab.com/cmocka/cmocka)
+* * License: Apache-2.0
+* * Copyright: Andreas Schneider, Google Inc.
+
+* [Libsodium](https://github.com/jedisct1/libsodium)
+* * License: ISC
+* * Copyright: Frank Denis
+
+---
+
+Raphael Beck, the 23rd of September, 2020
