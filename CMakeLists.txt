@@ -18,15 +18,16 @@ project(cecies C)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
-set(CECIES_MAJOR 2)
-set(CECIES_MINOR 1)
-set(CECIES_PATCH 3)
+set(${PROJECT_NAME}_MAJOR 2)
+set(${PROJECT_NAME}_MINOR 1)
+set(${PROJECT_NAME}_PATCH 4)
+set(${PROJECT_NAME}_VERSION_STRING "${${PROJECT_NAME}_MAJOR}.${${PROJECT_NAME}_MINOR}.${${PROJECT_NAME}_PATCH}")
 
-option(CECIES_ENABLE_TESTS "Build CECIES tests." OFF)
-option(CECIES_ENABLE_PROGRAMS "Build CECIES CLI programs." OFF)
-option(CECIES_ENABLE_EXAMPLES "Build CECIES example programs." OFF)
-option(CECIES_DLL "Use CECIES as a DLL." OFF)
-option(CECIES_BUILD_DLL "Build CECIES as a DLL." OFF)
+option(${PROJECT_NAME}_ENABLE_TESTS "Build CECIES tests." OFF)
+option(${PROJECT_NAME}_ENABLE_PROGRAMS "Build CECIES CLI programs." OFF)
+option(${PROJECT_NAME}_ENABLE_EXAMPLES "Build CECIES example programs." OFF)
+option(${PROJECT_NAME}_DLL "Use CECIES as a DLL." OFF)
+option(${PROJECT_NAME}_BUILD_DLL "Build CECIES as a DLL." OFF)
 
 if (CECIES_BUILD_DLL)
     add_compile_definitions("CECIES_BUILD_DLL=1")
@@ -110,7 +111,7 @@ if (CECIES_ENABLE_PROGRAMS)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/programs programs)
 endif ()
 
-if (CECIES_ENABLE_TESTS)
+if (${${PROJECT_NAME}_ENABLE_TESTS})
 
     find_package(cmocka)
 
