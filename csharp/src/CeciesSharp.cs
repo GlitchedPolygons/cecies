@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
 using System.Runtime.InteropServices;
@@ -173,8 +174,7 @@ namespace GlitchedPolygons.CeciesSharp
 
         private delegate ulong CeciesGetVersionNumberDelegate();
 
-        [return: MarshalAs(UnmanagedType.LPUTF8Str)]
-        private delegate string CeciesGetVersionNumberStringDelegate();
+        private delegate IntPtr CeciesGetVersionNumberStringDelegate();
         
         private delegate int CeciesGenerateKeypairCurve25519Delegate(
             ref CeciesKeypairCurve25519 output,
@@ -437,9 +437,9 @@ namespace GlitchedPolygons.CeciesSharp
         /// <summary>
         /// Check whether CECIES is allowed to fprintf() into stdout or not.
         /// </summary>
-        public bool IsConsoleLoggingEnabled
+        public bool IsConsoleLoggingEnabled()
         {
-            get => ceciesIsFprintfEnabledDelegate();
+            return ceciesIsFprintfEnabledDelegate();
         }
 
         /// <summary>
@@ -457,7 +457,8 @@ namespace GlitchedPolygons.CeciesSharp
         /// <returns>CECIES version number as a nicely formatted, human-readable string.</returns>
         public string GetVersionNumberString()
         {
-            return ceciesGetVersionNumberStringDelegate();
+            IntPtr ptr = ceciesGetVersionNumberStringDelegate();
+            return Marshal.PtrToStringUTF8(ptr);
         }
 
         /// <summary>
@@ -607,7 +608,7 @@ namespace GlitchedPolygons.CeciesSharp
             using var cecies = new CeciesSharpContext();
             cecies.EnableConsoleLogging();
 
-            Console.WriteLine("Allow fprintf: " + cecies.IsConsoleLoggingEnabled);
+            Console.WriteLine("Allow fprintf: " + cecies.IsConsoleLoggingEnabled());
 
             Console.WriteLine($"CECIES Version: {cecies.GetVersionNumberString()} ({cecies.GetVersionNumber()})" + Environment.NewLine);
             
@@ -633,7 +634,7 @@ namespace GlitchedPolygons.CeciesSharp
 
             cecies.DisableConsoleLogging();
 
-            Console.WriteLine("Allow fprintf: " + cecies.IsConsoleLoggingEnabled);
+            Console.WriteLine("Allow fprintf: " + cecies.IsConsoleLoggingEnabled());
         }
     }
 }
