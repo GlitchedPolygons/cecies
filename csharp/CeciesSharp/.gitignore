@@ -167,6 +167,8 @@ ASALocalRun/
 # NVidia Nsight GPU debugger configuration file
 *.nvuser
 
+!src/lib/**
+
 # JetBrains IDE files
 **/.idea
 
@@ -175,5 +177,3 @@ ASALocalRun/
 
 # Because macOS...
 *.DS_Store
-
-!src/lib/**

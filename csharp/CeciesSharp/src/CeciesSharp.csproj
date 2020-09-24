@@ -23,8 +23,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="lib\x64\linux\libcecies.so.2.1.3" />
-        <None Remove="lib\x64\mac\libcecies.2.1.3.dylib" />
+        <None Remove="lib\x64\linux\libcecies.so.2.1.4" />
+        <None Remove="lib\x64\mac\libcecies.2.1.4.dylib" />
         <None Remove="lib\x64\windows\cecies.dll" />
     </ItemGroup>
 
@@ -33,7 +33,7 @@
             <PackageCopyToOutput>true</PackageCopyToOutput>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="lib\x64\mac\libcecies.2.1.3.dylib">
+        <Content Include="lib\x64\mac\libcecies.2.1.4.dylib">
             <PackageCopyToOutput>true</PackageCopyToOutput>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
