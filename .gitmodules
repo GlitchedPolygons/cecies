@@ -8,3 +8,6 @@
 [submodule "lib/libsodium"]
 	path = lib/libsodium
 	url = https://github.com/GlitchedPolygons/libsodium
+[submodule "lib/acutest"]
+	path = lib/acutest
+	url = https://github.com/mity/acutest.git

@@ -147,30 +147,19 @@ endif ()
 
 if (${${PROJECT_NAME}_ENABLE_TESTS})
 
-    find_package(cmocka)
-
-    if (NOT ${cmocka_FOUND})
-        message(STATUS "cmocka not found; using included version inside lib/cmocka/ folder...")
-        add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/cmocka cmocka)
-    else ()
-        message(STATUS "Found cmocka!")
-    endif ()
-
     add_executable(run_tests
             ${CMAKE_CURRENT_LIST_DIR}/tests/tests.c
-            ${${PROJECT_NAME}_HEADERS}
-            ${${PROJECT_NAME}_SOURCES}
-            )
-
-    target_include_directories(run_tests
-            PUBLIC ${cmocka_INCLUDE_DIR}
-            PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
-            PUBLIC ${CMAKE_CURRENT_LIST_DIR}/lib/mbedtls/include
             )
 
     target_link_libraries(run_tests
+            PUBLIC ${PROJECT_NAME}
             PUBLIC ${${PROJECT_NAME}_DEPS_TARGETS}
-            PUBLIC cmocka
+            )
+
+    target_include_directories(run_tests
+            PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
+            PUBLIC ${CMAKE_CURRENT_LIST_DIR}/lib/acutest/include
+            PUBLIC ${CMAKE_CURRENT_LIST_DIR}/lib/mbedtls/include
             )
 
     if (ENABLE_COVERAGE)
