@@ -37,13 +37,12 @@ There are pre-built binaries for every major platform for you to download inside
 Oh, you're still here :) You really want to compile it yourself, huh. 
 Cool. 
 
-Look, just execute the following commands and you'll have your CECIES comfortably built and packaged for you automatically into a _.tar.gz_ file that you will find inside the `build/` folder.
+Look, just execute the following command and you'll have your CECIES comfortably built and packaged for you automatically into a _.tar.gz_ file that you will find inside the `build/` folder.
 
 ```bash
-mkdir -p build && cd build
-cmake -DBUILD_SHARED_LIBS=On -DUSE_SHARED_MBEDTLS_LIBRARY=Off -Dcecies_BUILD_DLL=On -Dcecies_PACKAGE=On -DCMAKE_BUILD_TYPE=Release ..
-cmake --build . --config Release
+bash build.sh
 ```
+This works on Windows too: just use the [Git Bash for Windows](https://git-scm.com/download/win) CLI!
 
 ### Linking
 
