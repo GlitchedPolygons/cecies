@@ -37,7 +37,6 @@ extern "C" {
 #define CECIES_API
 #endif
 
-
 /**
  * Contains a Curve25519 key, encoded as a NUL-terminated hex-string.
  */

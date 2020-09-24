@@ -31,8 +31,9 @@ extern "C" {
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "cecies/util.h"
-#include "cecies/types.h"
+
+#include "util.h"
+#include "types.h"
 
 /**
  * Generates a CECIES Curve25519 keypair and writes it into the specified output buffers.

@@ -29,7 +29,7 @@ extern "C" {
 
 #include <stddef.h>
 #include <stdint.h>
-#include "cecies/types.h"
+#include "types.h"
 
 /**
  * Decrypts the given data using ECIES, Curve25519 and AES256-GCM.

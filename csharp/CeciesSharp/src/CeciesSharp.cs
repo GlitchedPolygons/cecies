@@ -171,6 +171,11 @@ namespace GlitchedPolygons.CeciesSharp
 
         private delegate bool CeciesIsFprintfEnabledDelegate();
 
+        private delegate ulong CeciesGetVersionNumberDelegate();
+
+        [return: MarshalAs(UnmanagedType.LPUTF8Str)]
+        private delegate string CeciesGetVersionNumberStringDelegate();
+        
         private delegate int CeciesGenerateKeypairCurve25519Delegate(
             ref CeciesKeypairCurve25519 output,
             [MarshalAs(UnmanagedType.LPUTF8Str)] string additionalEntropy,
@@ -226,6 +231,8 @@ namespace GlitchedPolygons.CeciesSharp
         private CeciesEnableFprintfDelegate ceciesEnableFprintfDelegate;
         private CeciesDisableFprintfDelegate ceciesDisableFprintfDelegate;
         private CeciesIsFprintfEnabledDelegate ceciesIsFprintfEnabledDelegate;
+        private CeciesGetVersionNumberDelegate ceciesGetVersionNumberDelegate;
+        private CeciesGetVersionNumberStringDelegate ceciesGetVersionNumberStringDelegate;
         private CeciesGenerateKeypairCurve25519Delegate ceciesGenerateKeypairCurve25519Delegate;
         private CeciesEncryptCurve25519Delegate ceciesEncryptCurve25519Delegate;
         private CeciesDecryptCurve25519Delegate ceciesDecryptCurve25519Delegate;
@@ -328,6 +335,18 @@ namespace GlitchedPolygons.CeciesSharp
             {
                 goto hell;
             }
+            
+            IntPtr getVersionNr = loadUtils.GetProcAddress(lib, "cecies_get_version_nr");
+            if (getVersionNr == IntPtr.Zero)
+            {
+                goto hell;
+            }
+            
+            IntPtr getVersionStr = loadUtils.GetProcAddress(lib, "cecies_get_version_str");
+            if (getVersionStr == IntPtr.Zero)
+            {
+                goto hell;
+            }
 
             IntPtr gen25519 = loadUtils.GetProcAddress(lib, "cecies_generate_curve25519_keypair");
             if (gen25519 == IntPtr.Zero)
@@ -368,6 +387,8 @@ namespace GlitchedPolygons.CeciesSharp
             ceciesEnableFprintfDelegate = Marshal.GetDelegateForFunctionPointer<CeciesEnableFprintfDelegate>(enableFprintf);
             ceciesDisableFprintfDelegate = Marshal.GetDelegateForFunctionPointer<CeciesDisableFprintfDelegate>(disableFprintf);
             ceciesIsFprintfEnabledDelegate = Marshal.GetDelegateForFunctionPointer<CeciesIsFprintfEnabledDelegate>(isFprintfEnabled);
+            ceciesGetVersionNumberDelegate = Marshal.GetDelegateForFunctionPointer<CeciesGetVersionNumberDelegate>(getVersionNr);
+            ceciesGetVersionNumberStringDelegate = Marshal.GetDelegateForFunctionPointer<CeciesGetVersionNumberStringDelegate>(getVersionStr);
             ceciesGenerateKeypairCurve25519Delegate = Marshal.GetDelegateForFunctionPointer<CeciesGenerateKeypairCurve25519Delegate>(gen25519);
             ceciesEncryptCurve25519Delegate = Marshal.GetDelegateForFunctionPointer<CeciesEncryptCurve25519Delegate>(enc25519);
             ceciesDecryptCurve25519Delegate = Marshal.GetDelegateForFunctionPointer<CeciesDecryptCurve25519Delegate>(dec25519);
@@ -419,6 +440,24 @@ namespace GlitchedPolygons.CeciesSharp
         public bool IsConsoleLoggingEnabled
         {
             get => ceciesIsFprintfEnabledDelegate();
+        }
+
+        /// <summary>
+        /// Get the current CECIES version number (numeric).
+        /// </summary>
+        /// <returns>Unsigned integer containing the currently used CECIES version number.</returns>
+        public ulong GetVersionNumber()
+        {
+            return ceciesGetVersionNumberDelegate();
+        }
+
+        /// <summary>
+        /// Get the current CECIES version number (nicely formatted, human-readable string).
+        /// </summary>
+        /// <returns>CECIES version number as a nicely formatted, human-readable string.</returns>
+        public string GetVersionNumberString()
+        {
+            return ceciesGetVersionNumberStringDelegate();
         }
 
         /// <summary>
@@ -570,6 +609,8 @@ namespace GlitchedPolygons.CeciesSharp
 
             Console.WriteLine("Allow fprintf: " + cecies.IsConsoleLoggingEnabled);
 
+            Console.WriteLine($"CECIES Version: {cecies.GetVersionNumberString()} ({cecies.GetVersionNumber()})" + Environment.NewLine);
+            
             (string, string) keyPair25519 = cecies.GenerateKeypairCurve25519(null);
             Console.WriteLine($"Generated Curve25519 Key Pair:\nPub: {keyPair25519.Item1}\nPrv: {keyPair25519.Item2}");
 

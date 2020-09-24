@@ -30,7 +30,7 @@ extern "C" {
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "cecies/types.h"
+#include "types.h"
 
 /**
  * Encrypts the given data using ECIES over Curve25519 and AES256-GCM.
