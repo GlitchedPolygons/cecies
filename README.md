@@ -35,7 +35,15 @@ If you don't want to use git submodules, you can also start vendoring a specific
 There are pre-built binaries for every major platform for you to download inside the [GitHub Releases page](https://github.com/GlitchedPolygons/cecies/releases). Thanks for downloading, and I hope you enjoy!
 
 Oh, you're still here :) You really want to compile it yourself, huh. 
-There is a [build.bat](https://github.com/GlitchedPolygons/cecies/blob/master/build.bat) for Windows and [build.sh](https://github.com/GlitchedPolygons/cecies/blob/master/build.sh) for Linux & Mac available for easy Release-build compilation. 
+Cool. 
+
+Look, just execute the following commands and you'll have your CECIES comfortably built and packaged for you automatically into a _.tar.gz_ file that you will find inside the `build/` folder.
+
+```bash
+mkdir -p build && cd build
+cmake -DBUILD_SHARED_LIBS=On -DUSE_SHARED_MBEDTLS_LIBRARY=Off -Dcecies_BUILD_DLL=On -Dcecies_PACKAGE=On -DCMAKE_BUILD_TYPE=Release ..
+cmake --build . --config Release
+```
 
 ### Linking
 
@@ -46,11 +54,13 @@ This is equivalent to static linking by default, but much more pleasant than the
 
 #### Dynamic linking
 
-* To dynamically link CECIES into your application, you need to `#define CECIES_DLL` before including any of the CECIES headers in your code! (Or, alternatively, add the `CECIES_DLL` pre-processor definition inside your build script/solution config)
-* If you didn't grab the pre-built DLL, you need to define/pass the pre-processor macro `CECIES_BUILD_DLL` before compiling CECIES!
-* Always have the CECIES shared library reachable inside your `$PATH`, or copy it into the same directory where your application's executable resides.
+* To dynamically link CECIES into your application on Windows, you need to `#define CECIES_DLL` before including any of the CECIES headers in your code! (Or, alternatively, add the `CECIES_DLL` pre-processor definition inside your build script/solution config)
+* * This will add the `__declspec(dllexport)` declaration that are needed on Windows to the various CECIES functions.
+* If you did not grab the pre-built DLL, you need to define/pass the pre-processor macro `CECIES_BUILD_DLL` before compiling CECIES!
+* * Your consuming code should then only `#define CECIES_DLL` (as stated above).
+* For shared libs: always have the CECIES shared library reachable inside your `$PATH`, or copy it into the same directory where your application's executable resides.
 
-**Note:** the default setting for building CECIES as a shared library compiles the MbedTLS dependency targets as [position-independent code](https://en.wikipedia.org/wiki/Position-independent_code) and statically links them into the CECIES shared library, so that you only need to include one `cecies.dll` file (or `.so`/`.dylib` file, whatever) with your application.
+**Note:** the default configuration for building CECIES as a shared library compiles the MbedTLS dependency targets as [position-independent code](https://en.wikipedia.org/wiki/Position-independent_code) directly into the CECIES shared library, so that you only need to include one `cecies.dll` file (or `.so`/`.dylib` file, whatever) with your application.
 
 If this is not what you want, you are free to manually compile [MbedTLS](https://github.com/ARMmbed/mbedtls) as a DLL too and modify the [CMakeLists.txt](https://github.com/GlitchedPolygons/cecies/blob/master/CMakeLists.txt) file accordingly.
 
