@@ -170,7 +170,7 @@ namespace GlitchedPolygons.CeciesSharp
 
         private delegate void CeciesDisableFprintfDelegate();
 
-        private delegate bool CeciesIsFprintfEnabledDelegate();
+        private delegate byte CeciesIsFprintfEnabledDelegate();
 
         private delegate ulong CeciesGetVersionNumberDelegate();
 
@@ -439,7 +439,8 @@ namespace GlitchedPolygons.CeciesSharp
         /// </summary>
         public bool IsConsoleLoggingEnabled()
         {
-            return ceciesIsFprintfEnabledDelegate();
+            byte r = ceciesIsFprintfEnabledDelegate();
+            return r != 0;
         }
 
         /// <summary>
