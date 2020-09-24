@@ -55,7 +55,7 @@ This is equivalent to static linking by default, but much more pleasant than the
 #### Dynamic linking
 
 * To dynamically link CECIES into your application on Windows, you need to `#define CECIES_DLL` before including any of the CECIES headers in your code! (Or, alternatively, add the `CECIES_DLL` pre-processor definition inside your build script/solution config)
-* * This will add the `__declspec(dllexport)` declaration that are needed on Windows to the various CECIES functions.
+* * This will add the `__declspec(dllexport)` declaration that is needed on Windows to the various CECIES functions.
 * If you did not grab the pre-built DLL, you need to define/pass the pre-processor macro `CECIES_BUILD_DLL` before compiling CECIES!
 * * Your consuming code should then only `#define CECIES_DLL` (as stated above).
 * For shared libs: always have the CECIES shared library reachable inside your `$PATH`, or copy it into the same directory where your application's executable resides.
