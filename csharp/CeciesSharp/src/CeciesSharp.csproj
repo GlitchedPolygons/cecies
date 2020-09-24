@@ -10,10 +10,7 @@
         <PackageTags>c# cryptographcy ecies cecies ecc elliptic curve curves curve25519 curve448 encryption decryption</PackageTags>
         <PackageProjectUrl>https://github.com/GlitchedPolygons/cecies</PackageProjectUrl>
         <RepositoryUrl>https://github.com/GlitchedPolygons/cecies</RepositoryUrl>
-        <PackageVersion>2.1.4.0</PackageVersion>
         <Authors>Glitched Polygons</Authors>
-        <AssemblyVersion>2.1.4.0</AssemblyVersion>
-        <FileVersion>2.1.4.0</FileVersion>
         <LangVersion>8</LangVersion>
         <OutputType>Exe</OutputType>
     </PropertyGroup>
@@ -23,23 +20,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="lib\x64\linux\libcecies.so.2.1.4" />
-        <None Remove="lib\x64\mac\libcecies.2.1.4.dylib" />
-        <None Remove="lib\x64\windows\cecies.dll" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Content Include="lib\x64\linux\libcecies.so.2.1.4">
-            <PackageCopyToOutput>true</PackageCopyToOutput>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="lib\x64\mac\libcecies.2.1.4.dylib">
-            <PackageCopyToOutput>true</PackageCopyToOutput>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="lib\x64\windows\cecies.dll">
-            <PackageCopyToOutput>true</PackageCopyToOutput>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
+        <None Include="$(MSBuildThisFileDirectory)lib\**" CopyToOutputDirectory="Always" />
     </ItemGroup>
 </Project>
