@@ -118,7 +118,7 @@ Macros</h2></td></tr>
 <tr class="memitem:aaeccc2ccc982178c6bf0f0636522eeab"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#aaeccc2ccc982178c6bf0f0636522eeab">CECIES_MAX</a>(x,  y)&#160;&#160;&#160;(((x) &gt; (y)) ? (x) : (y))</td></tr>
 <tr class="separator:aaeccc2ccc982178c6bf0f0636522eeab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06dcd275a454ec67defccddf38779f59"><td class="memItemLeft" align="right" valign="top"><a id="a06dcd275a454ec67defccddf38779f59"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>cecies_fprintf</b>&#160;&#160;&#160;_cecies_fprintf_fptr</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>cecies_fprintf</b>&#160;&#160;&#160;cecies_fprintf_fptr</td></tr>
 <tr class="separator:a06dcd275a454ec67defccddf38779f59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -141,8 +141,8 @@ Functions</h2></td></tr>
 <tr class="separator:ac8e3ea8c14230ae9f1519e49291bd871"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa79983982686a5be66789ca19d303113"><td class="memItemLeft" align="right" valign="top">CECIES_API uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#aa79983982686a5be66789ca19d303113">cecies_get_version_nr</a> ()</td></tr>
 <tr class="separator:aa79983982686a5be66789ca19d303113"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a563a44461fb1c1e9d242cf47f7524259"><td class="memItemLeft" align="right" valign="top">CECIES_API bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a563a44461fb1c1e9d242cf47f7524259">cecies_is_fprintf_enabled</a> ()</td></tr>
-<tr class="separator:a563a44461fb1c1e9d242cf47f7524259"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a375db176a13bd5f6bef8f6a0eefd112a"><td class="memItemLeft" align="right" valign="top">CECIES_API unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a375db176a13bd5f6bef8f6a0eefd112a">cecies_is_fprintf_enabled</a> ()</td></tr>
+<tr class="separator:a375db176a13bd5f6bef8f6a0eefd112a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a289a1479fbe884b60dd256c2cfecc735"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a289a1479fbe884b60dd256c2cfecc735">cecies_printvoid</a> (FILE *stream, const char *format,...)</td></tr>
 <tr class="separator:a289a1479fbe884b60dd256c2cfecc735"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d9122bb205f577d0d6225ed2771795b"><td class="memItemLeft" align="right" valign="top">CECIES_API void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a0d9122bb205f577d0d6225ed2771795b">cecies_enable_fprintf</a> ()</td></tr>
@@ -651,14 +651,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a563a44461fb1c1e9d242cf47f7524259"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a563a44461fb1c1e9d242cf47f7524259">&#9670;&nbsp;</a></span>cecies_is_fprintf_enabled()</h2>
+<a id="a375db176a13bd5f6bef8f6a0eefd112a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a375db176a13bd5f6bef8f6a0eefd112a">&#9670;&nbsp;</a></span>cecies_is_fprintf_enabled()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">CECIES_API bool cecies_is_fprintf_enabled </td>
+          <td class="memname">CECIES_API unsigned char cecies_is_fprintf_enabled </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>

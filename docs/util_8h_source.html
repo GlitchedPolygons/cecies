@@ -145,20 +145,20 @@ $(function() {
 <div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
 <div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;CECIES_API uint64_t <a class="code" href="util_8h.html#aa79983982686a5be66789ca19d303113">cecies_get_version_nr</a>();</div>
 <div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;CECIES_API <span class="keywordtype">bool</span> <a class="code" href="util_8h.html#a563a44461fb1c1e9d242cf47f7524259">cecies_is_fprintf_enabled</a>();</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;CECIES_API <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> <a class="code" href="util_8h.html#a375db176a13bd5f6bef8f6a0eefd112a">cecies_is_fprintf_enabled</a>();</div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
 <div class="line"><a name="l00157"></a><span class="lineno"><a class="line" href="util_8h.html#a289a1479fbe884b60dd256c2cfecc735">  157</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">int</span> <a class="code" href="util_8h.html#a289a1479fbe884b60dd256c2cfecc735">cecies_printvoid</a>(FILE* stream, <span class="keyword">const</span> <span class="keywordtype">char</span>* format, ...)</div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;{</div>
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="keywordflow">return</span> 0;</div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;}</div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;CECIES_API <span class="keyword">extern</span> int (*_cecies_fprintf_fptr)(FILE* stream, <span class="keyword">const</span> <span class="keywordtype">char</span>* format, ...);</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;CECIES_API <span class="keyword">extern</span> int (*cecies_fprintf_fptr)(FILE* stream, <span class="keyword">const</span> <span class="keywordtype">char</span>* format, ...);</div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;CECIES_API <span class="keywordtype">void</span> <a class="code" href="util_8h.html#a0d9122bb205f577d0d6225ed2771795b">cecies_enable_fprintf</a>();</div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;CECIES_API <span class="keywordtype">void</span> <a class="code" href="util_8h.html#a54ee58fdf0965aa02f7bb74dd8b20d94">cecies_disable_fprintf</a>();</div>
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<span class="preprocessor">#define cecies_fprintf _cecies_fprintf_fptr</span></div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<span class="preprocessor">#define cecies_fprintf cecies_fprintf_fptr</span></div>
 <div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
 <div class="line"><a name="l00185"></a><span class="lineno"><a class="line" href="util_8h.html#afccad4d81076bc94026ff47bf99c582a">  185</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> <span class="keywordtype">int</span> <a class="code" href="util_8h.html#afccad4d81076bc94026ff47bf99c582a">cecies_get_random_big_integer</a>()</div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;{</div>
@@ -180,6 +180,7 @@ $(function() {
 <div class="ttc" id="autil_8h_html_a335269d0e79567b20346bd39108403b0"><div class="ttname"><a href="util_8h.html#a335269d0e79567b20346bd39108403b0">cecies_calc_aes_cbc_ciphertext_length</a></div><div class="ttdeci">static size_t cecies_calc_aes_cbc_ciphertext_length(const size_t plaintext_length)</div><div class="ttdef"><b>Definition:</b> util.h:55</div></div>
 <div class="ttc" id="atypes_8h_html"><div class="ttname"><a href="types_8h.html">types.h</a></div><div class="ttdoc">CECIES types.</div></div>
 <div class="ttc" id="autil_8h_html_af3b8cd9fc39f89ca430a1e5f084d055c"><div class="ttname"><a href="util_8h.html#af3b8cd9fc39f89ca430a1e5f084d055c">cecies_curve25519_calc_output_buffer_needed_size</a></div><div class="ttdeci">static size_t cecies_curve25519_calc_output_buffer_needed_size(const size_t input_buffer_length)</div><div class="ttdef"><b>Definition:</b> util.h:82</div></div>
+<div class="ttc" id="autil_8h_html_a375db176a13bd5f6bef8f6a0eefd112a"><div class="ttname"><a href="util_8h.html#a375db176a13bd5f6bef8f6a0eefd112a">cecies_is_fprintf_enabled</a></div><div class="ttdeci">CECIES_API unsigned char cecies_is_fprintf_enabled()</div></div>
 <div class="ttc" id="aconstants_8h_html_ad71e4756e3bc5a1125ca086587286600"><div class="ttname"><a href="constants_8h.html#ad71e4756e3bc5a1125ca086587286600">CECIES_X25519_KEY_SIZE</a></div><div class="ttdeci">#define CECIES_X25519_KEY_SIZE</div><div class="ttdef"><b>Definition:</b> constants.h:44</div></div>
 <div class="ttc" id="autil_8h_html_a653a1020a00b9e36a20efc386622e441"><div class="ttname"><a href="util_8h.html#a653a1020a00b9e36a20efc386622e441">cecies_dev_urandom</a></div><div class="ttdeci">CECIES_API void cecies_dev_urandom(unsigned char *output_buffer, size_t output_buffer_size)</div></div>
 <div class="ttc" id="aconstants_8h_html_a038c483a06eaff1b607b5720d51cd7ca"><div class="ttname"><a href="constants_8h.html#a038c483a06eaff1b607b5720d51cd7ca">CECIES_X448_KEY_SIZE</a></div><div class="ttdeci">#define CECIES_X448_KEY_SIZE</div><div class="ttdef"><b>Definition:</b> constants.h:49</div></div>
@@ -192,7 +193,6 @@ $(function() {
 <div class="ttc" id="autil_8h_html_a838f6a0f17cec65d970cb5a407c58e7e"><div class="ttname"><a href="util_8h.html#a838f6a0f17cec65d970cb5a407c58e7e">cecies_calc_output_buffer_needed_size</a></div><div class="ttdeci">static size_t cecies_calc_output_buffer_needed_size(const size_t input_buffer_length, const size_t key_size)</div><div class="ttdef"><b>Definition:</b> util.h:66</div></div>
 <div class="ttc" id="autil_8h_html_a289a1479fbe884b60dd256c2cfecc735"><div class="ttname"><a href="util_8h.html#a289a1479fbe884b60dd256c2cfecc735">cecies_printvoid</a></div><div class="ttdeci">static int cecies_printvoid(FILE *stream, const char *format,...)</div><div class="ttdef"><b>Definition:</b> util.h:157</div></div>
 <div class="ttc" id="autil_8h_html_ac8e3ea8c14230ae9f1519e49291bd871"><div class="ttname"><a href="util_8h.html#ac8e3ea8c14230ae9f1519e49291bd871">cecies_get_version_str</a></div><div class="ttdeci">CECIES_API char * cecies_get_version_str()</div></div>
-<div class="ttc" id="autil_8h_html_a563a44461fb1c1e9d242cf47f7524259"><div class="ttname"><a href="util_8h.html#a563a44461fb1c1e9d242cf47f7524259">cecies_is_fprintf_enabled</a></div><div class="ttdeci">CECIES_API bool cecies_is_fprintf_enabled()</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
