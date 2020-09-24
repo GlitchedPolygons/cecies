@@ -362,7 +362,7 @@ static void cecies_curve25519_encrypt_raw_binary_decrypts_successfully()
     memset(decrypted_string, 0x00, encrypted_string_length);
 
     TEST_CHECK(0 == cecies_curve25519_decrypt(encrypted_string, encrypted_string_length, false, TEST_CURVE25519_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    TEST_CHECK(0 == memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
+    TEST_CHECK(0 == memcmp(TEST_STRING, decrypted_string, sizeof(TEST_STRING)));
     //
 
     free(encrypted_string);
@@ -388,7 +388,7 @@ static void cecies_curve25519_encrypt_base64_decrypts_successfully()
     memset(decrypted_string, 0x00, encrypted_string_length);
 
     TEST_CHECK(0 == cecies_curve25519_decrypt(encrypted_string, encrypted_string_length, true, TEST_CURVE25519_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    TEST_CHECK(0 == memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
+    TEST_CHECK(0 == memcmp(TEST_STRING, decrypted_string, sizeof(TEST_STRING)));
     //
 
     free(encrypted_string);
@@ -414,7 +414,7 @@ static void cecies_curve25519_encrypt_bin_decrypt_with_public_key_fails()
     memset(decrypted_string, 0x00, encrypted_string_length);
 
     TEST_CHECK(0 != cecies_curve25519_decrypt(encrypted_string, encrypted_string_length, false, TEST_CURVE25519_PUBLIC_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
+    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, sizeof(TEST_STRING)));
     //
 
     free(encrypted_string);
@@ -442,7 +442,7 @@ static void cecies_curve25519_encrypt_bin_decrypt_with_invalid_key_fails()
     memset(decrypted_string, 0x00, encrypted_string_length);
 
     TEST_CHECK(0 != cecies_curve25519_decrypt(encrypted_string, encrypted_string_length, false, INVALID_CURVE25519_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
+    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, sizeof(TEST_STRING)));
     //
 
     free(encrypted_string);
@@ -470,7 +470,7 @@ static void cecies_curve25519_encrypt_bin_decrypt_with_invalid_key_2_fails()
     memset(decrypted_string, 0x00, encrypted_string_length);
 
     TEST_CHECK(0 != cecies_curve25519_decrypt(encrypted_string, encrypted_string_length, false, INVALID_CURVE25519_KEY2, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
+    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, sizeof(TEST_STRING)));
     //
 
     free(encrypted_string);
@@ -500,7 +500,7 @@ static void cecies_curve25519_encrypt_bin_decrypt_with_wrong_key_fails()
     memset(decrypted_string, 0x00, encrypted_string_length);
 
     TEST_CHECK(0 != cecies_curve25519_decrypt(encrypted_string, encrypted_string_length, false, TEST_CURVE25519_PRIVATE_KEY2, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
+    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, sizeof(TEST_STRING)));
     //
 
     free(encrypted_string);
@@ -527,7 +527,7 @@ static void cecies_curve25519_encrypt_bin_decrypt_with_zero_key_fails()
 
     cecies_curve25519_key z = { .hexstring = "0000000000000000000000000000000000000000000000000000000000000000" };
     TEST_CHECK(0 != cecies_curve25519_decrypt(encrypted_string, encrypted_string_length, false, z, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
+    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, sizeof(TEST_STRING)));
     //
 
     free(encrypted_string);
@@ -1129,7 +1129,7 @@ static void cecies_curve448_encrypt_raw_binary_decrypts_successfully()
     memset(decrypted_string, 0x00, encrypted_string_length);
 
     TEST_CHECK(0 == cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, TEST_CURVE448_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    TEST_CHECK(0 == memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
+    TEST_CHECK(0 == memcmp(TEST_STRING, decrypted_string, sizeof(TEST_STRING)));
     //
 
     free(encrypted_string);
@@ -1155,7 +1155,7 @@ static void cecies_curve448_encrypt_base64_decrypts_successfully()
     memset(decrypted_string, 0x00, encrypted_string_length);
 
     TEST_CHECK(0 == cecies_curve448_decrypt(encrypted_string, encrypted_string_length, true, TEST_CURVE448_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    TEST_CHECK(0 == memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
+    TEST_CHECK(0 == memcmp(TEST_STRING, decrypted_string, sizeof(TEST_STRING)));
     //
 
     free(encrypted_string);
@@ -1181,7 +1181,7 @@ static void cecies_curve448_encrypt_bin_decrypt_with_public_key_fails()
     memset(decrypted_string, 0x00, encrypted_string_length);
 
     TEST_CHECK(0 != cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, TEST_CURVE448_PUBLIC_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
+    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, sizeof(TEST_STRING)));
     //
 
     free(encrypted_string);
@@ -1209,7 +1209,7 @@ static void cecies_curve448_encrypt_bin_decrypt_with_invalid_key_fails()
     memset(decrypted_string, 0x00, encrypted_string_length);
 
     TEST_CHECK(0 != cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, INVALID_CURVE448_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
+    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, sizeof(TEST_STRING)));
     //
 
     free(encrypted_string);
@@ -1237,7 +1237,7 @@ static void cecies_curve448_encrypt_bin_decrypt_with_invalid_key_2_fails()
     memset(decrypted_string, 0x00, encrypted_string_length);
 
     TEST_CHECK(0 != cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, INVALID_CURVE448_KEY2, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
+    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, sizeof(TEST_STRING)));
     //
 
     free(encrypted_string);
@@ -1267,7 +1267,7 @@ static void cecies_curve448_encrypt_bin_decrypt_with_wrong_key_fails()
     memset(decrypted_string, 0x00, encrypted_string_length);
 
     TEST_CHECK(0 != cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, TEST_CURVE448_PRIVATE_KEY2, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
+    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, sizeof(TEST_STRING)));
     //
 
     free(encrypted_string);
@@ -1294,7 +1294,7 @@ static void cecies_curve448_encrypt_bin_decrypt_with_zero_key_fails()
 
     cecies_curve448_key z = { .hexstring = "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" };
     TEST_CHECK(0 != cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, z, decrypted_string, encrypted_string_length, &decrypted_string_length));
-    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, decrypted_string_length));
+    TEST_CHECK(0 != memcmp(TEST_STRING, decrypted_string, sizeof(TEST_STRING)));
     //
 
     free(encrypted_string);
