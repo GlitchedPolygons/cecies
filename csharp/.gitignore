@@ -167,7 +167,7 @@ ASALocalRun/
 # NVidia Nsight GPU debugger configuration file
 *.nvuser
 
-!src/lib/**
+!lib/**
 
 # JetBrains IDE files
 **/.idea

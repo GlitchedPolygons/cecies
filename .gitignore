@@ -4,6 +4,7 @@
 **/[Tt]humbs.db
 **/[Oo]ut
 **/[Bb]uild*
+!build.sh
 **/[Cc]make-build-*
 latex/
 
