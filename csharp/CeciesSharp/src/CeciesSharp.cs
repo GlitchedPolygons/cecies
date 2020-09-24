@@ -7,7 +7,9 @@ using System.Runtime.InteropServices;
 namespace GlitchedPolygons.CeciesSharp
 {
     /// <summary>
-    /// CeciesSharp class that wraps the native C functions from the CECIES library.
+    /// CeciesSharp class that wraps the native C functions from the CECIES library. <para> </para>
+    /// Copy this class into your own C# project and then don't forget to
+    /// copy the lib/ folder to your own project's build output directory!
     /// </summary>
     public class CeciesSharpContext : IDisposable
     {
@@ -549,11 +551,19 @@ namespace GlitchedPolygons.CeciesSharp
 
             return _o;
         }
-        
+    }
+
+    //  --------------------------------------------------------------------
+    //  ------------------------------> DEMO <------------------------------
+    //  --------------------------------------------------------------------
+    
+    internal static class Example
+    {
         // DEMO
         // This is an example Main method that shows how the various CeciesSharp wrapper functionalities can be used.
         // Don't forget to copy the CeciesSharp/src/lib folder into your output build directory, otherwise CeciesSharp doesn't know from where to load the DLL/shared lib!
-        static void Main(string[] args)
+        
+        private static void Main(string[] args)
         {
             using var cecies = new CeciesSharpContext();
             cecies.EnableConsoleLogging();
