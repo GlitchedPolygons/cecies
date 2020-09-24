@@ -277,7 +277,7 @@ namespace GlitchedPolygons.CeciesSharp
 
             if (!Directory.Exists(pathBuilder.ToString()))
             {
-                throw new PlatformNotSupportedException($"CECIES shared library not found in {pathBuilder.ToString()} and/or unsupported CPU architecture. Please don't forget to copy the CECIES shared libraries/DLL into the 'lib/{{CPU_ARCHITECTURE}}/{{OS}}/{{SHARED_LIB_FILE}}' folder of your output build directory.  https://github.com/GlitchedPolygons/cecies/tree/master/csharp/CeciesSharp/src");
+                throw new PlatformNotSupportedException($"CECIES shared library not found in {pathBuilder.ToString()} and/or unsupported CPU architecture. Please don't forget to copy the CECIES shared libraries/DLL into the 'lib/{{CPU_ARCHITECTURE}}/{{OS}}/{{SHARED_LIB_FILE}}' folder of your output build directory.  https://github.com/GlitchedPolygons/cecies/tree/master/csharp/");
             }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
