@@ -23,6 +23,27 @@
 #include <bcrypt.h>
 #endif
 
+static unsigned char cecies_fprintf_enabled = 1;
+
+unsigned char cecies_is_fprintf_enabled()
+{
+    return cecies_fprintf_enabled;
+}
+
+int (*cecies_fprintf_fptr)(FILE* stream, const char* format, ...) = &fprintf;
+
+void cecies_enable_fprintf()
+{
+    cecies_fprintf_enabled = 1;
+    cecies_fprintf_fptr = &fprintf;
+}
+
+void cecies_disable_fprintf()
+{
+    cecies_fprintf_enabled = 0;
+    cecies_fprintf_fptr = &cecies_printvoid;
+}
+
 int cecies_hexstr2bin(const char* hexstr, const size_t hexstr_length, unsigned char* output, const size_t output_size, size_t* output_length)
 {
     if (hexstr == NULL || output == NULL || hexstr_length == 0)
@@ -115,25 +136,4 @@ char* cecies_get_version_str()
 uint64_t cecies_get_version_nr()
 {
     return CECIES_VERSION;
-}
-
-static bool _cecies_fprintf_enabled = true;
-
-bool cecies_is_fprintf_enabled()
-{
-    return _cecies_fprintf_enabled;
-}
-
-int (*_cecies_fprintf_fptr)(FILE* stream, const char* format, ...) = &fprintf;
-
-void cecies_enable_fprintf()
-{
-    _cecies_fprintf_enabled = true;
-    _cecies_fprintf_fptr = &fprintf;
-}
-
-void cecies_disable_fprintf()
-{
-    _cecies_fprintf_enabled = false;
-    _cecies_fprintf_fptr = &cecies_printvoid;
 }

@@ -145,7 +145,7 @@ CECIES_API uint64_t cecies_get_version_nr();
  * Checks whether CECIES fprintf is enabled (whether errors are fprintfed into stderr).
  * @return Whether errors are fprintfed into stderr or not.
  */
-CECIES_API bool cecies_is_fprintf_enabled();
+CECIES_API unsigned char cecies_is_fprintf_enabled();
 
 /**
  * Like fprintf() except it doesn't do anything. Like printing into <c>/dev/null</c> :D lots of fun!
@@ -160,7 +160,7 @@ static inline int cecies_printvoid(FILE* stream, const char* format, ...)
 }
 
 /** @private */
-CECIES_API extern int (*_cecies_fprintf_fptr)(FILE* stream, const char* format, ...);
+CECIES_API extern int (*cecies_fprintf_fptr)(FILE* stream, const char* format, ...);
 
 /**
  * Enables CECIES' use of fprintf().
@@ -173,7 +173,7 @@ CECIES_API void cecies_enable_fprintf();
 CECIES_API void cecies_disable_fprintf();
 
 /** @private */
-#define cecies_fprintf _cecies_fprintf_fptr
+#define cecies_fprintf cecies_fprintf_fptr
 
 /**
  * Gets a random big integer. This only features very limited randomness due to usage of <c>rand()</c>! <p>

@@ -54,11 +54,11 @@ static void cecies_fprintf_enables_and_disables_correctly()
 {
     cecies_disable_fprintf();
     TEST_CHECK(!cecies_is_fprintf_enabled());
-    TEST_CHECK(memcmp(_cecies_fprintf_fptr, &fprintf, sizeof(&fprintf)) != 0);
+    TEST_CHECK(memcmp(cecies_fprintf_fptr, &fprintf, sizeof(&fprintf)) != 0);
 
     cecies_enable_fprintf();
     TEST_CHECK(cecies_is_fprintf_enabled());
-    TEST_CHECK(memcmp(_cecies_fprintf_fptr, &fprintf, sizeof(&fprintf)) == 0);
+    TEST_CHECK(memcmp(cecies_fprintf_fptr, &fprintf, sizeof(&fprintf)) == 0);
 
     cecies_disable_fprintf();
 }
