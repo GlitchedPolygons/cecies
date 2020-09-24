@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
         <Title>GlitchedPolygons.CeciesSharp</Title>
         <AssemblyName>GlitchedPolygons.CeciesSharp</AssemblyName>
         <RootNamespace>GlitchedPolygons.CeciesSharp</RootNamespace>
@@ -29,7 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="lib\x64\linux\libcecies.so.2.1.3">
+        <Content Include="lib\x64\linux\libcecies.so.2.1.4">
             <PackageCopyToOutput>true</PackageCopyToOutput>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
