@@ -257,16 +257,20 @@ namespace GlitchedPolygons.CeciesSharp
         /// </summary>
         public CeciesSharpContext(string sharedLibPathOverride = null)
         {
+            string os;
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
+                os = "windows";
                 loadUtils = new SharedLibLoadUtilsWindows();
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
+                os = "linux";
                 loadUtils = new SharedLibLoadUtilsLinux();
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
+                os = "mac";
                 loadUtils = new SharedLibLoadUtilsMac();
             }
             else
@@ -300,22 +304,8 @@ namespace GlitchedPolygons.CeciesSharp
                     throw new PlatformNotSupportedException($"CECIES shared library not found in {pathBuilder.ToString()} and/or unsupported CPU architecture. Please don't forget to copy the CECIES shared libraries/DLL into the 'lib/{{CPU_ARCHITECTURE}}/{{OS}}/{{SHARED_LIB_FILE}}' folder of your output build directory.  https://github.com/GlitchedPolygons/cecies/tree/master/csharp/");
                 }
 
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    pathBuilder.Append("windows/");
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    pathBuilder.Append("linux/");
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                {
-                    pathBuilder.Append("mac/");
-                }
-                else
-                {
-                    throw new PlatformNotSupportedException("Unsupported OS");
-                }
+                pathBuilder.Append(os);
+                pathBuilder.Append('/');
 
                 string[] l = Directory.GetFiles(pathBuilder.ToString());
                 if (l == null || l.Length != 1)
