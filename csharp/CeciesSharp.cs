@@ -175,7 +175,7 @@ namespace GlitchedPolygons.CeciesSharp
         private delegate ulong CeciesGetVersionNumberDelegate();
 
         private delegate IntPtr CeciesGetVersionNumberStringDelegate();
-        
+
         private delegate int CeciesGenerateKeypairCurve25519Delegate(
             ref CeciesKeypairCurve25519 output,
             [MarshalAs(UnmanagedType.LPUTF8Str)] string additionalEntropy,
@@ -253,64 +253,84 @@ namespace GlitchedPolygons.CeciesSharp
         /// <summary>
         /// Creates a new CeciesSharp instance. <para> </para>
         /// Make sure to create one only once and cache it as needed, since loading the DLLs into memory could be, well, not so performant.
+        /// <param name="sharedLibPathOverride">[OPTIONAL] Don't look for a <c>lib/</c> folder and directly use this path as a pre-resolved, platform-specific shared lib/DLL file path. Pass this if you want to handle the various platform's paths yourself.</param>
         /// </summary>
-        public CeciesSharpContext()
+        public CeciesSharpContext(string sharedLibPathOverride = null)
         {
-            StringBuilder pathBuilder = new StringBuilder(256);
-            pathBuilder.Append("lib/");
-
-            switch (RuntimeInformation.ProcessArchitecture)
-            {
-                case Architecture.X64:
-                    pathBuilder.Append("x64/");
-                    break;
-                case Architecture.X86:
-                    pathBuilder.Append("x86/");
-                    break;
-                case Architecture.Arm:
-                    pathBuilder.Append("armeabi-v7a/");
-                    break;
-                case Architecture.Arm64:
-                    pathBuilder.Append("arm64-v8a/");
-                    break;
-            }
-
-            if (!Directory.Exists(pathBuilder.ToString()))
-            {
-                throw new PlatformNotSupportedException($"CECIES shared library not found in {pathBuilder.ToString()} and/or unsupported CPU architecture. Please don't forget to copy the CECIES shared libraries/DLL into the 'lib/{{CPU_ARCHITECTURE}}/{{OS}}/{{SHARED_LIB_FILE}}' folder of your output build directory.  https://github.com/GlitchedPolygons/cecies/tree/master/csharp/");
-            }
-
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 loadUtils = new SharedLibLoadUtilsWindows();
-                pathBuilder.Append("windows/");
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 loadUtils = new SharedLibLoadUtilsLinux();
-                pathBuilder.Append("linux/");
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 loadUtils = new SharedLibLoadUtilsMac();
-                pathBuilder.Append("mac/");
             }
             else
             {
                 throw new PlatformNotSupportedException("Unsupported OS");
             }
 
-            string[] l = Directory.GetFiles(pathBuilder.ToString());
-            if (l == null || l.Length != 1)
+            if (string.IsNullOrEmpty(sharedLibPathOverride))
             {
-                throw new FileLoadException("There should only be exactly one CECIES shared library file per supported platform!");
+                StringBuilder pathBuilder = new StringBuilder(256);
+                pathBuilder.Append("lib/");
+
+                switch (RuntimeInformation.ProcessArchitecture)
+                {
+                    case Architecture.X64:
+                        pathBuilder.Append("x64/");
+                        break;
+                    case Architecture.X86:
+                        pathBuilder.Append("x86/");
+                        break;
+                    case Architecture.Arm:
+                        pathBuilder.Append("armeabi-v7a/");
+                        break;
+                    case Architecture.Arm64:
+                        pathBuilder.Append("arm64-v8a/");
+                        break;
+                }
+
+                if (!Directory.Exists(pathBuilder.ToString()))
+                {
+                    throw new PlatformNotSupportedException($"CECIES shared library not found in {pathBuilder.ToString()} and/or unsupported CPU architecture. Please don't forget to copy the CECIES shared libraries/DLL into the 'lib/{{CPU_ARCHITECTURE}}/{{OS}}/{{SHARED_LIB_FILE}}' folder of your output build directory.  https://github.com/GlitchedPolygons/cecies/tree/master/csharp/");
+                }
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    pathBuilder.Append("windows/");
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    pathBuilder.Append("linux/");
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    pathBuilder.Append("mac/");
+                }
+                else
+                {
+                    throw new PlatformNotSupportedException("Unsupported OS");
+                }
+
+                string[] l = Directory.GetFiles(pathBuilder.ToString());
+                if (l == null || l.Length != 1)
+                {
+                    throw new FileLoadException("There should only be exactly one CECIES shared library file per supported platform!");
+                }
+
+                pathBuilder.Append(Path.GetFileName(l[0]));
+                LoadedLibraryPath = Path.GetFullPath(pathBuilder.ToString());
+                pathBuilder.Clear();
             }
-
-            pathBuilder.Append(Path.GetFileName(l[0]));
-
-            LoadedLibraryPath = Path.GetFullPath(pathBuilder.ToString());
-
-            pathBuilder.Clear();
+            else
+            {
+                LoadedLibraryPath = sharedLibPathOverride;
+            }
 
             lib = loadUtils.LoadLibrary(LoadedLibraryPath);
             if (lib == IntPtr.Zero)
@@ -335,13 +355,13 @@ namespace GlitchedPolygons.CeciesSharp
             {
                 goto hell;
             }
-            
+
             IntPtr getVersionNr = loadUtils.GetProcAddress(lib, "cecies_get_version_nr");
             if (getVersionNr == IntPtr.Zero)
             {
                 goto hell;
             }
-            
+
             IntPtr getVersionStr = loadUtils.GetProcAddress(lib, "cecies_get_version_str");
             if (getVersionStr == IntPtr.Zero)
             {
@@ -597,13 +617,13 @@ namespace GlitchedPolygons.CeciesSharp
     //  --------------------------------------------------------------------
     //  ------------------------------> DEMO <------------------------------
     //  --------------------------------------------------------------------
-    
+
     internal static class Example
     {
         // DEMO
         // This is an example Main method that shows how the various CeciesSharp wrapper functionalities can be used.
         // Don't forget to copy the CeciesSharp/src/lib folder into your output build directory, otherwise CeciesSharp doesn't know from where to load the DLL/shared lib!
-        
+
         private static void Main(string[] args)
         {
             using var cecies = new CeciesSharpContext();
@@ -612,7 +632,7 @@ namespace GlitchedPolygons.CeciesSharp
             Console.WriteLine("Allow fprintf: " + cecies.IsConsoleLoggingEnabled());
 
             Console.WriteLine($"CECIES Version: {cecies.GetVersionNumberString()} ({cecies.GetVersionNumber()})" + Environment.NewLine);
-            
+
             (string, string) keyPair25519 = cecies.GenerateKeypairCurve25519(null);
             Console.WriteLine($"Generated Curve25519 Key Pair:\nPub: {keyPair25519.Item1}\nPrv: {keyPair25519.Item2}");
 
