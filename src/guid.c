@@ -21,10 +21,17 @@ extern "C" {
 #ifdef _WIN32
 #include <objbase.h>
 #else
+#include <sys/param.h>
+#ifdef __FreeBSD__
+#include <uuid.h>
+#else
 #include <uuid/uuid.h>
 #endif
+#endif
 
+#include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "cecies/guid.h"
 
@@ -47,6 +54,49 @@ cecies_guid cecies_new_guid(const bool lowercase, const bool hyphens)
         snprintf(out.string, sizeof(out.string), CECIES_GET_GUID_FORMAT(lowercase, hyphens), guid.Data1, guid.Data2, guid.Data3, guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3], guid.Data4[4], guid.Data4[5], guid.Data4[6], guid.Data4[7]);
     }
 
+    return out;
+}
+
+#elif defined (__FreeBSD__)
+
+cecies_guid cecies_new_guid(const bool lowercase, const bool hyphens)
+{
+    cecies_guid out;
+    memset(out.string, '\0', sizeof(out.string));
+
+    uint32_t status;
+    uuid_t uuid;
+    uuid_create(&uuid, &status);
+
+    char* tmp = NULL;
+    uuid_to_string(&uuid, &tmp, &status);
+    const size_t tmplen = strlen(tmp);
+
+    if (!lowercase)
+    {
+        for (int i = 0; i < tmplen; ++i)
+        {
+            tmp[i] = toupper(tmp[i]);
+        }
+    }
+
+    if (hyphens)
+    {
+        memcpy(out.string, tmp, tmplen);
+    }
+    else
+    {
+        char* c = out.string;
+        for (int i = 0; i < sizeof(tmp); ++i)
+        {
+            if (tmp[i] != '-')
+            {
+                *(c++) = tmp[i];
+            }
+        }
+    }
+
+    free(tmp);
     return out;
 }
 
