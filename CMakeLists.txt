@@ -122,7 +122,7 @@ target_link_libraries(${PROJECT_NAME}
         PUBLIC mbedcrypto
         )
 
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux" OR ${CYGWIN})
+if (${CYGWIN} OR ${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     target_link_libraries(${PROJECT_NAME} PRIVATE -luuid -lm)
 endif ()
 
