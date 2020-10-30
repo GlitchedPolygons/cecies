@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Security.Cryptography;
 using System.Runtime.InteropServices;
@@ -278,48 +279,43 @@ namespace GlitchedPolygons.CeciesSharp
                 throw new PlatformNotSupportedException("Unsupported OS");
             }
 
-            if (string.IsNullOrEmpty(sharedLibPathOverride))
+            if (!string.IsNullOrEmpty(sharedLibPathOverride))
             {
-                StringBuilder pathBuilder = new StringBuilder(256);
-                pathBuilder.Append("lib/");
-
-                switch (RuntimeInformation.ProcessArchitecture)
-                {
-                    case Architecture.X64:
-                        pathBuilder.Append("x64/");
-                        break;
-                    case Architecture.X86:
-                        pathBuilder.Append("x86/");
-                        break;
-                    case Architecture.Arm:
-                        pathBuilder.Append("armeabi-v7a/");
-                        break;
-                    case Architecture.Arm64:
-                        pathBuilder.Append("arm64-v8a/");
-                        break;
-                }
-
-                if (!Directory.Exists(pathBuilder.ToString()))
-                {
-                    throw new PlatformNotSupportedException($"CECIES shared library not found in {pathBuilder.ToString()} and/or unsupported CPU architecture. Please don't forget to copy the CECIES shared libraries/DLL into the 'lib/{{CPU_ARCHITECTURE}}/{{OS}}/{{SHARED_LIB_FILE}}' folder of your output build directory.  https://github.com/GlitchedPolygons/cecies/tree/master/csharp/");
-                }
-
-                pathBuilder.Append(os);
-                pathBuilder.Append('/');
-
-                string[] l = Directory.GetFiles(pathBuilder.ToString());
-                if (l == null || l.Length != 1)
-                {
-                    throw new FileLoadException("There should only be exactly one CECIES shared library file per supported platform!");
-                }
-
-                pathBuilder.Append(Path.GetFileName(l[0]));
-                LoadedLibraryPath = Path.GetFullPath(pathBuilder.ToString());
-                pathBuilder.Clear();
+                LoadedLibraryPath = sharedLibPathOverride;
             }
             else
             {
-                LoadedLibraryPath = sharedLibPathOverride;
+                string cpu = RuntimeInformation.ProcessArchitecture switch
+                {
+                    Architecture.X64 => "x64",
+                    Architecture.X86 => "x86",
+                    Architecture.Arm => "armeabi-v7a",
+                    Architecture.Arm64 => "arm64-v8a",
+                    _ => throw new PlatformNotSupportedException("CPU Architecture not supported!")
+                };
+
+                string path = Path.Combine(Path.GetFullPath(Path.GetDirectoryName(Assembly.GetCallingAssembly().Location) ?? "."), "lib", cpu, os);
+
+                if (!Directory.Exists(path))
+                {
+                    throw new PlatformNotSupportedException($"Shared library not found in {path} and/or unsupported CPU architecture. Please don't forget to copy the shared libraries/DLL into the 'lib/{{CPU_ARCHITECTURE}}/{{OS}}/{{SHARED_LIB_FILE}}' folder of your output build directory. ");
+                }
+
+                bool found = false;
+                foreach (string file in Directory.GetFiles(path))
+                {
+                    if (file.ToLower().Contains("cecies"))
+                    {
+                        LoadedLibraryPath = Path.GetFullPath(Path.Combine(path, file));
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    throw new FileLoadException($"Shared library not found in {path} and/or unsupported CPU architecture. Please don't forget to copy the shared libraries/DLL into the 'lib/{{CPU_ARCHITECTURE}}/{{OS}}/{{SHARED_LIB_FILE}}' folder of your output build directory. ");
+                }
             }
 
             lib = loadUtils.LoadLibrary(LoadedLibraryPath);
