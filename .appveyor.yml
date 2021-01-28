@@ -1,0 +1,13 @@
+version: 1.0.{build}
+image: Ubuntu
+install:
+- sh: sudo apt-get update && sudo apt-get install -y sudo git gcc g++ clang build-essential cmake && sudo rm -rf 
+/var/lib/apt/lists/*
+- sh: export CC=clang
+- sh: export CXX=clang++
+test_script:
+- sh: sudo bash -eo pipefail test.sh
+build_script:
+- sh: bash -eo pipefail build.sh
+artifacts:
+- path: 'build/*.tar.gz'
