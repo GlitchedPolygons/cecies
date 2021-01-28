@@ -30,6 +30,10 @@ option(${PROJECT_NAME}_DLL "Use as a DLL." OFF)
 option(${PROJECT_NAME}_BUILD_DLL "Build as a DLL." OFF)
 option(${PROJECT_NAME}_PACKAGE "Build the library and package it into a .tar.gz after successfully building." OFF)
 
+if (WIN32)
+    include("${CMAKE_CURRENT_LIST_DIR}/cmake/FixWindowsC5105.cmake")
+endif ()
+
 if (${${PROJECT_NAME}_BUILD_DLL})
     add_compile_definitions("CECIES_BUILD_DLL=1")
     set(${PROJECT_NAME}_DLL ON)
@@ -127,7 +131,6 @@ if ( (${CMAKE_SYSTEM_NAME} STREQUAL "Linux") OR (${CYGWIN}) )
 endif ()
 
 if (WIN32)
-    include("${CMAKE_CURRENT_LIST_DIR}/cmake/FixWindowsC5105.cmake")
     target_link_libraries(${PROJECT_NAME} PUBLIC bcrypt)
 endif ()
 
