@@ -1,12 +1,13 @@
 version: 1.0.{build}
 image: Ubuntu2004
 install:
-- sh: sudo apt-get update && sudo apt-get upgrade -y
+- sh: git submodule update --init --recursive
 - sh: export CC=clang
 - sh: export CXX=clang++
-test_script:
-- sh: sudo bash -eo pipefail test.sh
+before_build:
+- sh: bash -eo pipefail test.sh
 build_script:
+- sh: sudo rm -rf build
 - sh: bash -eo pipefail build.sh
 artifacts:
-- path: 'build/*.tar.gz'
+- path: 'build\*.tar.gz'
