@@ -19,7 +19,7 @@ for:
     - sh: bash -eo pipefail build.sh
     artifacts:
     - path: 'build\*.tar.gz'
-    -
+  -
     matrix:
       only:
         - image: macos
