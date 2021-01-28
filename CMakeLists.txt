@@ -127,8 +127,10 @@ if ( (${CMAKE_SYSTEM_NAME} STREQUAL "Linux") OR (${CYGWIN}) )
 endif ()
 
 if (WIN32)
+    include("${CMAKE_CURRENT_LIST_DIR}/cmake/FixWindowsC5105.cmake")
     target_link_libraries(${PROJECT_NAME} PUBLIC bcrypt)
 endif ()
+
 
 target_include_directories(${PROJECT_NAME}
         PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
