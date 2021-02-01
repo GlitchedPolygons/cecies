@@ -68,6 +68,11 @@ set(${PROJECT_NAME}_SOURCES
         ${CMAKE_CURRENT_LIST_DIR}/src/decrypt.c
         )
 
+add_library(${PROJECT_NAME}
+        ${${PROJECT_NAME}_HEADERS}
+        ${${PROJECT_NAME}_SOURCES}
+        )
+
 if (NOT TARGET mbedtls)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/mbedtls mbedtls)
 endif ()
@@ -82,10 +87,7 @@ if (NOT TARGET ccrush)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/ccrush ccrush)
 endif ()
 
-add_library(${PROJECT_NAME}
-        ${${PROJECT_NAME}_HEADERS}
-        ${${PROJECT_NAME}_SOURCES}
-        )
+set_property(TARGET ccrush PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if (${${PROJECT_NAME}_BUILD_DLL} OR BUILD_SHARED_LIBS)
     set_property(TARGET mbedtls PROPERTY POSITION_INDEPENDENT_CODE ON)
@@ -187,3 +189,5 @@ if (${${PROJECT_NAME}_ENABLE_TESTS})
         coverage_evaluate()
     endif ()
 endif ()
+
+set(BUILD_SHARED_LIBS ${${PROJECT_NAME}_PREV_BUILD_SHARED_LIBS})
