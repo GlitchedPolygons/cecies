@@ -347,8 +347,8 @@ static void cecies_curve25519_encrypt_raw_binary_decrypts_successfully()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -392,8 +392,8 @@ static void cecies_curve25519_encrypt_base64_decrypts_successfully()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -413,8 +413,8 @@ static void cecies_curve25519_encrypt_bin_decrypt_with_public_key_fails()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -434,8 +434,8 @@ static void cecies_curve25519_encrypt_bin_decrypt_with_invalid_key_fails()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -455,8 +455,8 @@ static void cecies_curve25519_encrypt_bin_decrypt_with_invalid_key_2_fails()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -478,8 +478,8 @@ static void cecies_curve25519_encrypt_bin_decrypt_with_wrong_key_fails()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -496,8 +496,8 @@ static void cecies_curve25519_encrypt_bin_decrypt_with_zero_key_fails()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -515,8 +515,8 @@ static void cecies_curve25519_encrypt_bin_decrypt_with_NULL_args_fails_returns_C
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -538,8 +538,8 @@ static void cecies_curve25519_encrypt_bin_decrypt_with_INVALID_args_fails_return
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -557,8 +557,8 @@ static void cecies_curve25519_encrypt_base64_decrypt_invalid_base64_str_returns_
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -579,8 +579,8 @@ static void cecies_curve25519_encrypt_base64_decrypt_base64_with_or_without_NUL_
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -602,8 +602,8 @@ static void cecies_curve25519_encrypt_null_args_fails_returns_CECIES_ENCRYPT_ERR
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -620,8 +620,8 @@ static void cecies_curve25519_encrypt_invalid_args_fails_returns_CECIES_ENCRYPT_
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -637,8 +637,8 @@ static void cecies_curve25519_encrypt_base64_decrypt_base64_with_invalid_private
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -657,8 +657,8 @@ static void cecies_curve25519_encrypt_base64_decrypt_different_key_always_fails(
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -683,8 +683,8 @@ static void cecies_curve25519_encrypt_output_length_always_identical_with_calcul
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -704,8 +704,8 @@ static void cecies_curve25519_encrypt_base64_decrypt_base64_tampered_ephemeral_p
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -729,8 +729,8 @@ static void cecies_curve25519_encrypt_base64_decrypt_binary_fails()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -750,8 +750,8 @@ static void cecies_curve25519_encrypt_binary_decrypt_base64_fails()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -769,8 +769,8 @@ static void cecies_curve25519_encrypt_base64_decrypt_ciphertext_was_tampered_wit
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -793,8 +793,8 @@ static void cecies_curve25519_encrypt_binary_decrypt_ciphertext_was_tampered_wit
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -815,8 +815,8 @@ static void cecies_curve25519_encrypt_base64_decrypt_base64_lengths_identical()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -840,8 +840,8 @@ static void cecies_curve25519_encrypt_base64_decrypt_base64_compression_reduces_
 
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1018,8 +1018,8 @@ static void cecies_curve448_encrypt_raw_binary_decrypts_successfully()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1037,8 +1037,8 @@ static void cecies_curve448_encrypt_base64_decrypts_successfully()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1058,8 +1058,8 @@ static void cecies_curve448_encrypt_bin_decrypt_with_public_key_fails()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1079,8 +1079,8 @@ static void cecies_curve448_encrypt_bin_decrypt_with_invalid_key_fails()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1099,8 +1099,8 @@ static void cecies_curve448_encrypt_bin_decrypt_with_invalid_key_2_fails()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1121,8 +1121,8 @@ static void cecies_curve448_encrypt_bin_decrypt_with_wrong_key_fails()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1140,8 +1140,8 @@ static void cecies_curve448_encrypt_bin_decrypt_with_zero_key_fails()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1160,8 +1160,8 @@ static void cecies_curve448_encrypt_bin_decrypt_with_NULL_args_fails_returns_CEC
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     encrypted_string = calloc(encrypted_string_length, sizeof(uint8_t));
 
@@ -1186,8 +1186,8 @@ static void cecies_curve448_encrypt_bin_decrypt_with_INVALID_args_fails_returns_
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1205,8 +1205,8 @@ static void cecies_curve448_encrypt_base64_decrypt_invalid_base64_str_returns_CE
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1227,8 +1227,8 @@ static void cecies_curve448_encrypt_base64_decrypt_base64_with_or_without_NUL_te
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1249,8 +1249,8 @@ static void cecies_curve448_encrypt_base64_decrypt_base64_lengths_identical()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1274,8 +1274,8 @@ static void cecies_curve448_encrypt_base64_decrypt_base64_compression_reduces_si
 
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1293,8 +1293,8 @@ static void cecies_curve448_encrypt_null_args_fails_returns_CECIES_ENCRYPT_ERROR
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1311,8 +1311,8 @@ static void cecies_curve448_encrypt_invalid_args_fails_returns_CECIES_ENCRYPT_ER
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1328,8 +1328,8 @@ static void cecies_curve448_encrypt_base64_decrypt_base64_with_invalid_private_k
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1345,8 +1345,8 @@ static void cecies_curve448_encrypt_base64_decrypt_different_key_always_fails()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1371,8 +1371,8 @@ static void cecies_curve448_encrypt_output_length_always_identical_with_calculat
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     encrypted_string_length = cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH_WITH_NUL_TERMINATOR);
 
@@ -1392,8 +1392,8 @@ static void cecies_curve448_encrypt_base64_decrypt_base64_tampered_ephemeral_pub
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1417,8 +1417,8 @@ static void cecies_curve448_encrypt_base64_decrypt_binary_fails()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1438,8 +1438,8 @@ static void cecies_curve448_encrypt_binary_decrypt_base64_fails()
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1457,8 +1457,8 @@ static void cecies_curve448_encrypt_base64_decrypt_ciphertext_was_tampered_with_
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 
@@ -1481,8 +1481,8 @@ static void cecies_curve448_encrypt_binary_decrypt_ciphertext_was_tampered_with_
 {
     uint8_t* encrypted_string = NULL;
     uint8_t* decrypted_string = NULL;
-    size_t encrypted_string_length;
-    size_t decrypted_string_length;
+    size_t encrypted_string_length = 0;
+    size_t decrypted_string_length = 0;
 
     //
 

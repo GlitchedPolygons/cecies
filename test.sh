@@ -31,7 +31,8 @@ cov=Off
 if [ "$1" = "cov" ]; then cov=On; fi
 rm -rf "$REPO"/build
 mkdir -p "$REPO"/build && cd "$REPO"/build || exit
-cmake -DBUILD_SHARED_LIBS=Off -DUSE_SHARED_MBEDTLS_LIBRARY=Off -Dcecies_ENABLE_TESTS=On -DENABLE_COVERAGE="${cov}" ..
+
+cmake -DBUILD_SHARED_LIBS=Off -DUSE_SHARED_MBEDTLS_LIBRARY=Off "-D${PROJECT_NAME}_ENABLE_TESTS=On" -DENABLE_COVERAGE="${cov}" ..
 cmake --build . --config Debug || exit
 
 export CC="$PREVCC"
