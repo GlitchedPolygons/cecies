@@ -166,6 +166,8 @@ namespace GlitchedPolygons.CeciesSharp
 
         #region Function mapping
 
+        private delegate void CeciesFreeDelegate(IntPtr mem);
+
         private delegate void CeciesEnableFprintfDelegate();
 
         private delegate void CeciesDisableFprintfDelegate();
@@ -185,9 +187,9 @@ namespace GlitchedPolygons.CeciesSharp
         private delegate int CeciesEncryptCurve25519Delegate(
             [MarshalAs(UnmanagedType.LPArray)] byte[] data,
             [MarshalAs(UnmanagedType.U8)] ulong dataLength,
+            [MarshalAs(UnmanagedType.I4)] int compress,
             CeciesKeyCurve25519 publicKey,
-            [MarshalAs(UnmanagedType.LPArray)] byte[] output,
-            [MarshalAs(UnmanagedType.U8)] ulong outputBufferSize,
+            out IntPtr output,
             ref ulong outputLength,
             [MarshalAs(UnmanagedType.Bool)] bool outputBase64
         );
@@ -197,8 +199,7 @@ namespace GlitchedPolygons.CeciesSharp
             [MarshalAs(UnmanagedType.U8)] ulong encryptedDataLength,
             [MarshalAs(UnmanagedType.Bool)] bool encryptedDataBase64,
             CeciesKeyCurve25519 privateKey,
-            [MarshalAs(UnmanagedType.LPArray)] byte[] output,
-            [MarshalAs(UnmanagedType.U8)] ulong outputBufferSize,
+            out IntPtr output,
             ref ulong outputLength
         );
 
@@ -211,9 +212,9 @@ namespace GlitchedPolygons.CeciesSharp
         private delegate int CeciesEncryptCurve448Delegate(
             [MarshalAs(UnmanagedType.LPArray)] byte[] data,
             [MarshalAs(UnmanagedType.U8)] ulong dataLength,
+            [MarshalAs(UnmanagedType.I4)] int compress,
             CeciesKeyCurve448 publicKey,
-            [MarshalAs(UnmanagedType.LPArray)] byte[] output,
-            [MarshalAs(UnmanagedType.U8)] ulong outputBufferSize,
+            out IntPtr output,
             ref ulong outputLength,
             [MarshalAs(UnmanagedType.Bool)] bool outputBase64
         );
@@ -223,11 +224,11 @@ namespace GlitchedPolygons.CeciesSharp
             [MarshalAs(UnmanagedType.U8)] ulong encryptedDataLength,
             [MarshalAs(UnmanagedType.Bool)] bool encryptedDataBase64,
             CeciesKeyCurve448 privateKey,
-            [MarshalAs(UnmanagedType.LPArray)] byte[] output,
-            [MarshalAs(UnmanagedType.U8)] ulong outputBufferSize,
+            out IntPtr output,
             ref ulong outputLength
         );
 
+        private CeciesFreeDelegate ceciesFreeDelegate;
         private CeciesEnableFprintfDelegate ceciesEnableFprintfDelegate;
         private CeciesDisableFprintfDelegate ceciesDisableFprintfDelegate;
         private CeciesIsFprintfEnabledDelegate ceciesIsFprintfEnabledDelegate;
@@ -323,6 +324,12 @@ namespace GlitchedPolygons.CeciesSharp
                 goto hell;
             }
 
+            IntPtr free = loadUtils.GetProcAddress(lib, "cecies_free");
+            if (free == IntPtr.Zero)
+            {
+                goto hell;
+            }
+
             IntPtr enableFprintf = loadUtils.GetProcAddress(lib, "cecies_enable_fprintf");
             if (enableFprintf == IntPtr.Zero)
             {
@@ -389,6 +396,7 @@ namespace GlitchedPolygons.CeciesSharp
                 goto hell;
             }
 
+            ceciesFreeDelegate = Marshal.GetDelegateForFunctionPointer<CeciesFreeDelegate>(free);
             ceciesEnableFprintfDelegate = Marshal.GetDelegateForFunctionPointer<CeciesEnableFprintfDelegate>(enableFprintf);
             ceciesDisableFprintfDelegate = Marshal.GetDelegateForFunctionPointer<CeciesDisableFprintfDelegate>(disableFprintf);
             ceciesIsFprintfEnabledDelegate = Marshal.GetDelegateForFunctionPointer<CeciesIsFprintfEnabledDelegate>(isFprintfEnabled);
@@ -416,6 +424,26 @@ namespace GlitchedPolygons.CeciesSharp
         {
             DisableConsoleLogging();
             loadUtils.FreeLibrary(lib);
+        }
+
+        private static byte[] MarshalReadBytes(IntPtr array, ulong arrayLength, int bufferSize = 1024 * 256)
+        {
+            using var ms = new MemoryStream((int)arrayLength);
+
+            IntPtr i = array;
+            ulong rem = arrayLength;
+            byte[] buf = new byte[bufferSize];
+
+            while (rem != 0)
+            {
+                int n = (int)Math.Min(rem, (ulong)buf.LongLength);
+                Marshal.Copy(i, buf, 0, n);
+                i = IntPtr.Add(i, n);
+                rem -= (ulong)n;
+                ms.Write(buf, 0, n);
+            }
+
+            return ms.ToArray();
         }
 
         private static long CalcOutputBufferSize(long l)
@@ -491,23 +519,22 @@ namespace GlitchedPolygons.CeciesSharp
         /// Encrypts a given chunk of data using a Curve25519 public key (hex-formatted).
         /// </summary>
         /// <param name="data">The data to encrypt.</param>
+        /// <param name="compress">Should the <paramref name="data"/> be compressed before being encrypted? Pass any integer value between [0; 9] (where \c 0 is no compression at all and \c 9 is highest but slowest compression).</param>
         /// <param name="publicKey">The public key to encrypt the data with.</param>
         /// <param name="outputBase64">Should the output be base64-encoded UTF8 bytes? (Human-readable vs just raw binary ciphertext).</param>
         /// <returns><c>null</c> if encryption failed (check the stderr console output in this case for more details); the encrypted bytes if encryption succeeded.</returns>
-        public byte[] EncryptCurve25519(byte[] data, string publicKey, bool outputBase64)
+        public byte[] EncryptCurve25519(byte[] data, int compress, string publicKey, bool outputBase64)
         {
             ulong olen = 0;
-            byte[] o = new byte[CalcOutputBufferSize(data.LongLength)];
             CeciesKeyCurve25519 k = new CeciesKeyCurve25519 { hexString = publicKey };
-            int r = ceciesEncryptCurve25519Delegate(data, (ulong)data.LongLength, k, o, (ulong)o.LongLength, ref olen, outputBase64);
-            if (r != 0) return null;
-            byte[] _o = new byte[olen];
-            for (ulong i = 0; i < olen; i++)
-            {
-                _o[i] = o[i];
-            }
 
-            return _o;
+            int r = ceciesEncryptCurve25519Delegate(data, (ulong)data.LongLength, compress, k, out IntPtr output, ref olen, outputBase64);
+            if (r != 0) return null;
+
+            byte[] o = MarshalReadBytes(output, olen);
+
+            ceciesFreeDelegate(output);
+            return o;
         }
 
         /// <summary>
@@ -520,17 +547,15 @@ namespace GlitchedPolygons.CeciesSharp
         public byte[] DecryptCurve25519(byte[] encryptedData, bool encryptedDataBase64, string privateKey)
         {
             ulong olen = 0;
-            byte[] o = new byte[encryptedData.LongLength];
             CeciesKeyCurve25519 k = new CeciesKeyCurve25519 { hexString = privateKey };
-            int r = ceciesDecryptCurve25519Delegate(encryptedData, (ulong)encryptedData.LongLength, encryptedDataBase64, k, o, (ulong)o.LongLength, ref olen);
-            if (r != 0) return null;
-            byte[] _o = new byte[olen];
-            for (ulong i = 0; i < olen; i++)
-            {
-                _o[i] = o[i];
-            }
 
-            return _o;
+            int r = ceciesDecryptCurve25519Delegate(encryptedData, (ulong)encryptedData.LongLength, encryptedDataBase64, k, out IntPtr output, ref olen);
+            if (r != 0) return null;
+
+            byte[] o = MarshalReadBytes(output, olen);
+
+            ceciesFreeDelegate(output);
+            return o;
         }
 
         /// <summary>
@@ -557,22 +582,22 @@ namespace GlitchedPolygons.CeciesSharp
         /// Encrypts a given chunk of data using a Curve448 public key (hex-formatted).
         /// </summary>
         /// <param name="data">The data to encrypt.</param>
+        /// <param name="compress">Should the <paramref name="data"/> be compressed before being encrypted? Pass any integer value between [0; 9] (where \c 0 is no compression at all and \c 9 is highest but slowest compression).</param>
         /// <param name="publicKey">The public key to encrypt the data with.</param>
         /// <param name="outputBase64">Should the output be base64-encoded UTF8 bytes? (Human-readable vs just raw binary ciphertext).</param>
         /// <returns><c>null</c> if encryption failed (check the stderr console output in this case for more details); the encrypted bytes if encryption succeeded.</returns>
-        public byte[] EncryptCurve448(byte[] data, string publicKey, bool outputBase64)
+        public byte[] EncryptCurve448(byte[] data, int compress, string publicKey, bool outputBase64)
         {
             ulong olen = 0;
-            byte[] o = new byte[CalcOutputBufferSize(data.LongLength)];
             CeciesKeyCurve448 k = new CeciesKeyCurve448 { hexString = publicKey };
-            if (ceciesEncryptCurve448Delegate(data, (ulong)data.LongLength, k, o, (ulong)o.LongLength, ref olen, outputBase64) != 0) return null;
-            byte[] _o = new byte[olen];
-            for (ulong i = 0; i < olen; i++)
-            {
-                _o[i] = o[i];
-            }
 
-            return _o;
+            int r = ceciesEncryptCurve448Delegate(data, (ulong)data.LongLength, compress, k, out IntPtr output, ref olen, outputBase64);
+            if (r != 0) return null;
+
+            byte[] o = MarshalReadBytes(output, olen);
+
+            ceciesFreeDelegate(output);
+            return o;
         }
 
         /// <summary>
@@ -585,17 +610,15 @@ namespace GlitchedPolygons.CeciesSharp
         public byte[] DecryptCurve448(byte[] encryptedData, bool encryptedDataBase64, string privateKey)
         {
             ulong olen = 0;
-            byte[] o = new byte[encryptedData.LongLength];
             CeciesKeyCurve448 k = new CeciesKeyCurve448 { hexString = privateKey };
-            int r = ceciesDecryptCurve448Delegate(encryptedData, (ulong)encryptedData.LongLength, encryptedDataBase64, k, o, (ulong)o.LongLength, ref olen);
-            if (r != 0) return null;
-            byte[] _o = new byte[olen];
-            for (ulong i = 0; i < olen; i++)
-            {
-                _o[i] = o[i];
-            }
 
-            return _o;
+            int r = ceciesDecryptCurve448Delegate(encryptedData, (ulong)encryptedData.LongLength, encryptedDataBase64, k, out IntPtr output, ref olen);
+            if (r != 0) return null;
+
+            byte[] o = MarshalReadBytes(output, olen);
+
+            ceciesFreeDelegate(output);
+            return o;
         }
     }
 
@@ -626,8 +649,8 @@ namespace GlitchedPolygons.CeciesSharp
 
             byte[] plaintext = Encoding.UTF8.GetBytes("Test test test FKSOGUEidbbpyqkr3dgkb 349749t43t ö ä $ _} \\ hg9\\'8gkjn ;;;");
 
-            string ciphertextCurve25519 = Encoding.UTF8.GetString(cecies.EncryptCurve25519(plaintext, keyPair25519.Item1, true));
-            string ciphertextCurve448 = Encoding.UTF8.GetString(cecies.EncryptCurve448(plaintext, keyPair448.Item1, true));
+            string ciphertextCurve25519 = Encoding.UTF8.GetString(cecies.EncryptCurve25519(plaintext, 0, keyPair25519.Item1, true));
+            string ciphertextCurve448 = Encoding.UTF8.GetString(cecies.EncryptCurve448(plaintext, 0, keyPair448.Item1, true));
 
             Console.WriteLine($"Encrypt Curve25519: {ciphertextCurve25519} \n Ciphertext length: {ciphertextCurve25519.Length}");
             Console.WriteLine($"Encrypt Curve448: {ciphertextCurve448} \n Ciphertext length: {ciphertextCurve448.Length}");
