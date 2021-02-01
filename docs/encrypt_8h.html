@@ -76,18 +76,16 @@ $(function() {
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stddef.h&gt;</code><br />
 <code>#include &lt;stdint.h&gt;</code><br />
-<code>#include &lt;stdbool.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="types_8h_source.html">types.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for encrypt.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="encrypt_8h__incl.png" border="0" usemap="#include_2cecies_2encrypt_8h" alt=""/></div>
 <map name="include_2cecies_2encrypt_8h" id="include_2cecies_2encrypt_8h">
-<area shape="rect" title="ECIES encryption implementation using Curve25516 or Curve448, AES256&#45;GCM and MbedTLS." alt="" coords="95,5,258,32"/>
+<area shape="rect" title="ECIES encryption implementation using Curve25516 or Curve448, AES256&#45;GCM and MbedTLS." alt="" coords="49,5,211,32"/>
 <area shape="rect" title=" " alt="" coords="5,80,73,107"/>
 <area shape="rect" title=" " alt="" coords="97,80,163,107"/>
-<area shape="rect" title=" " alt="" coords="187,80,262,107"/>
-<area shape="rect" href="types_8h.html" title="CECIES types." alt="" coords="287,80,352,107"/>
+<area shape="rect" href="types_8h.html" title="CECIES types." alt="" coords="187,80,252,107"/>
 </map>
 </div>
 </div>
@@ -95,17 +93,17 @@ Include dependency graph for encrypt.h:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a8a65f7c212f151f39bf9b4e79a0b2ef8"><td class="memItemLeft" align="right" valign="top">CECIES_API int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="encrypt_8h.html#a8a65f7c212f151f39bf9b4e79a0b2ef8">cecies_curve25519_encrypt</a> (const unsigned char *data, size_t data_length, <a class="el" href="structcecies__curve25519__key.html">cecies_curve25519_key</a> public_key, unsigned char *output, size_t output_bufsize, size_t *output_length, bool output_base64)</td></tr>
-<tr class="separator:a8a65f7c212f151f39bf9b4e79a0b2ef8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e44e0662732904b0c155c60a1efc54a"><td class="memItemLeft" align="right" valign="top">CECIES_API int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="encrypt_8h.html#a8e44e0662732904b0c155c60a1efc54a">cecies_curve448_encrypt</a> (const unsigned char *data, size_t data_length, <a class="el" href="structcecies__curve448__key.html">cecies_curve448_key</a> public_key, unsigned char *output, size_t output_bufsize, size_t *output_length, bool output_base64)</td></tr>
-<tr class="separator:a8e44e0662732904b0c155c60a1efc54a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ae4439da086e86e7e97f088e3647919"><td class="memItemLeft" align="right" valign="top">CECIES_API int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="encrypt_8h.html#a7ae4439da086e86e7e97f088e3647919">cecies_curve25519_encrypt</a> (const uint8_t *data, size_t data_length, int compress, <a class="el" href="structcecies__curve25519__key.html">cecies_curve25519_key</a> public_key, uint8_t **output, size_t *output_length, int output_base64)</td></tr>
+<tr class="separator:a7ae4439da086e86e7e97f088e3647919"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca812529b47e15a316447c1232009d8d"><td class="memItemLeft" align="right" valign="top">CECIES_API int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="encrypt_8h.html#aca812529b47e15a316447c1232009d8d">cecies_curve448_encrypt</a> (const uint8_t *data, size_t data_length, int compress, <a class="el" href="structcecies__curve448__key.html">cecies_curve448_key</a> public_key, uint8_t **output, size_t *output_length, int output_base64)</td></tr>
+<tr class="separator:aca812529b47e15a316447c1232009d8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>ECIES encryption implementation using Curve25516 or Curve448, AES256-GCM and MbedTLS. </p>
 <dl class="section author"><dt>Author</dt><dd>Raphael Beck </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a8a65f7c212f151f39bf9b4e79a0b2ef8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a65f7c212f151f39bf9b4e79a0b2ef8">&#9670;&nbsp;</a></span>cecies_curve25519_encrypt()</h2>
+<a id="a7ae4439da086e86e7e97f088e3647919"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ae4439da086e86e7e97f088e3647919">&#9670;&nbsp;</a></span>cecies_curve25519_encrypt()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -113,7 +111,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">CECIES_API int cecies_curve25519_encrypt </td>
           <td>(</td>
-          <td class="paramtype">const unsigned char *&#160;</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
           <td class="paramname"><em>data</em>, </td>
         </tr>
         <tr>
@@ -125,20 +123,20 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>compress</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype"><a class="el" href="structcecies__curve25519__key.html">cecies_curve25519_key</a>&#160;</td>
           <td class="paramname"><em>public_key</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned char *&#160;</td>
+          <td class="paramtype">uint8_t **&#160;</td>
           <td class="paramname"><em>output</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>output_bufsize</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -149,7 +147,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>output_base64</em>&#160;</td>
         </tr>
         <tr>
@@ -163,11 +161,11 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">data</td><td>The data to encrypt. </td></tr>
     <tr><td class="paramname">data_length</td><td>The length of the data array. </td></tr>
-    <tr><td class="paramname">public_key</td><td>The public key to encrypt the data with (hex-string format, as is the output of <a class="el" href="keygen_8h.html#a4bcd66c3815011ebb05556bae89bac36">cecies_generate_curve25519_keypair()</a>). </td></tr>
-    <tr><td class="paramname">output</td><td>Where to write the encrypted output into (please pre-allocate this big enough, you can use <a class="el" href="util_8h.html#af3b8cd9fc39f89ca430a1e5f084d055c">cecies_curve25519_calc_output_buffer_needed_size()</a> to find out how much you need). </td></tr>
-    <tr><td class="paramname">output_bufsize</td><td>How big the output buffer is. </td></tr>
-    <tr><td class="paramname">output_length</td><td>[OPTIONAL] Where to write the output buffer length into (this will be less than the provided output_bufsize). Pass <code>NULL</code> if you don't care (e.g. you already know the output size because you allocated space using <a class="el" href="util_8h.html#af3b8cd9fc39f89ca430a1e5f084d055c">cecies_curve25519_calc_output_buffer_needed_size()</a>). </td></tr>
-    <tr><td class="paramname">output_base64</td><td>Should the encrypted output bytes be base64-encoded for easy transmission over e.g. email? If you decide to base64-encode the encrypted data buffer, please be aware that a NUL-terminator is appended at the end to allow usage as a C-string but it will not be counted in <code>output_length</code>. </td></tr>
+    <tr><td class="paramname">compress</td><td>Should the <code>data</code> be compressed before being encrypted? Pass any integer value between [0; 9] (where <code>0</code> is no compression at all and <code>9</code> is highest but slowest compression). </td></tr>
+    <tr><td class="paramname">public_key</td><td>The public key to encrypt the data with (hex-string format, as is the output of <a class="el" href="keygen_8h.html#a9c4ec945754fc2ac57fbeb517e671eed">cecies_generate_curve25519_keypair()</a>). </td></tr>
+    <tr><td class="paramname">output</td><td>Where to write the encrypted output into (this will ONLY be allocated if encryption succeeds; if the procedure fails in any way this is left untouched). On success: DO NOT FORGET TO FREE THIS YOURSELF! Use <a class="el" href="util_8h.html#ad8a252a0e609de2f2e2516e57e19a7ac">cecies_free()</a> for freeing. </td></tr>
+    <tr><td class="paramname">output_length</td><td>Where to write the output buffer length into. </td></tr>
+    <tr><td class="paramname">output_base64</td><td>Should the encrypted output bytes be base64-encoded for easy transmission over e.g. email? If you decide to base64-encode the encrypted data buffer, please be aware that a NUL-terminator is appended at the end to allow usage as a C-string but it will not be counted in <code>output_length</code>. Pass <code>0</code> for <code>false</code>, anything else for <code>true</code>. </td></tr>
   </table>
   </dd>
 </dl>
@@ -175,8 +173,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a8e44e0662732904b0c155c60a1efc54a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8e44e0662732904b0c155c60a1efc54a">&#9670;&nbsp;</a></span>cecies_curve448_encrypt()</h2>
+<a id="aca812529b47e15a316447c1232009d8d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca812529b47e15a316447c1232009d8d">&#9670;&nbsp;</a></span>cecies_curve448_encrypt()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -184,7 +182,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">CECIES_API int cecies_curve448_encrypt </td>
           <td>(</td>
-          <td class="paramtype">const unsigned char *&#160;</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
           <td class="paramname"><em>data</em>, </td>
         </tr>
         <tr>
@@ -196,20 +194,20 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>compress</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype"><a class="el" href="structcecies__curve448__key.html">cecies_curve448_key</a>&#160;</td>
           <td class="paramname"><em>public_key</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned char *&#160;</td>
+          <td class="paramtype">uint8_t **&#160;</td>
           <td class="paramname"><em>output</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>output_bufsize</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -220,7 +218,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>output_base64</em>&#160;</td>
         </tr>
         <tr>
@@ -234,11 +232,11 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">data</td><td>The data to encrypt. </td></tr>
     <tr><td class="paramname">data_length</td><td>The length of the data array. </td></tr>
-    <tr><td class="paramname">public_key</td><td>The public key to encrypt the data with (hex-string format, as is the output of <a class="el" href="keygen_8h.html#aa546d27645dd3b744ddd8c050b9a2e64">cecies_generate_curve448_keypair()</a>). </td></tr>
-    <tr><td class="paramname">output</td><td>Where to write the encrypted output into (please pre-allocate this big enough, you can use <a class="el" href="util_8h.html#a72712b76d6f0872e29095599bb166259">cecies_curve448_calc_output_buffer_needed_size()</a> to find out how much you need). </td></tr>
-    <tr><td class="paramname">output_bufsize</td><td>How big the output buffer is. </td></tr>
-    <tr><td class="paramname">output_length</td><td>[OPTIONAL] Where to write the output buffer length into (this will be less than the provided output_bufsize). Pass <code>NULL</code> if you don't care (e.g. you already know the output size because you allocated space using <a class="el" href="util_8h.html#a72712b76d6f0872e29095599bb166259">cecies_curve448_calc_output_buffer_needed_size()</a>). </td></tr>
-    <tr><td class="paramname">output_base64</td><td>Should the encrypted output bytes be base64-encoded for easy transmission over e.g. email? If you decide to base64-encode the encrypted data buffer, please be aware that a NUL-terminator is appended at the end to allow usage as a C-string but it will not be counted in <code>output_length</code>. </td></tr>
+    <tr><td class="paramname">compress</td><td>Should the <code>data</code> be compressed before being encrypted? Pass any integer value between [0; 9] (where <code>0</code> is no compression at all and <code>9</code> is highest but slowest compression). </td></tr>
+    <tr><td class="paramname">public_key</td><td>The public key to encrypt the data with (hex-string format, as is the output of <a class="el" href="keygen_8h.html#aa88cd5c57ae3746dc45b1b700fb37fda">cecies_generate_curve448_keypair()</a>). </td></tr>
+    <tr><td class="paramname">output</td><td>Where to write the encrypted output into (this will ONLY be allocated if encryption succeeds; if the procedure fails in any way this is left untouched). On success: DO NOT FORGET TO FREE THIS YOURSELF! Use <a class="el" href="util_8h.html#ad8a252a0e609de2f2e2516e57e19a7ac">cecies_free()</a> for freeing. </td></tr>
+    <tr><td class="paramname">output_length</td><td>Where to write the output buffer length into. </td></tr>
+    <tr><td class="paramname">output_base64</td><td>Should the encrypted output bytes be base64-encoded for easy transmission over e.g. email? If you decide to base64-encode the encrypted data buffer, please be aware that a NUL-terminator is appended at the end to allow usage as a C-string but it will not be counted in <code>output_length</code>. Pass <code>0</code> for <code>false</code>, anything else for <code>true</code>. </td></tr>
   </table>
   </dd>
 </dl>

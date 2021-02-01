@@ -85,16 +85,15 @@ Include dependency graph for keygen.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="keygen_8h__incl.png" border="0" usemap="#include_2cecies_2keygen_8h" alt=""/></div>
 <map name="include_2cecies_2keygen_8h" id="include_2cecies_2keygen_8h">
-<area shape="rect" title="Curve25519 and Curve448 key&#45;pair generators (both export their output into NUL&#45;terminated,..." alt="" coords="157,5,320,32"/>
+<area shape="rect" title="Curve25519 and Curve448 key&#45;pair generators (both export their output into NUL&#45;terminated,..." alt="" coords="172,5,335,32"/>
 <area shape="rect" title=" " alt="" coords="5,155,64,181"/>
 <area shape="rect" title=" " alt="" coords="89,155,157,181"/>
 <area shape="rect" title=" " alt="" coords="181,155,245,181"/>
-<area shape="rect" title=" " alt="" coords="270,155,335,181"/>
-<area shape="rect" href="util_8h.html" title="Useful utility functions for CECIES." alt="" coords="301,80,352,107"/>
-<area shape="rect" href="types_8h.html" title="CECIES types." alt="" coords="659,155,725,181"/>
-<area shape="rect" title=" " alt="" coords="360,155,421,181"/>
-<area shape="rect" title=" " alt="" coords="445,155,520,181"/>
-<area shape="rect" href="constants_8h.html" title="CECIES constants." alt="" coords="544,155,635,181"/>
+<area shape="rect" title=" " alt="" coords="470,155,535,181"/>
+<area shape="rect" href="util_8h.html" title="Useful utility functions for CECIES." alt="" coords="279,80,329,107"/>
+<area shape="rect" href="types_8h.html" title="CECIES types." alt="" coords="559,155,625,181"/>
+<area shape="rect" title=" " alt="" coords="384,155,445,181"/>
+<area shape="rect" href="constants_8h.html" title="CECIES constants." alt="" coords="269,155,360,181"/>
 </map>
 </div>
 </div>
@@ -102,17 +101,17 @@ Include dependency graph for keygen.h:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a4bcd66c3815011ebb05556bae89bac36"><td class="memItemLeft" align="right" valign="top">CECIES_API int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="keygen_8h.html#a4bcd66c3815011ebb05556bae89bac36">cecies_generate_curve25519_keypair</a> (<a class="el" href="structcecies__curve25519__keypair.html">cecies_curve25519_keypair</a> *output, const unsigned char *additional_entropy, size_t additional_entropy_length)</td></tr>
-<tr class="separator:a4bcd66c3815011ebb05556bae89bac36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa546d27645dd3b744ddd8c050b9a2e64"><td class="memItemLeft" align="right" valign="top">CECIES_API int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="keygen_8h.html#aa546d27645dd3b744ddd8c050b9a2e64">cecies_generate_curve448_keypair</a> (<a class="el" href="structcecies__curve448__keypair.html">cecies_curve448_keypair</a> *output, const unsigned char *additional_entropy, size_t additional_entropy_length)</td></tr>
-<tr class="separator:aa546d27645dd3b744ddd8c050b9a2e64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c4ec945754fc2ac57fbeb517e671eed"><td class="memItemLeft" align="right" valign="top">CECIES_API int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="keygen_8h.html#a9c4ec945754fc2ac57fbeb517e671eed">cecies_generate_curve25519_keypair</a> (<a class="el" href="structcecies__curve25519__keypair.html">cecies_curve25519_keypair</a> *output, const uint8_t *additional_entropy, size_t additional_entropy_length)</td></tr>
+<tr class="separator:a9c4ec945754fc2ac57fbeb517e671eed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa88cd5c57ae3746dc45b1b700fb37fda"><td class="memItemLeft" align="right" valign="top">CECIES_API int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="keygen_8h.html#aa88cd5c57ae3746dc45b1b700fb37fda">cecies_generate_curve448_keypair</a> (<a class="el" href="structcecies__curve448__keypair.html">cecies_curve448_keypair</a> *output, const uint8_t *additional_entropy, size_t additional_entropy_length)</td></tr>
+<tr class="separator:aa88cd5c57ae3746dc45b1b700fb37fda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Curve25519 and Curve448 key-pair generators (both export their output into NUL-terminated, hex-encoded strings). </p>
 <dl class="section author"><dt>Author</dt><dd>Raphael Beck </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a4bcd66c3815011ebb05556bae89bac36"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4bcd66c3815011ebb05556bae89bac36">&#9670;&nbsp;</a></span>cecies_generate_curve25519_keypair()</h2>
+<a id="a9c4ec945754fc2ac57fbeb517e671eed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c4ec945754fc2ac57fbeb517e671eed">&#9670;&nbsp;</a></span>cecies_generate_curve25519_keypair()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -126,7 +125,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const unsigned char *&#160;</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
           <td class="paramname"><em>additional_entropy</em>, </td>
         </tr>
         <tr>
@@ -154,8 +153,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aa546d27645dd3b744ddd8c050b9a2e64"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa546d27645dd3b744ddd8c050b9a2e64">&#9670;&nbsp;</a></span>cecies_generate_curve448_keypair()</h2>
+<a id="aa88cd5c57ae3746dc45b1b700fb37fda"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa88cd5c57ae3746dc45b1b700fb37fda">&#9670;&nbsp;</a></span>cecies_generate_curve448_keypair()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -169,7 +168,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const unsigned char *&#160;</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
           <td class="paramname"><em>additional_entropy</em>, </td>
         </tr>
         <tr>

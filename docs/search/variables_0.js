@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['empty256_83',['empty256',['../constants_8h.html#a3af06471acf8ae0d71b8cacfaa64b722',1,'constants.h']]],
-  ['empty32_84',['empty32',['../constants_8h.html#a6e029ca711d467cec6c1dde04be91228',1,'constants.h']]],
-  ['empty64_85',['empty64',['../constants_8h.html#a065e72301221b809831106b92143a428',1,'constants.h']]]
+  ['hexstring_84',['hexstring',['../structcecies__curve25519__key.html#abf381ec507ffbc17e84640fd8bbbcb03',1,'cecies_curve25519_key::hexstring()'],['../structcecies__curve448__key.html#a97ad4b93f4ae3f1ee51e0ec9d30b310d',1,'cecies_curve448_key::hexstring()']]]
 ];

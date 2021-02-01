@@ -94,28 +94,21 @@ $(function() {
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &lt;stddef.h&gt;</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="types_8h.html">types.h</a>&quot;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="structcecies__guid.html">cecies_guid</a> _cecies_empty_guid = { .<a class="code" href="structcecies__guid.html#a5fe66f9ac5002d573ecb1901a5eaca43">string</a> = <span class="stringliteral">&quot;00000000-0000-0000-0000-000000000000&quot;</span> };</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="types_8h.html">types.h</a>&quot;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;CECIES_API <a class="code" href="structcecies__guid.html">cecies_guid</a> <a class="code" href="guid_8h.html#a0fdbf94a4ffed2f99802e0c0c1de0bc0">cecies_empty_guid</a>();</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="guid_8h.html#a97dff5afede136e04914c9463e1eba52">   44</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <a class="code" href="structcecies__guid.html">cecies_guid</a> <a class="code" href="guid_8h.html#a97dff5afede136e04914c9463e1eba52">cecies_empty_guid</a>()</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;{</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordflow">return</span> _cecies_empty_guid;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;}</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;CECIES_API <a class="code" href="structcecies__guid.html">cecies_guid</a> <a class="code" href="guid_8h.html#a54842fb7954e577cc0e406898f279847">cecies_new_guid</a>(<span class="keywordtype">bool</span> lowercase, <span class="keywordtype">bool</span> hyphens);</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;} <span class="comment">// extern &quot;C&quot;</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#endif // CECIES_GUID_H</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;CECIES_API <a class="code" href="structcecies__guid.html">cecies_guid</a> <a class="code" href="guid_8h.html#a96fa1d0f48f99d376984c9919d198451">cecies_new_guid</a>(<span class="keywordtype">int</span> lowercase, <span class="keywordtype">int</span> hyphens);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;} <span class="comment">// extern &quot;C&quot;</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#endif // CECIES_GUID_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aguid_8h_html_a97dff5afede136e04914c9463e1eba52"><div class="ttname"><a href="guid_8h.html#a97dff5afede136e04914c9463e1eba52">cecies_empty_guid</a></div><div class="ttdeci">static cecies_guid cecies_empty_guid()</div><div class="ttdef"><b>Definition:</b> guid.h:44</div></div>
 <div class="ttc" id="atypes_8h_html"><div class="ttname"><a href="types_8h.html">types.h</a></div><div class="ttdoc">CECIES types.</div></div>
-<div class="ttc" id="aguid_8h_html_a54842fb7954e577cc0e406898f279847"><div class="ttname"><a href="guid_8h.html#a54842fb7954e577cc0e406898f279847">cecies_new_guid</a></div><div class="ttdeci">CECIES_API cecies_guid cecies_new_guid(bool lowercase, bool hyphens)</div></div>
-<div class="ttc" id="astructcecies__guid_html_a5fe66f9ac5002d573ecb1901a5eaca43"><div class="ttname"><a href="structcecies__guid.html#a5fe66f9ac5002d573ecb1901a5eaca43">cecies_guid::string</a></div><div class="ttdeci">char string[36+1]</div><div class="ttdef"><b>Definition:</b> types.h:111</div></div>
+<div class="ttc" id="aguid_8h_html_a0fdbf94a4ffed2f99802e0c0c1de0bc0"><div class="ttname"><a href="guid_8h.html#a0fdbf94a4ffed2f99802e0c0c1de0bc0">cecies_empty_guid</a></div><div class="ttdeci">CECIES_API cecies_guid cecies_empty_guid()</div></div>
+<div class="ttc" id="aguid_8h_html_a96fa1d0f48f99d376984c9919d198451"><div class="ttname"><a href="guid_8h.html#a96fa1d0f48f99d376984c9919d198451">cecies_new_guid</a></div><div class="ttdeci">CECIES_API cecies_guid cecies_new_guid(int lowercase, int hyphens)</div></div>
 <div class="ttc" id="astructcecies__guid_html"><div class="ttname"><a href="structcecies__guid.html">cecies_guid</a></div><div class="ttdoc">Struct containing the output from a call to the cecies_new_guid() function.</div><div class="ttdef"><b>Definition:</b> types.h:108</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
