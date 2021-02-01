@@ -72,6 +72,10 @@ if (NOT TARGET mbedtls)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/mbedtls mbedtls)
 endif ()
 
+if (NOT TARGET ccrush)
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/ccrush ccrush)
+endif ()
+
 add_library(${PROJECT_NAME}
         ${${PROJECT_NAME}_HEADERS}
         ${${PROJECT_NAME}_SOURCES}
@@ -124,9 +128,10 @@ target_link_libraries(${PROJECT_NAME}
         PUBLIC mbedtls
         PUBLIC mbedx509
         PUBLIC mbedcrypto
+        PUBLIC ccrush
         )
 
-if ( (${CMAKE_SYSTEM_NAME} STREQUAL "Linux") OR (${CYGWIN}) )
+if ((${CMAKE_SYSTEM_NAME} STREQUAL "Linux") OR (${CYGWIN}))
     target_link_libraries(${PROJECT_NAME} PRIVATE -luuid -lm)
 endif ()
 
@@ -137,7 +142,8 @@ endif ()
 
 target_include_directories(${PROJECT_NAME}
         PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
-        PUBLIC ${CMAKE_CURRENT_LIST_DIR}/lib/mbedtls/include
+        PRIVATE ${CMAKE_CURRENT_LIST_DIR}/lib/mbedtls/include
+        PRIVATE ${CMAKE_CURRENT_LIST_DIR}/lib/ccrush/include
         )
 
 get_target_property(${PROJECT_NAME}_DEPS_TARGETS ${PROJECT_NAME} LINK_LIBRARIES)
@@ -165,6 +171,7 @@ if (${${PROJECT_NAME}_ENABLE_TESTS})
             PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
             PUBLIC ${CMAKE_CURRENT_LIST_DIR}/lib/acutest/include
             PUBLIC ${CMAKE_CURRENT_LIST_DIR}/lib/mbedtls/include
+            PUBLIC ${CMAKE_CURRENT_LIST_DIR}/lib/ccrush/include
             )
 
     if (ENABLE_COVERAGE)

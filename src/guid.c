@@ -41,9 +41,16 @@ extern "C" {
 #define CECIES_GUID_UPPERCASE_NO_HYPHENS "%08X%04X%04X%02X%02X%02X%02X%02X%02X%02X%02X"
 #define CECIES_GET_GUID_FORMAT(lowercase, hyphens) ((lowercase) ? (hyphens) ? (CECIES_GUID_LOWERCASE_HYPHENS) : (CECIES_GUID_LOWERCASE_NO_HYPHENS) : (hyphens) ? (CECIES_GUID_UPPERCASE_HYPHENS) : (CECIES_GUID_UPPERCASE_NO_HYPHENS))
 
+static const cecies_guid CECIES_EMPTY_GUID = { .string = "00000000-0000-0000-0000-000000000000" };
+
+cecies_guid cecies_empty_guid()
+{
+    return CECIES_EMPTY_GUID;
+}
+
 #ifdef _WIN32
 
-cecies_guid cecies_new_guid(const bool lowercase, const bool hyphens)
+cecies_guid cecies_new_guid(const int lowercase, const int hyphens)
 {
     cecies_guid out;
     memset(&out, 0x00, sizeof(out));
@@ -57,9 +64,9 @@ cecies_guid cecies_new_guid(const bool lowercase, const bool hyphens)
     return out;
 }
 
-#elif defined (__FreeBSD__)
+#elif defined(__FreeBSD__)
 
-cecies_guid cecies_new_guid(const bool lowercase, const bool hyphens)
+cecies_guid cecies_new_guid(const int lowercase, const int hyphens)
 {
     cecies_guid out;
     memset(out.string, '\0', sizeof(out.string));
@@ -102,7 +109,7 @@ cecies_guid cecies_new_guid(const bool lowercase, const bool hyphens)
 
 #else
 
-cecies_guid cecies_new_guid(const bool lowercase, const bool hyphens)
+cecies_guid cecies_new_guid(const int lowercase, const int hyphens)
 {
     cecies_guid out;
     memset(&out, 0x00, sizeof(out));
@@ -127,7 +134,7 @@ cecies_guid cecies_new_guid(const bool lowercase, const bool hyphens)
     else
     {
         char* c = out.string;
-        for (int i = 0; i < sizeof(tmp); i++)
+        for (int i = 0; i < sizeof(tmp); ++i)
         {
             if (tmp[i] != '-')
             {

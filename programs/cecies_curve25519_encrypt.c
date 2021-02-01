@@ -49,12 +49,11 @@ int main(const int argc, const char* argv[])
         return -2;
     }
 
-    cecies_curve25519_key public_key;
-    memset(&public_key, 0x00, sizeof(cecies_curve25519_key));
+    cecies_curve25519_key public_key = { 0x00 };
     memcpy(public_key.hexstring, public_key_hexstr, public_key_hexstr_len);
 
     size_t olen = cecies_calc_base64_length(cecies_curve25519_calc_output_buffer_needed_size(message_len));
-    unsigned char* o = calloc(olen, sizeof(unsigned char));
+    uint8_t* o = calloc(olen, sizeof(uint8_t));
 
     if (o == NULL)
     {
@@ -62,7 +61,7 @@ int main(const int argc, const char* argv[])
         return -3;
     }
 
-    int r = cecies_curve25519_encrypt((unsigned char*)message, message_len, public_key, o, olen, NULL, true);
+    int r = cecies_curve25519_encrypt((uint8_t*)message, message_len, 0, public_key, o, olen, NULL, 1);
     if (r != 0)
     {
         free(o);

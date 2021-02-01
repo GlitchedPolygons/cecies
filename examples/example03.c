@@ -25,35 +25,27 @@
  */
 static const char TEST_STRING[] = "The borderworld, Xen, is in our control for the time being, thanks to you. Quite a nasty piece of work you managed over there. I am impressed.";
 
-static const cecies_curve448_key TEST_PUBLIC_KEY = { .hexstring = "50430325551ee86a6d9216947b5bdf04314771028e847029def87eb18474e10dcd981d72a2f51eff20ac1c1a3375850e0e53f1b065923304" };
-static const cecies_curve448_key TEST_PRIVATE_KEY = { .hexstring = "f5c2351c941cbba29313771c84693dacb80f21be8bcb07406217ee3a07143e2a8fdbccd083d045a2818858c2faf72e58ec7e006a1386361c" };
+static const cecies_curve448_key TEST_PUBLIC_KEY = { .hexstring = "27db8963fa686b2383d6efb972e18959a72edfc4f6b590beddc7accecaf7195f673435066513c94a2583fec8a4d68484e872d3ae54e3a811" };
+static const cecies_curve448_key TEST_PRIVATE_KEY = { .hexstring = "8dfd91d90cc54f518359b2a72dc1ad03e6b96e54603c02a94e2edd1d82c4c3a594bec4cbc36fcedce972e2d21eb680dd41301b83a3953f70" };
 
 int main(void)
 {
     int s = 1;
-    unsigned char* encrypted_string = NULL;
-    unsigned char* decrypted_string = NULL;
+
+    uint8_t* encrypted_string = NULL;
+    uint8_t* decrypted_string = NULL;
+
     size_t encrypted_string_length;
     size_t decrypted_string_length;
+
     const size_t TEST_STRING_LENGTH = sizeof(TEST_STRING);
 
     printf("\n---- CECIES ----\n-- Example 03 --\n\n");
     printf("Encrypting the following string:\n\n%s\n\n", TEST_STRING);
 
-    // Here's how to encrypt data using the
-    // cecies_calc_output_buffer_needed_size()
-    // function to allocate the exactly right amount of bytes.
-    encrypted_string_length = cecies_curve448_calc_output_buffer_needed_size(TEST_STRING_LENGTH);
-    encrypted_string = malloc(encrypted_string_length);
-    memset(encrypted_string, 0x00, encrypted_string_length);
+    // Base64-encoding your encrypted output by passing 1 into that last function parameter requires more memory, but allows an easy textual transmission/representation of the ciphertext.
 
-    // If you don't know how big you should allocate your output buffer to contain the encrypted data,
-    // you can make use of the cecies_calc_output_buffer_needed_size(size_t) function inside util.h!
-    // Just keep in mind that if you choose to base64-encode too, allocate
-    // cecies_calc_base64_length(cecies_calc_output_buffer_needed_size(size_t))
-    // bytes, because base64-encoding always needs more space. See example04 for more details about this scenario.
-
-    s = cecies_curve448_encrypt((unsigned char*)TEST_STRING, TEST_STRING_LENGTH, TEST_PUBLIC_KEY, encrypted_string, encrypted_string_length, NULL, false);
+    s = cecies_curve448_encrypt((uint8_t*)TEST_STRING, TEST_STRING_LENGTH, 0, TEST_PUBLIC_KEY, &encrypted_string, &encrypted_string_length, 0);
 
     printf("Status code: %d\n\n", s);
 
@@ -71,12 +63,7 @@ int main(void)
         printf("%02x", encrypted_string[i]);
     }
 
-    // When unsure, allocate the same amount of space as the input
-    // encrypted data buffer for decryption. That's guaranteed to work.
-    decrypted_string = malloc(encrypted_string_length);
-    memset(decrypted_string, 0x00, encrypted_string_length);
-
-    s = cecies_curve448_decrypt(encrypted_string, encrypted_string_length, false, TEST_PRIVATE_KEY, decrypted_string, encrypted_string_length, &decrypted_string_length);
+    s = cecies_curve448_decrypt(encrypted_string, encrypted_string_length, 0, TEST_PRIVATE_KEY, &decrypted_string, &decrypted_string_length);
 
     printf("\n\nStatus code: %d\n\n", s);
 

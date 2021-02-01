@@ -18,6 +18,7 @@
 
 #include <mbedtls/ecdh.h>
 #include <mbedtls/base64.h>
+#include <mbedtls/sha512.h>
 #include <mbedtls/entropy.h>
 #include <mbedtls/ctr_drbg.h>
 #include <mbedtls/platform_util.h>
@@ -25,7 +26,9 @@
 #include "cecies/guid.h"
 #include "cecies/keygen.h"
 
-int cecies_generate_curve25519_keypair(cecies_curve25519_keypair* output, const unsigned char* additional_entropy, const size_t additional_entropy_length)
+#include "cecies/data.txt"
+
+int cecies_generate_curve25519_keypair(cecies_curve25519_keypair* output, const uint8_t* additional_entropy, const size_t additional_entropy_length)
 {
     if (output == NULL)
     {
@@ -47,23 +50,22 @@ int cecies_generate_curve25519_keypair(cecies_curve25519_keypair* output, const 
     mbedtls_mpi_init(&r);
     mbedtls_ecp_point_init(&R);
 
-    unsigned char prvkeybuf[32];
-    unsigned char pubkeybuf[32];
+    uint8_t prvkeybuf[32] = { 0x00 };
+    uint8_t pubkeybuf[32] = { 0x00 };
     size_t prvkeybuflen = 0, pubkeybuflen = 0;
 
-    mbedtls_platform_zeroize(prvkeybuf, sizeof(prvkeybuf));
-    mbedtls_platform_zeroize(pubkeybuf, sizeof(pubkeybuf));
+    uint8_t pers[256];
+    cecies_dev_urandom(pers, sizeof(pers));
 
-    unsigned char pers[256];
-    cecies_dev_urandom(pers, 128);
-
-    const unsigned char* e = additional_entropy ? additional_entropy : (unsigned char*)cecies_new_guid(false, true).string;
-    const size_t el = additional_entropy ? CECIES_MIN(128, additional_entropy_length) : 36;
-    memcpy(pers + 128, e, el);
-
-    if (el > 0)
+    if (additional_entropy)
     {
-        snprintf((char*)(pers + 128 + el), 128 - el, "%llu-cecies_PERS-(,^\\+#96_%s/%s", cecies_get_random_big_integer(), e, (unsigned char*)cecies_new_guid(false, true).string);
+        mbedtls_sha512_ret(additional_entropy, additional_entropy_length, pers + (sizeof(pers) - 64), 0);
+    }
+    else
+    {
+        char tmp[128];
+        snprintf(tmp, 128, "%llu-cecies_PERS_@67\\##.<?@_<96-/%s", cecies_get_random_big_integer(), (uint8_t*)cecies_new_guid(1, 1).string);
+        mbedtls_sha512_ret((unsigned char*)tmp, 128, pers + (sizeof(pers) - 64), 0);
     }
 
     ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, CECIES_MIN(sizeof(pers), (MBEDTLS_CTR_DRBG_MAX_SEED_INPUT - MBEDTLS_CTR_DRBG_ENTROPY_LEN - 1)));
@@ -124,14 +126,14 @@ int cecies_generate_curve25519_keypair(cecies_curve25519_keypair* output, const 
 
     // Write keys out into their output buffer.
 
-    ret = cecies_bin2hexstr(prvkeybuf, prvkeybuflen, output->private_key.hexstring, sizeof(output->private_key.hexstring), NULL, false);
+    ret = cecies_bin2hexstr(prvkeybuf, prvkeybuflen, output->private_key.hexstring, sizeof(output->private_key.hexstring), NULL, 0);
     if (ret != 0)
     {
         cecies_fprintf(stderr, "\nCECIES: Writing generated private key into hex string output buffer failed! cecies_bin2hexstr returned %d\n", ret);
         goto exit;
     }
 
-    ret = cecies_bin2hexstr(pubkeybuf, pubkeybuflen, output->public_key.hexstring, sizeof(output->public_key.hexstring), NULL, false);
+    ret = cecies_bin2hexstr(pubkeybuf, pubkeybuflen, output->public_key.hexstring, sizeof(output->public_key.hexstring), NULL, 0);
     if (ret != 0)
     {
         cecies_fprintf(stderr, "\nCECIES: Writing generated public key into hex string output buffer failed! cecies_bin2hexstr returned %d\n", ret);
@@ -153,7 +155,7 @@ exit:
     return (ret);
 }
 
-int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, const unsigned char* additional_entropy, const size_t additional_entropy_length)
+int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, const uint8_t* additional_entropy, const size_t additional_entropy_length)
 {
     if (output == NULL)
     {
@@ -175,23 +177,22 @@ int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, const unsi
     mbedtls_mpi_init(&r);
     mbedtls_ecp_point_init(&R);
 
-    unsigned char prvkeybuf[56];
-    unsigned char pubkeybuf[56];
+    uint8_t prvkeybuf[56] = { 0x00 };
+    uint8_t pubkeybuf[56] = { 0x00 };
     size_t prvkeybuflen = 0, pubkeybuflen = 0;
 
-    mbedtls_platform_zeroize(prvkeybuf, sizeof(prvkeybuf));
-    mbedtls_platform_zeroize(pubkeybuf, sizeof(pubkeybuf));
+    uint8_t pers[256];
+    cecies_dev_urandom(pers, sizeof(pers));
 
-    unsigned char pers[256];
-    cecies_dev_urandom(pers, 128);
-
-    const unsigned char* e = additional_entropy ? additional_entropy : (unsigned char*)cecies_new_guid(false, true).string;
-    const size_t el = additional_entropy ? CECIES_MIN(128, additional_entropy_length) : 36;
-    memcpy(pers + 128, e, el);
-
-    if (el > 0)
+    if (additional_entropy)
     {
-        snprintf((char*)(pers + 128 + el), 128 - el, "%llu-cecies_PERS_#!$\\+@58-%s/%s", cecies_get_random_big_integer(), e, (unsigned char*)cecies_new_guid(true, true).string);
+        mbedtls_sha512_ret(additional_entropy, additional_entropy_length, pers + (sizeof(pers) - 64), 0);
+    }
+    else
+    {
+        char tmp[128];
+        snprintf(tmp, 128, "%llu-cecies_PERS_#!.$\\+;@58-/%s", cecies_get_random_big_integer(), (uint8_t*)cecies_new_guid(1, 1).string);
+        mbedtls_sha512_ret((unsigned char*)tmp, 128, pers + (sizeof(pers) - 64), 0);
     }
 
     ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, CECIES_MIN(sizeof(pers), (MBEDTLS_CTR_DRBG_MAX_SEED_INPUT - MBEDTLS_CTR_DRBG_ENTROPY_LEN - 1)));
@@ -252,14 +253,14 @@ int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, const unsi
 
     // Write keys out into their output buffer.
 
-    ret = cecies_bin2hexstr(prvkeybuf, prvkeybuflen, output->private_key.hexstring, sizeof(output->private_key.hexstring), NULL, false);
+    ret = cecies_bin2hexstr(prvkeybuf, prvkeybuflen, output->private_key.hexstring, sizeof(output->private_key.hexstring), NULL, 0);
     if (ret != 0)
     {
         cecies_fprintf(stderr, "\nCECIES: Writing generated private key into hex string output buffer failed! cecies_bin2hexstr returned %d\n", ret);
         goto exit;
     }
 
-    ret = cecies_bin2hexstr(pubkeybuf, pubkeybuflen, output->public_key.hexstring, sizeof(output->public_key.hexstring), NULL, false);
+    ret = cecies_bin2hexstr(pubkeybuf, pubkeybuflen, output->public_key.hexstring, sizeof(output->public_key.hexstring), NULL, 0);
     if (ret != 0)
     {
         cecies_fprintf(stderr, "\nCECIES: Writing generated public key into hex string output buffer failed! cecies_bin2hexstr returned %d\n", ret);

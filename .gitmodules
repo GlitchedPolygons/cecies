@@ -7,3 +7,6 @@
 [submodule "lib/acutest"]
 	path = lib/acutest
 	url = https://github.com/mity/acutest.git
+[submodule "lib/ccrush"]
+	path = lib/ccrush
+	url = https://github.com/GlitchedPolygons/ccrush

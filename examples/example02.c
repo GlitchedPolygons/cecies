@@ -18,6 +18,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <cecies/keygen.h>
+#include <mbedtls/platform_util.h>
 
 /*
  *     This example shows how to generate CECIES keypairs.
@@ -52,7 +53,7 @@ int main(int argc, char* argv[])
 
     printf("\nSuccessfully generated CECIES key-pair (Curve448)\n\nPrivate key:  %s\n\nPublic key:   %s\n\n", keypair.private_key.hexstring, keypair.public_key.hexstring);
 
-    memset(&keypair, 0x00, sizeof(keypair));
+    mbedtls_platform_zeroize(&keypair, sizeof(keypair));
     cecies_disable_fprintf();
     return r;
 }

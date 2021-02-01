@@ -32,7 +32,6 @@ extern "C" {
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <stdbool.h>
 
 #include "types.h"
 #include "constants.h"
@@ -58,6 +57,16 @@ static inline size_t cecies_calc_aes_cbc_ciphertext_length(const size_t plaintex
 }
 
 /**
+ * Estimates the required buffer size that would be needed to compress \p data_length bytes of data.
+ * @param data_length How many bytes to compress.
+ * @return The minimum amount of bytes to allocate for a compression of \p data_length bytes to conclude safely.
+ */
+static inline size_t cecies_calc_compression_bound(const size_t data_length)
+{
+    return data_length + (data_length >> 12) + (data_length >> 14) + (data_length >> 25) + 13;
+}
+
+/**
  * Gets the minimum amount of needed buffer size for an encryption with a given plaintext data length.
  * @param input_buffer_length The amount of bytes to encrypt.
  * @param key_size Size in bytes of the used ephemeral key (X448 keys are slightly bigger than X25519).
@@ -65,13 +74,14 @@ static inline size_t cecies_calc_aes_cbc_ciphertext_length(const size_t plaintex
  */
 static inline size_t cecies_calc_output_buffer_needed_size(const size_t input_buffer_length, const size_t key_size)
 {
-    //     1    2    3          4
+    //     1    2    3          4    5
     return 16 + 32 + key_size + 16 + input_buffer_length;
 
     // 1:  IV (AES initialization vector)
     // 2:  Salt (for HKDF)
     // 3:  R (ephemeral public key)
     // 4:  Tag (from AES-GCM)
+    // 5:  Actual data array length
 }
 
 /**
@@ -114,7 +124,7 @@ static inline size_t cecies_calc_base64_length(const size_t data_length)
  * @param output_length [OPTIONAL] Where to write the output array length into. This is always gonna be <c>hexstr_length / 2</c>, but you can still choose to write it out just to be sure. If you want to omit this: no problem.. just pass <c>NULL</c>!
  * @return <c>0</c> if conversion succeeded. <c>1</c> if one or more required arguments were <c>NULL</c> or invalid. <c>2</c> if the hexadecimal string is in an invalid format (e.g. not divisible by 2). <c>3</c> if output buffer size was insufficient (needs to be at least <c>(hexstr_length / 2) + 1</c> bytes).
  */
-CECIES_API int cecies_hexstr2bin(const char* hexstr, size_t hexstr_length, unsigned char* output, size_t output_size, size_t* output_length);
+CECIES_API int cecies_hexstr2bin(const char* hexstr, size_t hexstr_length, uint8_t* output, size_t output_size, size_t* output_length);
 
 /**
  * Converts a byte array to a hex string. <p>
@@ -124,10 +134,10 @@ CECIES_API int cecies_hexstr2bin(const char* hexstr, size_t hexstr_length, unsig
  * @param output Where to write the hex string into.
  * @param output_size Maximum capacity of the \p output buffer. Make sure to allocate at least <c>(bin_length * 2) + 1</c> bytes!
  * @param output_length [OPTIONAL] Where to write the output string length into. This is always gonna be <c>bin_length * 2</c>, but you can still choose to write it out just to be sure. If you want to omit this: no problem.. just pass <c>NULL</c>!
- * @param uppercase Should the \p output string characters be UPPER- or lowercase?
+ * @param uppercase Should the \p output string characters be UPPER- or lowercase? Pass \c 0 for \c false, anything else for \c true.
  * @return <c>0</c> if conversion succeeded. <c>1</c> if one or more required arguments were <c>NULL</c> or invalid. <c>2</c> if the output buffer size is insufficient: please allocate at least <c>(bin_length * 2) + 1</c> bytes!
  */
-CECIES_API int cecies_bin2hexstr(const unsigned char* bin, size_t bin_length, char* output, size_t output_size, size_t* output_length, bool uppercase);
+CECIES_API int cecies_bin2hexstr(const uint8_t* bin, size_t bin_length, char* output, size_t output_size, size_t* output_length, int uppercase);
 
 /**
  * Gets the current CECIES version number as a human-readable string (e.g. <c>"2.1.2"</c>).
@@ -143,9 +153,9 @@ CECIES_API uint64_t cecies_get_version_nr();
 
 /**
  * Checks whether CECIES fprintf is enabled (whether errors are fprintfed into stderr).
- * @return Whether errors are fprintfed into stderr or not.
+ * @return Whether errors are fprintfed into stderr or not (\c 1 for \c true ; \c 0 for \c false).
  */
-CECIES_API unsigned char cecies_is_fprintf_enabled();
+CECIES_API int cecies_is_fprintf_enabled();
 
 /**
  * Like fprintf() except it doesn't do anything. Like printing into <c>/dev/null</c> :D lots of fun!
@@ -193,7 +203,14 @@ static inline unsigned long long int cecies_get_random_big_integer()
  * @param output_buffer Where to write the random bytes into.
  * @param output_buffer_size How many random bytes to write into \p output_buffer
  */
-CECIES_API void cecies_dev_urandom(unsigned char* output_buffer, size_t output_buffer_size);
+CECIES_API void cecies_dev_urandom(uint8_t* output_buffer, size_t output_buffer_size);
+
+/**
+ * Free memory that was allocated by CECIES. <p>
+ * Wraps the <c>free()</c> function (mainly useful for C# interop).
+ * @param mem The pointer to the memory to free.
+ */
+CECIES_API void cecies_free(void* mem);
 
 #ifdef __cplusplus
 } // extern "C"

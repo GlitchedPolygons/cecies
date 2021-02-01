@@ -29,30 +29,21 @@ extern "C" {
 
 #include <stddef.h>
 #include <stdint.h>
-#include <stdbool.h>
 #include "types.h"
-
-/**
- * @private
- */
-static const cecies_guid _cecies_empty_guid = { .string = "00000000-0000-0000-0000-000000000000" };
 
 /**
  * Gets an empty GUID (<c>"00000000-0000-0000-0000-000000000000"</c>).
  * @return <c>"00000000-0000-0000-0000-000000000000"</c>
  */
-static inline cecies_guid cecies_empty_guid()
-{
-    return _cecies_empty_guid;
-}
+CECIES_API cecies_guid cecies_empty_guid();
 
 /**
  * Generates a new GUID (a.k.a. UUID).
- * @param lowercase Should the GUID be lowercase or UPPERCASE only?
- * @param hyphens Should the GUID contain hyphen separators?
+ * @param lowercase Should the GUID be lowercase or UPPERCASE only? Pass \c 0 for \c false, anything else for \c true.
+ * @param hyphens Should the GUID contain hyphen separators? Pass \c 0 for \c false, anything else for \c true.
  * @return The cecies_guid
  */
-CECIES_API cecies_guid cecies_new_guid(bool lowercase, bool hyphens);
+CECIES_API cecies_guid cecies_new_guid(int lowercase, int hyphens);
 
 #ifdef __cplusplus
 } // extern "C"

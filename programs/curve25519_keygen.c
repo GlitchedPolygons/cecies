@@ -18,8 +18,12 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+
 #include <cecies/util.h>
 #include <cecies/keygen.h>
+
+#include <mbedtls/sha512.h>
+#include <mbedtls/platform_util.h>
 
 int main(int argc, const char* argv[])
 {
@@ -27,18 +31,17 @@ int main(int argc, const char* argv[])
 
     cecies_curve25519_keypair keypair;
 
-    unsigned char additional_entropy[128];
-    size_t rem = sizeof(additional_entropy);
+    uint8_t additional_entropy[128];
 
-    for (int i = 1; i < argc && rem > 0; i++)
+    for (int i = 0; i < argc; ++i)
     {
-        const char* istr = argv[i];
-        const size_t ilen = CECIES_MIN(rem, strlen(istr));
-        snprintf((char*)(additional_entropy + (128 - rem)), ilen, "%s", istr);
-        rem -= ilen;
+        const char* arg = argv[i];
+        mbedtls_sha512_ret((const unsigned char*)arg, strlen(arg), additional_entropy + (64 * (i % 2)), 0);
     }
 
-    const int r = cecies_generate_curve25519_keypair(&keypair, additional_entropy, sizeof additional_entropy);
+    mbedtls_sha512_ret(additional_entropy, sizeof(additional_entropy), additional_entropy + 64, 0);
+
+    const int r = cecies_generate_curve25519_keypair(&keypair, additional_entropy, sizeof(additional_entropy));
     if (r != 0)
     {
         return r;
@@ -47,7 +50,7 @@ int main(int argc, const char* argv[])
     fprintf(stdout, "{\"curve25519_private_key\":\"%s\",\"curve25519_public_key\":\"%s\"}\n", keypair.private_key.hexstring, keypair.public_key.hexstring);
 
     // Cleanup:
-    memset(&keypair, 0x00, sizeof(cecies_curve25519_keypair));
-    memset(additional_entropy, 0x00, sizeof(additional_entropy));
+    mbedtls_platform_zeroize(&keypair, sizeof(cecies_curve25519_keypair));
+    mbedtls_platform_zeroize(additional_entropy, sizeof(additional_entropy));
     return 0;
 }

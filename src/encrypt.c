@@ -15,29 +15,47 @@
 */
 
 #include <string.h>
+
 #include <mbedtls/gcm.h>
 #include <mbedtls/ecdh.h>
 #include <mbedtls/hkdf.h>
 #include <mbedtls/base64.h>
+#include <mbedtls/sha512.h>
 #include <mbedtls/entropy.h>
 #include <mbedtls/ctr_drbg.h>
 #include <mbedtls/md_internal.h>
 
+#include <ccrush.h>
+
 #include "cecies/util.h"
 #include "cecies/encrypt.h"
+
+#include "cecies/data.txt"
+
+static inline int cecies_prepare_data(const uint8_t* data, const size_t data_length, const int compress, uint8_t** out_data, size_t* out_data_length)
+{
+    if (compress)
+    {
+        return ccrush_compress(data, data_length, 256, compress, out_data, out_data_length);
+    }
+
+    *out_data = (uint8_t*)data;
+    *out_data_length = data_length;
+    return 0;
+}
 
 /*
  * This avoids code duplication between the Curve25519 and Curve448 encryption variants (only key length and a few minor things differ).
  * The last "curve" argument determines which curve to use for encryption: pass 0 for Curve25519 and 1 for Curve448!
  */
-static int cecies_encrypt(const unsigned char* data, const size_t data_length, const char* public_key, unsigned char* output, const size_t output_bufsize, size_t* output_length, const bool output_base64, const unsigned char curve)
+static int cecies_encrypt(const uint8_t* data, const size_t data_length, const int compress, const char* public_key, uint8_t** output, size_t* output_length, const int output_base64, const int curve)
 {
-    if (data == NULL || output == NULL)
+    if (data == NULL || output == NULL || output_length == NULL || public_key == NULL)
     {
         return CECIES_ENCRYPT_ERROR_CODE_NULL_ARG;
     }
 
-    if (data_length == 0 || output_bufsize == 0)
+    if (data_length == 0)
     {
         return CECIES_ENCRYPT_ERROR_CODE_INVALID_ARG;
     }
@@ -46,13 +64,14 @@ static int cecies_encrypt(const unsigned char* data, const size_t data_length, c
 
     const size_t key_length = curve == 0 ? CECIES_X25519_KEY_SIZE : CECIES_X448_KEY_SIZE;
 
-    size_t olen = cecies_calc_output_buffer_needed_size(data_length, key_length);
-    size_t total_output_length = output_base64 ? cecies_calc_base64_length(olen) : olen;
+    uint8_t* input_data = NULL;
+    size_t input_data_length = 0;
 
-    if (output_bufsize < total_output_length)
+    ret = cecies_prepare_data(data, data_length, compress, &input_data, &input_data_length);
+    if (ret != 0)
     {
-        cecies_fprintf(stderr, "CECIES: encryption failed: output buffer too small!\n");
-        return CECIES_ENCRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE;
+        cecies_fprintf(stderr, "CECIES: compression failed: ccrush return code %d\n", ret);
+        return CECIES_ENCRYPT_ERROR_CODE_COMPRESSION_FAILED;
     }
 
     mbedtls_gcm_context aes_ctx;
@@ -77,23 +96,18 @@ static int cecies_encrypt(const unsigned char* data, const size_t data_length, c
     mbedtls_ecp_point_init(&S);
     mbedtls_ecp_point_init(&QA);
 
-    unsigned char iv[16];
-    unsigned char salt[32];
-    unsigned char aes_key[32];
-    unsigned char S_bytes[128];
-    unsigned char R_bytes[128];
+    uint8_t iv[16] = { 0x00 };
+    uint8_t salt[32] = { 0x00 };
+    uint8_t aes_key[32] = { 0x00 };
+    uint8_t S_bytes[128] = { 0x00 };
+    uint8_t R_bytes[128] = { 0x00 };
 
     size_t R_bytes_length = 0, S_bytes_length = 0;
 
-    memset(iv, 0x00, 16);
-    memset(salt, 0x00, 32);
-    memset(aes_key, 0x00, 32);
-    memset(S_bytes, 0x00, sizeof(S_bytes));
-    memset(R_bytes, 0x00, sizeof(R_bytes));
-
-    unsigned char pers[256];
+    uint8_t pers[256];
     cecies_dev_urandom(pers, 128);
     snprintf((char*)(pers + 128), 128, "cecies_PERS_@&=/\\.*67%llu", cecies_get_random_big_integer());
+    mbedtls_sha512_ret(pers + 128, 128, pers + 128 + 64, 0);
 
     ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, CECIES_MIN(sizeof(pers), (MBEDTLS_CTR_DRBG_MAX_SEED_INPUT - MBEDTLS_CTR_DRBG_ENTROPY_LEN - 1)));
     if (ret != 0)
@@ -131,8 +145,7 @@ static int cecies_encrypt(const unsigned char* data, const size_t data_length, c
     }
 
     size_t public_key_bytes_length;
-    unsigned char public_key_bytes[64];
-    memset(public_key_bytes, 0x00, sizeof(public_key_bytes));
+    uint8_t public_key_bytes[64] = { 0x00 };
 
     ret = cecies_hexstr2bin(public_key, key_length * 2, public_key_bytes, sizeof(public_key_bytes), &public_key_bytes_length);
     if (ret != 0 || public_key_bytes_length != key_length)
@@ -211,52 +224,69 @@ static int cecies_encrypt(const unsigned char* data, const size_t data_length, c
         goto exit;
     }
 
-    unsigned char* o = output;
+    size_t olen = cecies_calc_output_buffer_needed_size(input_data_length, key_length);
+
+    uint8_t* o = malloc(olen);
+    if (o == NULL)
+    {
+        ret = CECIES_ENCRYPT_ERROR_CODE_OUT_OF_MEMORY;
+        goto exit;
+    }
 
     memcpy(o, iv, 16);
-    o += 16;
+    memcpy(o + 16, salt, 32);
+    memcpy(o + 16 + 32, R_bytes, R_bytes_length);
 
-    memcpy(o, salt, 32);
-    o += 32;
+    ret = mbedtls_gcm_crypt_and_tag( //
+            &aes_ctx, // MbedTLS AES context pointer.
+            MBEDTLS_GCM_ENCRYPT, // Encryption mode.
+            input_data_length, // Input data length (or compressed input data length if compression is enabled).
+            iv, // The initialization vector.
+            16, // Length of the IV.
+            NULL, // No additional data.
+            0, // ^
+            input_data, // The input data to encrypt (or compressed input data if compression is enabled).
+            o + 16 + 32 + R_bytes_length + 16, // Where to write the encrypted output bytes into: this is offset so that the order of the ciphertext prefix IV + Salt + Ephemeral Key + Tag is skipped.
+            16, // Length of the authentication tag.
+            o + 16 + 32 + R_bytes_length // Where to insert the tag bytes inside the output ciphertext.
+    );
 
-    memcpy(o, R_bytes, R_bytes_length);
-    o += R_bytes_length;
-
-    ret = mbedtls_gcm_crypt_and_tag(&aes_ctx, MBEDTLS_GCM_ENCRYPT, data_length, iv, 16, NULL, 0, data, o + 16, 16, o);
     if (ret != 0)
     {
+        free(o);
         cecies_fprintf(stderr, "CECIES: AES-GCM encryption failed! mbedtls_gcm_crypt_and_tag returned %d\n", ret);
         goto exit;
     }
 
     if (output_base64)
     {
-        size_t b64len;
-        unsigned char* b64 = malloc(total_output_length);
+        size_t b64len = cecies_calc_base64_length(olen);
+        uint8_t* b64 = malloc(b64len);
         if (b64 == NULL)
         {
             ret = CECIES_ENCRYPT_ERROR_CODE_OUT_OF_MEMORY;
             cecies_fprintf(stderr, "CECIES: AES-GCM encryption failed while base64-encoding the output - OUT OF MEMORY! \n");
+            free(o);
             goto exit;
         }
 
-        ret = mbedtls_base64_encode(b64, total_output_length, &b64len, output, olen);
+        ret = mbedtls_base64_encode(b64, b64len, &b64len, o, olen);
         if (ret != 0)
         {
             cecies_fprintf(stderr, "CECIES: AES-GCM encryption failed while base64-encoding! mbedtls_base64_encode returned %d\n", ret);
+            free(o);
             free(b64);
             goto exit;
         }
 
-        b64[total_output_length - 1] = '\0';
-        memcpy(output, b64, total_output_length--);
-        free(b64);
+        free(o);
+        *output = b64;
+        *output_length = b64len;
+        goto exit;
     }
 
-    if (output_length != NULL)
-    {
-        *output_length = total_output_length;
-    }
+    *output = o;
+    *output_length = olen;
 
 exit:
 
@@ -277,15 +307,21 @@ exit:
     mbedtls_platform_zeroize(S_bytes, sizeof(S_bytes));
     mbedtls_platform_zeroize(R_bytes, sizeof(R_bytes));
 
+    if (compress && input_data != NULL)
+    {
+        mbedtls_platform_zeroize(input_data, input_data_length);
+        free(input_data);
+    }
+
     return (ret);
 }
 
-int cecies_curve25519_encrypt(const unsigned char* data, const size_t data_length, const cecies_curve25519_key public_key, unsigned char* output, const size_t output_bufsize, size_t* output_length, const bool output_base64)
+int cecies_curve25519_encrypt(const uint8_t* data, const size_t data_length, const int compress, const cecies_curve25519_key public_key, uint8_t** output, size_t* output_length, const int output_base64)
 {
-    return cecies_encrypt(data, data_length, public_key.hexstring, output, output_bufsize, output_length, output_base64, 0);
+    return cecies_encrypt(data, data_length, compress, public_key.hexstring, output, output_length, output_base64, 0);
 }
 
-int cecies_curve448_encrypt(const unsigned char* data, const size_t data_length, const cecies_curve448_key public_key, unsigned char* output, const size_t output_bufsize, size_t* output_length, const bool output_base64)
+int cecies_curve448_encrypt(const uint8_t* data, const size_t data_length, const int compress, const cecies_curve448_key public_key, uint8_t** output, size_t* output_length, const int output_base64)
 {
-    return cecies_encrypt(data, data_length, public_key.hexstring, output, output_bufsize, output_length, output_base64, 1);
+    return cecies_encrypt(data, data_length, compress, public_key.hexstring, output, output_length, output_base64, 1);
 }

@@ -15,7 +15,7 @@
 */
 
 #include <stdio.h>
-#include <stdbool.h>
+#include <stddef.h>
 #include <string.h>
 
 #include <mbedtls/gcm.h>
@@ -26,32 +26,36 @@
 #include <mbedtls/ctr_drbg.h>
 #include <mbedtls/md_internal.h>
 
+#include <ccrush.h>
+
 #include "cecies/util.h"
 #include "cecies/decrypt.h"
+
+#include "cecies/data.txt"
 
 /*
  * This avoids code duplication between the Curve25519 and Curve448 decryption variants (only key length and a few minor things differ).
  * The last "curve" argument determines which curve to use for decryption: pass 0 for Curve25519 and 1 for Curve448!
  */
-static int cecies_decrypt(const unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, char* private_key, unsigned char* output, const size_t output_bufsize, size_t* output_length, const unsigned char curve)
+static int cecies_decrypt(const uint8_t* encrypted_data, const size_t encrypted_data_length, const int encrypted_data_base64, char* private_key, uint8_t** output, size_t* output_length, const int curve)
 {
     const size_t min_data_len = curve == 0 ? 97 : 121;
     const size_t key_length = curve == 0 ? CECIES_X25519_KEY_SIZE : CECIES_X448_KEY_SIZE;
 
-    if (encrypted_data == NULL || output == NULL || output_length == NULL)
+    if (encrypted_data == NULL || output == NULL || output_length == NULL || private_key == NULL)
     {
         cecies_fprintf(stderr, "CECIES: decryption failed: one or more NULL arguments.\n");
         return CECIES_DECRYPT_ERROR_CODE_NULL_ARG;
     }
 
-    if (encrypted_data_length < min_data_len || output_bufsize == 0)
+    if (encrypted_data_length < min_data_len)
     {
         cecies_fprintf(stderr, "CECIES: decryption failed: one or more invalid arguments.\n");
         return CECIES_DECRYPT_ERROR_CODE_INVALID_ARG;
     }
 
     int ret = 1;
-    unsigned char* input = (unsigned char*)encrypted_data;
+    uint8_t* input = (uint8_t*)encrypted_data;
     size_t input_length = encrypted_data_length;
 
     if (encrypted_data_base64)
@@ -77,30 +81,17 @@ static int cecies_decrypt(const unsigned char* encrypted_data, const size_t encr
         }
     }
 
-    const size_t olen = input_length - 16 - 32 - key_length - 16;
+    size_t olen = input_length - 16 - 32 - key_length - 16;
 
-    if (output_bufsize < olen)
-    {
-        cecies_fprintf(stderr, "CECIES: decryption failed due to insufficient output buffer size. Please allocate at least as many bytes as the encrypted input buffer, just to be sure!\n");
-        return CECIES_DECRYPT_ERROR_CODE_INSUFFICIENT_OUTPUT_BUFFER_SIZE;
-    }
+    uint8_t iv[16] = { 0x00 };
+    uint8_t tag[16] = { 0x00 };
+    uint8_t salt[32] = { 0x00 };
+    uint8_t aes_key[32] = { 0x00 };
+    uint8_t R_bytes[64] = { 0x00 };
+    uint8_t S_bytes[64] = { 0x00 };
+    uint8_t private_key_bytes[64] = { 0x00 };
 
-    unsigned char iv[16];
-    unsigned char tag[16];
-    unsigned char salt[32];
-    unsigned char aes_key[32];
-    unsigned char R_bytes[64];
-    unsigned char S_bytes[64];
-    unsigned char private_key_bytes[64];
-    size_t private_key_bytes_length, S_bytes_length;
-
-    memset(iv, 0x00, 16);
-    memset(tag, 0x00, 16);
-    memset(salt, 0x00, 32);
-    memset(aes_key, 0x00, 32);
-    memset(R_bytes, 0x00, sizeof(R_bytes));
-    memset(S_bytes, 0x00, sizeof(S_bytes));
-    memset(private_key_bytes, 0x00, sizeof(private_key_bytes));
+    size_t private_key_bytes_length = 0, S_bytes_length = 0;
 
     mbedtls_ecp_group ecp_group;
     mbedtls_gcm_context aes_ctx;
@@ -129,9 +120,10 @@ static int cecies_decrypt(const unsigned char* encrypted_data, const size_t encr
         goto exit;
     }
 
-    unsigned char pers[256];
+    uint8_t pers[256];
     cecies_dev_urandom(pers, 128);
     snprintf((char*)(pers + 128), 128, "cecies_PERS_3~£,@+14/\\%llu", cecies_get_random_big_integer());
+    mbedtls_sha512_ret(pers + 128, 128, pers + 128 + 64, 0);
 
     ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, CECIES_MIN(sizeof(pers), (MBEDTLS_CTR_DRBG_MAX_SEED_INPUT - MBEDTLS_CTR_DRBG_ENTROPY_LEN - 1)));
     if (ret != 0)
@@ -144,8 +136,6 @@ static int cecies_decrypt(const unsigned char* encrypted_data, const size_t encr
     memcpy(salt, input + 16, 32);
     memcpy(R_bytes, input + 16 + 32, key_length);
     memcpy(tag, input + 16 + 32 + key_length, 16);
-
-    const unsigned char* ciphertext = input + (16 + 32 + key_length + 16);
 
     ret = cecies_hexstr2bin(private_key, key_length * 2, private_key_bytes, sizeof(private_key_bytes), &private_key_bytes_length);
     if (ret != 0 || private_key_bytes_length != key_length)
@@ -218,14 +208,72 @@ static int cecies_decrypt(const unsigned char* encrypted_data, const size_t encr
         goto exit;
     }
 
-    ret = mbedtls_gcm_auth_decrypt(&aes_ctx, olen, iv, 16, NULL, 0, tag, 16, ciphertext, output);
+    uint8_t* decrypted = malloc(olen);
+    if (decrypted == NULL)
+    {
+        ret = CCRUSH_ERROR_OUT_OF_MEMORY;
+        goto exit;
+    }
+
+    ret = mbedtls_gcm_auth_decrypt( //
+            &aes_ctx, // The MbedTLS AES context pointer.
+            olen, // Length of the data blob to decrypt.
+            iv, // Initialization vector which was extracted from the ciphertext.
+            16, // Length of the IV is always 16 bytes.
+            NULL, // No additional data.
+            0, // ^
+            tag, // The GCM auth tag.
+            16, // Length of the tag.
+            input + (16 + 32 + key_length + 16), // From where to start on reading the data to decrypt (skip the ciphertext prefix of IV, Salt, Ephemeral key and auth tag).
+            decrypted // Where to write the decrypted data into.
+    );
+
     if (ret != 0)
     {
+        free(decrypted);
         cecies_fprintf(stderr, "CECIES: decryption failed! mbedtls_gcm_auth_decrypt returned %d\n", ret);
         goto exit;
     }
 
-    *output_length = (size_t)olen;
+    if (*decrypted == 0x78)
+    {
+        switch (decrypted[1])
+        {
+            case 0x01:
+            case 0x5E:
+            case 0x9C:
+            case 0xDA: // Zlib header detected
+            {
+                uint8_t* tmp = NULL;
+                size_t tmplength = 0;
+
+                ret = ccrush_decompress(decrypted, olen, 256, &tmp, &tmplength);
+                if (ret != 0)
+                {
+                    // If decompression fails, it still means that the decryption succeeded!
+                    // In this case, maybe the data just happens to start with a valid zlib header...
+                    // So, uhh, silently succeed and output the decrypted data ;D
+                    break;
+                }
+
+                mbedtls_platform_zeroize(decrypted, olen);
+                free(decrypted);
+
+                ret = 0;
+                *output = tmp;
+                *output_length = tmplength;
+
+                goto exit;
+            }
+            default: {
+                break;
+            }
+        }
+    }
+
+    ret = 0;
+    *output = decrypted;
+    *output_length = olen;
 
 exit:
 
@@ -254,12 +302,12 @@ exit:
     return (ret);
 }
 
-int cecies_curve25519_decrypt(const unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, cecies_curve25519_key private_key, unsigned char* output, const size_t output_bufsize, size_t* output_length)
+int cecies_curve25519_decrypt(const uint8_t* encrypted_data, const size_t encrypted_data_length, const int encrypted_data_base64, cecies_curve25519_key private_key, uint8_t** output, size_t* output_length)
 {
-    return cecies_decrypt(encrypted_data, encrypted_data_length, encrypted_data_base64, private_key.hexstring, output, output_bufsize, output_length, 0);
+    return cecies_decrypt(encrypted_data, encrypted_data_length, encrypted_data_base64, private_key.hexstring, output, output_length, 0);
 }
 
-int cecies_curve448_decrypt(const unsigned char* encrypted_data, const size_t encrypted_data_length, const bool encrypted_data_base64, cecies_curve448_key private_key, unsigned char* output, const size_t output_bufsize, size_t* output_length)
+int cecies_curve448_decrypt(const uint8_t* encrypted_data, const size_t encrypted_data_length, const int encrypted_data_base64, cecies_curve448_key private_key, uint8_t** output, size_t* output_length)
 {
-    return cecies_decrypt(encrypted_data, encrypted_data_length, encrypted_data_base64, private_key.hexstring, output, output_bufsize, output_length, 1);
+    return cecies_decrypt(encrypted_data, encrypted_data_length, encrypted_data_base64, private_key.hexstring, output, output_length, 1);
 }

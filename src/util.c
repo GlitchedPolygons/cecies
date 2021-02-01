@@ -23,9 +23,9 @@
 #include <bcrypt.h>
 #endif
 
-static unsigned char cecies_fprintf_enabled = 1;
+static int cecies_fprintf_enabled = 1;
 
-unsigned char cecies_is_fprintf_enabled()
+int cecies_is_fprintf_enabled()
 {
     return cecies_fprintf_enabled;
 }
@@ -44,7 +44,7 @@ void cecies_disable_fprintf()
     cecies_fprintf_fptr = &cecies_printvoid;
 }
 
-int cecies_hexstr2bin(const char* hexstr, const size_t hexstr_length, unsigned char* output, const size_t output_size, size_t* output_length)
+int cecies_hexstr2bin(const char* hexstr, const size_t hexstr_length, uint8_t* output, const size_t output_size, size_t* output_length)
 {
     if (hexstr == NULL || output == NULL || hexstr_length == 0)
     {
@@ -65,7 +65,7 @@ int cecies_hexstr2bin(const char* hexstr, const size_t hexstr_length, unsigned c
         return 3;
     }
 
-    for (size_t i = 0, ii = 0; ii < final_length; i += 2, ii++)
+    for (size_t i = 0, ii = 0; ii < final_length; i += 2, ++ii)
     {
         output[ii] = (hexstr[i] % 32 + 9) % 25 * 16 + (hexstr[i + 1] % 32 + 9) % 25;
     }
@@ -80,7 +80,7 @@ int cecies_hexstr2bin(const char* hexstr, const size_t hexstr_length, unsigned c
     return 0;
 }
 
-int cecies_bin2hexstr(const unsigned char* bin, const size_t bin_length, char* output, const size_t output_size, size_t* output_length, const bool uppercase)
+int cecies_bin2hexstr(const uint8_t* bin, const size_t bin_length, char* output, const size_t output_size, size_t* output_length, const int uppercase)
 {
     if (bin == NULL || bin_length == 0 || output == NULL)
     {
@@ -96,7 +96,7 @@ int cecies_bin2hexstr(const unsigned char* bin, const size_t bin_length, char* o
 
     const char* format = uppercase ? "%02X" : "%02x";
 
-    for (size_t i = 0; i < bin_length; i++)
+    for (size_t i = 0; i < bin_length; ++i)
     {
         sprintf(output + i * 2, format, bin[i]);
     }
@@ -111,7 +111,7 @@ int cecies_bin2hexstr(const unsigned char* bin, const size_t bin_length, char* o
     return 0;
 }
 
-void cecies_dev_urandom(unsigned char* output_buffer, const size_t output_buffer_size)
+void cecies_dev_urandom(uint8_t* output_buffer, const size_t output_buffer_size)
 {
     if (output_buffer != NULL && output_buffer_size > 0)
     {
@@ -121,7 +121,7 @@ void cecies_dev_urandom(unsigned char* output_buffer, const size_t output_buffer
         FILE* rnd = fopen("/dev/urandom", "r");
         if (rnd != NULL)
         {
-            fread(output_buffer, sizeof(unsigned char), output_buffer_size, rnd);
+            fread(output_buffer, sizeof(uint8_t), output_buffer_size, rnd);
             fclose(rnd);
         }
 #endif
@@ -136,4 +136,9 @@ char* cecies_get_version_str()
 uint64_t cecies_get_version_nr()
 {
     return CECIES_VERSION;
+}
+
+void cecies_free(void* mem)
+{
+    free(mem);
 }
