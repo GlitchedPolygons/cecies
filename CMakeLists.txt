@@ -72,6 +72,12 @@ if (NOT TARGET mbedtls)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/mbedtls mbedtls)
 endif ()
 
+set(${PROJECT_NAME}_PREV_BUILD_SHARED_LIBS BUILD_SHARED_LIBS)
+
+if (BUILD_SHARED_LIBS)
+    set(BUILD_SHARED_LIBS Off)
+endif ()
+
 if (NOT TARGET ccrush)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/ccrush ccrush)
 endif ()
