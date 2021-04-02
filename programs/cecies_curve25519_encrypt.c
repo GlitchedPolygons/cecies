@@ -52,19 +52,12 @@ int main(const int argc, const char* argv[])
     cecies_curve25519_key public_key = { 0x00 };
     memcpy(public_key.hexstring, public_key_hexstr, public_key_hexstr_len);
 
-    size_t olen = cecies_calc_base64_length(cecies_curve25519_calc_output_buffer_needed_size(message_len));
-    uint8_t* o = calloc(olen, sizeof(uint8_t));
+    size_t olen;
+    uint8_t* o;
 
-    if (o == NULL)
-    {
-        fprintf(stderr, "cecies_curve25519_encrypt: OUT OF MEMORY!\n");
-        return -3;
-    }
-
-    int r = cecies_curve25519_encrypt((uint8_t*)message, message_len, 0, public_key, o, olen, NULL, 1);
+    int r = cecies_curve25519_encrypt((uint8_t*)message, message_len, 6, public_key, &o, &olen,  1);
     if (r != 0)
     {
-        free(o);
         return -4;
     }
 

@@ -53,22 +53,13 @@ int main(const int argc, const char* argv[])
     cecies_curve25519_key private_key = { 0x00 };
     memcpy(private_key.hexstring, private_key_hexstr, private_key_hexstr_len);
 
-    size_t olen = 0;
-    uint8_t* o = calloc(message_len, sizeof(uint8_t));
+    size_t olen;
+    uint8_t* o;
 
-    if (o == NULL)
-    {
-        fprintf(stderr, "cecies_curve25519_decrypt: OUT OF MEMORY!\n");
-        mbedtls_platform_zeroize(&private_key, sizeof(cecies_curve25519_key));
-        return -3;
-    }
-
-    int r = cecies_curve25519_decrypt((uint8_t*)message, message_len, 1, private_key, o, message_len, &olen);
+    int r = cecies_curve25519_decrypt((uint8_t*)message, message_len, 1, private_key, &o, &olen);
     if (r != 0)
     {
-        mbedtls_platform_zeroize(o, message_len);
         mbedtls_platform_zeroize(&private_key, sizeof(cecies_curve25519_key));
-        free(o);
         return -4;
     }
 
