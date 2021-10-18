@@ -1,8 +1,9 @@
 # CECIES
 ## ECIES implementation in C using MbedTLS
 
-[![Codecov](https://codecov.io/gh/GlitchedPolygons/cecies/branch/master/graph/badge.svg)](https://codecov.io/gh/GlitchedPolygons/cecies)
+[![Build status](https://ci.appveyor.com/api/projects/status/l6y23d4ij5ilfvm8?svg=true)](https://ci.appveyor.com/project/GlitchedPolygons/cecies)
 [![CircleCI](https://circleci.com/gh/GlitchedPolygons/cecies/tree/master.svg?style=shield)](https://circleci.com/gh/GlitchedPolygons/cecies/tree/master)
+[![Codecov](https://codecov.io/gh/GlitchedPolygons/cecies/branch/master/graph/badge.svg)](https://codecov.io/gh/GlitchedPolygons/cecies)
 [![License Shield](https://img.shields.io/badge/license-Apache--2.0-orange)](https://github.com/GlitchedPolygons/cecies/blob/master/LICENSE)
 [![API Docs](https://img.shields.io/badge/api-docs-informational.svg)](https://glitchedpolygons.github.io/cecies/files.html)
 
