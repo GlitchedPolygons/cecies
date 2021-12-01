@@ -10,3 +10,6 @@
 [submodule "lib/ccrush"]
 	path = lib/ccrush
 	url = https://github.com/GlitchedPolygons/ccrush
+[submodule "lib/doxygen-awesome"]
+	path = lib/doxygen-awesome
+	url = https://github.com/GlitchedPolygons/doxygen-awesome-css.git
