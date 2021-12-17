@@ -59,13 +59,13 @@ int cecies_generate_curve25519_keypair(cecies_curve25519_keypair* output, const 
 
     if (additional_entropy)
     {
-        mbedtls_sha512_ret(additional_entropy, additional_entropy_length, pers + (sizeof(pers) - 64), 0);
+        mbedtls_sha512(additional_entropy, additional_entropy_length, pers + (sizeof(pers) - 64), 0);
     }
     else
     {
         char tmp[128];
         snprintf(tmp, 128, "%llu-cecies_PERS_@67\\##.<?@_<96-/%s", cecies_get_random_big_integer(), (uint8_t*)cecies_new_guid(1, 1).string);
-        mbedtls_sha512_ret((unsigned char*)tmp, 128, pers + (sizeof(pers) - 64), 0);
+        mbedtls_sha512((unsigned char*)tmp, 128, pers + (sizeof(pers) - 64), 0);
     }
 
     ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, CECIES_MIN(sizeof(pers), (MBEDTLS_CTR_DRBG_MAX_SEED_INPUT - MBEDTLS_CTR_DRBG_ENTROPY_LEN - 1)));
@@ -186,13 +186,13 @@ int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, const uint
 
     if (additional_entropy)
     {
-        mbedtls_sha512_ret(additional_entropy, additional_entropy_length, pers + (sizeof(pers) - 64), 0);
+        mbedtls_sha512(additional_entropy, additional_entropy_length, pers + (sizeof(pers) - 64), 0);
     }
     else
     {
         char tmp[128];
         snprintf(tmp, 128, "%llu-cecies_PERS_#!.$\\+;@58-/%s", cecies_get_random_big_integer(), (uint8_t*)cecies_new_guid(1, 1).string);
-        mbedtls_sha512_ret((unsigned char*)tmp, 128, pers + (sizeof(pers) - 64), 0);
+        mbedtls_sha512((unsigned char*)tmp, 128, pers + (sizeof(pers) - 64), 0);
     }
 
     ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, CECIES_MIN(sizeof(pers), (MBEDTLS_CTR_DRBG_MAX_SEED_INPUT - MBEDTLS_CTR_DRBG_ENTROPY_LEN - 1)));

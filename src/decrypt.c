@@ -24,7 +24,7 @@
 #include <mbedtls/base64.h>
 #include <mbedtls/entropy.h>
 #include <mbedtls/ctr_drbg.h>
-#include <mbedtls/md_internal.h>
+#include <mbedtls/md.h>
 
 #include <ccrush.h>
 
@@ -123,7 +123,7 @@ static int cecies_decrypt(const uint8_t* encrypted_data, const size_t encrypted_
     uint8_t pers[256];
     cecies_dev_urandom(pers, 128);
     snprintf((char*)(pers + 128), 128, "cecies_PERS_3~£,@+14/\\%llu", cecies_get_random_big_integer());
-    mbedtls_sha512_ret(pers + 128, 128, pers + 128 + 64, 0);
+    mbedtls_sha512(pers + 128, 128, pers + 128 + 64, 0);
 
     ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, pers, CECIES_MIN(sizeof(pers), (MBEDTLS_CTR_DRBG_MAX_SEED_INPUT - MBEDTLS_CTR_DRBG_ENTROPY_LEN - 1)));
     if (ret != 0)
