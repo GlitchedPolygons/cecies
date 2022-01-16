@@ -20,7 +20,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 set(${PROJECT_NAME}_MAJOR 4)
 set(${PROJECT_NAME}_MINOR 0)
-set(${PROJECT_NAME}_PATCH 2)
+set(${PROJECT_NAME}_PATCH 3)
 set(${PROJECT_NAME}_VERSION_STRING "${${PROJECT_NAME}_MAJOR}.${${PROJECT_NAME}_MINOR}.${${PROJECT_NAME}_PATCH}")
 
 option(${PROJECT_NAME}_ENABLE_TESTS "Build tests." OFF)
@@ -32,6 +32,7 @@ option(${PROJECT_NAME}_PACKAGE "Build the library and package it into a .tar.gz 
 
 if (WIN32)
     include("${CMAKE_CURRENT_LIST_DIR}/cmake/FixWindowsC5105.cmake")
+    set(CMAKE_RELEASE_POSTFIX "${${PROJECT_NAME}_MAJOR}")
 endif ()
 
 if (${${PROJECT_NAME}_BUILD_DLL})

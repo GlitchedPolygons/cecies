@@ -45,12 +45,12 @@ extern "C" {
  * The version number of this CECIES implementation.
  * TODO: increase this and below string version accordingly BEFORE releasing new updates!
  */
-#define CECIES_VERSION 402
+#define CECIES_VERSION 403
 
 /**
  * The version number of this CECIES implementation (nicely-formatted string).
  */
-#define CECIES_VERSION_STR "4.0.2"
+#define CECIES_VERSION_STR "4.0.3"
 
 /**
  * Key size (in bytes) of an X25519 key (both public and private key have the same length).
