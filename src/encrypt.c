@@ -96,11 +96,11 @@ static int cecies_encrypt(const uint8_t* data, const size_t data_length, const i
     mbedtls_ecp_point_init(&S);
     mbedtls_ecp_point_init(&QA);
 
-    uint8_t iv[16] = {0x00};
-    uint8_t salt[32] = {0x00};
-    uint8_t aes_key[32] = {0x00};
-    uint8_t S_bytes[128] = {0x00};
-    uint8_t R_bytes[128] = {0x00};
+    uint8_t iv[16] = { 0x00 };
+    uint8_t salt[32] = { 0x00 };
+    uint8_t aes_key[32] = { 0x00 };
+    uint8_t S_bytes[128] = { 0x00 };
+    uint8_t R_bytes[128] = { 0x00 };
 
     size_t R_bytes_length = 0, S_bytes_length = 0;
 
@@ -145,7 +145,7 @@ static int cecies_encrypt(const uint8_t* data, const size_t data_length, const i
     }
 
     size_t public_key_bytes_length;
-    uint8_t public_key_bytes[64] = {0x00};
+    uint8_t public_key_bytes[64] = { 0x00 };
 
     ret = cecies_hexstr2bin(public_key, key_length * 2, public_key_bytes, sizeof(public_key_bytes), &public_key_bytes_length);
     if (ret != 0 || public_key_bytes_length != key_length)

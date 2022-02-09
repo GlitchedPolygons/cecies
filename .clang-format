@@ -15,18 +15,18 @@ BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Custom
 
 BraceWrapping:
-    AfterClass: true
-    AfterControlStatement: true
-    AfterEnum: true
-    AfterFunction: true
-    AfterNamespace: false
-    AfterObjCDeclaration: false
-    AfterStruct: true
-    AfterUnion: true
-    BeforeCatch: true
-    BeforeElse: true
-    BeforeLambdaBody: true
-    IndentBraces: false
+  AfterClass: true
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: false
+  AfterObjCDeclaration: false
+  AfterStruct: true
+  AfterUnion: true
+  BeforeCatch: true
+  BeforeElse: true
+  BeforeLambdaBody: true
+  IndentBraces: false
 
 ConstructorInitializerIndentWidth: 4
 
@@ -42,13 +42,15 @@ AllowShortFunctionsOnASingleLine: Inline
 
 SortIncludes: false
 
-ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH, forever, Q_FOREVER, QBENCHMARK, QBENCHMARK_ONCE ]
+ForEachMacros: [ foreach, Q_FOREACH, BOOST_FOREACH, forever, Q_FOREVER, QBENCHMARK, QBENCHMARK_ONCE ]
 
 BreakConstructorInitializers: BeforeColon
 
 IndentCaseLabels: true
 
 IndentWidth: 4
+
+Cpp11BracedListStyle: false
 
 # http://www.stroustrup.com/bs_faq2.html#whitespace
 PointerAlignment: Left
