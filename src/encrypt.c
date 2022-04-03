@@ -237,18 +237,18 @@ static int cecies_encrypt(const uint8_t* data, const size_t data_length, const i
     memcpy(o + 16, salt, 32);
     memcpy(o + 16 + 32, R_bytes, R_bytes_length);
 
-    ret = mbedtls_gcm_crypt_and_tag( //
-            &aes_ctx, // MbedTLS AES context pointer.
-            MBEDTLS_GCM_ENCRYPT, // Encryption mode.
-            input_data_length, // Input data length (or compressed input data length if compression is enabled).
-            iv, // The initialization vector.
-            16, // Length of the IV.
-            NULL, // No additional data.
-            0, // ^
-            input_data, // The input data to encrypt (or compressed input data if compression is enabled).
-            o + 16 + 32 + R_bytes_length + 16, // Where to write the encrypted output bytes into: this is offset so that the order of the ciphertext prefix IV + Salt + Ephemeral Key + Tag is skipped.
-            16, // Length of the authentication tag.
-            o + 16 + 32 + R_bytes_length // Where to insert the tag bytes inside the output ciphertext.
+    ret = mbedtls_gcm_crypt_and_tag(       //
+        &aes_ctx,                          // MbedTLS AES context pointer.
+        MBEDTLS_GCM_ENCRYPT,               // Encryption mode.
+        input_data_length,                 // Input data length (or compressed input data length if compression is enabled).
+        iv,                                // The initialization vector.
+        16,                                // Length of the IV.
+        NULL,                              // No additional data.
+        0,                                 // ^
+        input_data,                        // The input data to encrypt (or compressed input data if compression is enabled).
+        o + 16 + 32 + R_bytes_length + 16, // Where to write the encrypted output bytes into: this is offset so that the order of the ciphertext prefix IV + Salt + Ephemeral Key + Tag is skipped.
+        16,                                // Length of the authentication tag.
+        o + 16 + 32 + R_bytes_length       // Where to insert the tag bytes inside the output ciphertext.
     );
 
     if (ret != 0)

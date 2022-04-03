@@ -215,17 +215,17 @@ static int cecies_decrypt(const uint8_t* encrypted_data, const size_t encrypted_
         goto exit;
     }
 
-    ret = mbedtls_gcm_auth_decrypt( //
-            &aes_ctx, // The MbedTLS AES context pointer.
-            olen, // Length of the data blob to decrypt.
-            iv, // Initialization vector which was extracted from the ciphertext.
-            16, // Length of the IV is always 16 bytes.
-            NULL, // No additional data.
-            0, // ^
-            tag, // The GCM auth tag.
-            16, // Length of the tag.
-            input + (16 + 32 + key_length + 16), // From where to start on reading the data to decrypt (skip the ciphertext prefix of IV, Salt, Ephemeral key and auth tag).
-            decrypted // Where to write the decrypted data into.
+    ret = mbedtls_gcm_auth_decrypt(          //
+        &aes_ctx,                            // The MbedTLS AES context pointer.
+        olen,                                // Length of the data blob to decrypt.
+        iv,                                  // Initialization vector which was extracted from the ciphertext.
+        16,                                  // Length of the IV is always 16 bytes.
+        NULL,                                // No additional data.
+        0,                                   // ^
+        tag,                                 // The GCM auth tag.
+        16,                                  // Length of the tag.
+        input + (16 + 32 + key_length + 16), // From where to start on reading the data to decrypt (skip the ciphertext prefix of IV, Salt, Ephemeral key and auth tag).
+        decrypted                            // Where to write the decrypted data into.
     );
 
     if (ret != 0)

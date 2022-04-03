@@ -20,6 +20,20 @@
  *  @brief CECIES constants.
  */
 
+/**
+ * @mainpage CECIES
+ * @section intro Introduction
+ * Welcome to the CECIES library API documentation.
+ * @section deps Dependencies, installation and all that...
+ * See the git repository's [README.md](https://github.com/GlitchedPolygons/cecies) for instructions on how to get started with this.
+ * @section usage Usage
+ * Inside the git repo's [examples/](https://github.com/GlitchedPolygons/cecies/tree/master/examples) folder you can find a few examples on how to use this library. <p>
+ * Furthermore, here is a list of the most important types used within CECIES:
+ * * {@link #cecies_curve448_keypair} - This is a Curve448 key pair (stronger).
+ * * {@link #cecies_curve25519_keypair} - This is a Curve25519 key pair (faster).
+ * https://glitchedpolygons.github.io/cecies/files.html
+ */
+
 #ifndef CECIES_CONSTANTS_H
 #define CECIES_CONSTANTS_H
 
@@ -31,12 +45,12 @@ extern "C" {
  * The version number of this CECIES implementation.
  * TODO: increase this and below string version accordingly BEFORE releasing new updates!
  */
-#define CECIES_VERSION 401
+#define CECIES_VERSION 403
 
 /**
  * The version number of this CECIES implementation (nicely-formatted string).
  */
-#define CECIES_VERSION_STR "4.0.1"
+#define CECIES_VERSION_STR "4.0.3"
 
 /**
  * Key size (in bytes) of an X25519 key (both public and private key have the same length).
