@@ -81,4 +81,13 @@ yourself and link statically against it, you need to remember to also link your 
 
 To find out how to use the encrypt and decrypt functions, [check out the docs](https://glitchedpolygons.github.io/cecies/files.html) or [the provided example .c files.](https://github.com/GlitchedPolygons/cecies/tree/master/examples).
 
+## GUI
+
+There is also a graphical user interface for this available for desktop (Windows, Mac and Linux). That one costs some money, but links dynamically into this library here (which I signed using [the Glitched Polygons GPG key](https://glitchedpolygons.com/privacy)), so no worries there. There's an [Android app](https://play.google.com/store/apps/details?id=com.glitchedpolygons.cecies) too.
+
+Please consider buying the GUI from the [Glitched Polygons Store](https://glitchedpolygons.com/store) 
+(https://glitchedpolygons.com/software/cecies) to support me and my teammates in our mission to create better video games, tools and software for the world to enjoy :)
+
+![cecies-screenshot-side-by-side](https://user-images.githubusercontent.com/37942667/175427640-00043821-0e2f-4b69-80b7-1b03d185eb9f.png)
+
 # _In Curve448 we trust!_
