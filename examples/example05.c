@@ -56,9 +56,9 @@ static const char TEST_STRING[] = "Doctor Freeman. I realize this moment may not
        size_t decrypted_string_length;
        char* decrypted_string;
 
-//       s = cecies_curve448_decrypt(encrypted_string, encrypted_string_length, 1, TEST_PRIVATE_KEY, (uint8_t**)&decrypted_string, &decrypted_string_length);
-//
-//       printf("Decrypted string:\n\n%s\n\nStatus code: %d\n\n", decrypted_string, s);
+       s = cecies_secp256k1_decrypt(encrypted_string, encrypted_string_length, 1, TEST_PRIVATE_KEY, (uint8_t**)&decrypted_string, &decrypted_string_length);
+
+       printf("Decrypted string:\n\n%s\n\nStatus code: %d\n\n", decrypted_string, s);
 
        cecies_free(encrypted_string);
        cecies_free(decrypted_string);
