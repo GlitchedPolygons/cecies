@@ -27,3 +27,7 @@ target_include_directories(cecies_example_02 PRIVATE ${CMAKE_CURRENT_LIST_DIR}/.
 add_executable(cecies_example_03 ${CMAKE_CURRENT_LIST_DIR}/example03.c)
 target_link_libraries(cecies_example_03 PRIVATE cecies)
 target_include_directories(cecies_example_03 PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../lib/mbedtls/include)
+
+add_executable(cecies_example_04 ${CMAKE_CURRENT_LIST_DIR}/example04.c)
+target_link_libraries(cecies_example_04 PRIVATE cecies)
+target_include_directories(cecies_example_04 PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../lib/mbedtls/include)
