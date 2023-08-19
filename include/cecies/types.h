@@ -37,8 +37,7 @@ extern "C" {
 #define CECIES_API
 #endif
 
-#define SECP256K1_PRIV_KEY_SIZE 32
-#define SECP256K1_PUB_KEY_SIZE  65
+
 
 /**
  * Contains a Curve25519 key, encoded as a NUL-terminated hex-string.

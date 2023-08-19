@@ -62,7 +62,21 @@ static int cecies_encrypt(const uint8_t* data, const size_t data_length, const i
 
     int ret = 1;
 
-    const size_t key_length = curve == 0 ? CECIES_X25519_KEY_SIZE : CECIES_X448_KEY_SIZE;
+    size_t key_length;
+
+    if (curve == 0)
+    {
+        key_length = CECIES_X25519_KEY_SIZE;
+    }
+    else if (curve == 1)
+    {
+        key_length = CECIES_X448_KEY_SIZE;
+    }
+    else if (curve == 2)
+    {
+        key_length = SECP256K1_PUB_KEY_SIZE;
+    }
+
 
     uint8_t* input_data = NULL;
     size_t input_data_length = 0;
@@ -116,7 +130,22 @@ static int cecies_encrypt(const uint8_t* data, const size_t data_length, const i
         goto exit;
     }
 
-    ret = mbedtls_ecp_group_load(&ecp_group, curve == 0 ? MBEDTLS_ECP_DP_CURVE25519 : MBEDTLS_ECP_DP_CURVE448);
+    mbedtls_ecp_group_id id;
+
+    if (curve == 0)
+    {
+        id = MBEDTLS_ECP_DP_CURVE25519;
+    }
+    else if (curve == 1)
+    {
+        id = MBEDTLS_ECP_DP_CURVE448;
+    }
+    else if (curve == 2)
+    {
+        id = MBEDTLS_ECP_DP_SECP256K1;
+    }
+
+    ret = mbedtls_ecp_group_load(&ecp_group, id);
     if (ret != 0)
     {
         cecies_fprintf(stderr, "CECIES: MbedTLS ECP group setup failed! mbedtls_ecp_group_load returned %d\n", ret);
@@ -145,7 +174,7 @@ static int cecies_encrypt(const uint8_t* data, const size_t data_length, const i
     }
 
     size_t public_key_bytes_length;
-    uint8_t public_key_bytes[64] = { 0x00 };
+    uint8_t public_key_bytes[128] = { 0x00 }; //! Allocate large enough buffer for hex to bin conversion.
 
     ret = cecies_hexstr2bin(public_key, key_length * 2, public_key_bytes, sizeof(public_key_bytes), &public_key_bytes_length);
     if (ret != 0 || public_key_bytes_length != key_length)
@@ -324,4 +353,9 @@ int cecies_curve25519_encrypt(const uint8_t* data, const size_t data_length, con
 int cecies_curve448_encrypt(const uint8_t* data, const size_t data_length, const int compress, const cecies_curve448_key public_key, uint8_t** output, size_t* output_length, const int output_base64)
 {
     return cecies_encrypt(data, data_length, compress, public_key.hexstring, output, output_length, output_base64, 1);
+}
+
+int cecies_secp256k1_encrypt(const uint8_t* data, const size_t data_length, const int compress, const cecies_SECP256K1_pub_key public_key, uint8_t** output, size_t* output_length, const int output_base64)
+{
+    return cecies_encrypt(data, data_length, compress, public_key.hexstring, output, output_length, output_base64, 2);
 }
