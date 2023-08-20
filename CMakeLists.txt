@@ -160,6 +160,10 @@ target_include_directories(${PROJECT_NAME}
         PRIVATE ${CMAKE_CURRENT_LIST_DIR}/lib/ccrush/include
         )
 
+target_compile_definitions(${PROJECT_NAME}
+        PUBLIC CONFIG_CECIES_USE_SALT=1
+)
+
 get_target_property(${PROJECT_NAME}_DEPS_TARGETS ${PROJECT_NAME} LINK_LIBRARIES)
 
 if (${${PROJECT_NAME}_ENABLE_EXAMPLES})

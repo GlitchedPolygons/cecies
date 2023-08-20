@@ -238,7 +238,7 @@ static int cecies_encrypt(const uint8_t* data, const size_t data_length, const i
         goto exit;
     }
 
-    ret = mbedtls_hkdf(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512), salt, 32, S_bytes, S_bytes_length, NULL, 0, aes_key, 32);
+    ret = mbedtls_hkdf(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512), salt, CECIES_SALT_LEN, S_bytes, S_bytes_length, NULL, 0, aes_key, 32);
     if (ret != 0 || memcmp(aes_key, empty32, 32) == 0)
     {
         cecies_fprintf(stderr, "CECIES: HKDF failed! mbedtls_hkdf returned %d\n", ret);
@@ -262,21 +262,21 @@ static int cecies_encrypt(const uint8_t* data, const size_t data_length, const i
     }
 
     memcpy(o, R_bytes, R_bytes_length);
-    memcpy(o + R_bytes_length, iv, 16);
-    memcpy(o + R_bytes_length + 16 + 16, salt, 32);
+    memcpy(o + CECIES_IV_POS(R_bytes_length), iv, CECIES_IV_LEN);
+    memcpy(o + CECIES_SALT_POS(R_bytes_length), salt, CECIES_SALT_LEN);
 
-    ret = mbedtls_gcm_crypt_and_tag(       //
-        &aes_ctx,                          // MbedTLS AES context pointer.
-        MBEDTLS_GCM_ENCRYPT,               // Encryption mode.
-        input_data_length,                 // Input data length (or compressed input data length if compression is enabled).
-        iv,                                // The initialization vector.
-        16,                                // Length of the IV.
-        NULL,                              // No additional data.
-        0,                                 // ^
-        input_data,                        // The input data to encrypt (or compressed input data if compression is enabled).
-        o + 16 + 32 + R_bytes_length + 16, // Where to write the encrypted output bytes into: this is offset so that the order of the ciphertext prefix IV + Salt + Ephemeral Key + Tag is skipped.
-        16,                                // Length of the authentication tag.
-        o + R_bytes_length + 16            // Where to insert the tag bytes inside the output ciphertext.
+    ret = mbedtls_gcm_crypt_and_tag(                //
+        &aes_ctx,                                   // MbedTLS AES context pointer.
+        MBEDTLS_GCM_ENCRYPT,                        // Encryption mode.
+        input_data_length,                          // Input data length (or compressed input data length if compression is enabled).
+        iv,                                         // The initialization vector.
+        CECIES_IV_LEN,                              // Length of the IV.
+        NULL,                                       // No additional data.
+        0,                                          // ^
+        input_data,                                 // The input data to encrypt (or compressed input data if compression is enabled).
+        o + CECIES_CIPHER_TEXT_POS(R_bytes_length), // Where to write the encrypted output bytes into: this is offset so that the order of the ciphertext prefix IV + Salt + Ephemeral Key + Tag is skipped.
+        CECIES_TAG_LEN,                             // Length of the authentication tag.
+        o + CECIES_TAG_POS(R_bytes_length)          // Where to insert the tag bytes inside the output ciphertext.
     );
 
     if (ret != 0)
