@@ -165,10 +165,10 @@ static int cecies_decrypt(const uint8_t* encrypted_data, const size_t encrypted_
         goto exit;
     }
 
-    memcpy(iv, input, 16);
-    memcpy(salt, input + 16, 32);
-    memcpy(R_bytes, input + 16 + 32, pub_key_length);
-    memcpy(tag, input + 16 + 32 + pub_key_length, 16);
+    memcpy(R_bytes, input, pub_key_length);
+    memcpy(iv, input + pub_key_length, 16);
+    memcpy(tag, input + pub_key_length + 16, 16);
+    memcpy(salt, input + pub_key_length + 16 + 16, 32);
 
     ret = cecies_hexstr2bin(private_key, priv_key_length * 2, private_key_bytes, sizeof(private_key_bytes), &private_key_bytes_length);
     if (ret != 0 || private_key_bytes_length != priv_key_length)

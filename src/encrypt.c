@@ -77,7 +77,6 @@ static int cecies_encrypt(const uint8_t* data, const size_t data_length, const i
         key_length = SECP256K1_PUB_KEY_SIZE;
     }
 
-
     uint8_t* input_data = NULL;
     size_t input_data_length = 0;
 
@@ -262,9 +261,9 @@ static int cecies_encrypt(const uint8_t* data, const size_t data_length, const i
         goto exit;
     }
 
-    memcpy(o, iv, 16);
-    memcpy(o + 16, salt, 32);
-    memcpy(o + 16 + 32, R_bytes, R_bytes_length);
+    memcpy(o, R_bytes, R_bytes_length);
+    memcpy(o + R_bytes_length, iv, 16);
+    memcpy(o + R_bytes_length + 16 + 16, salt, 32);
 
     ret = mbedtls_gcm_crypt_and_tag(       //
         &aes_ctx,                          // MbedTLS AES context pointer.
@@ -277,7 +276,7 @@ static int cecies_encrypt(const uint8_t* data, const size_t data_length, const i
         input_data,                        // The input data to encrypt (or compressed input data if compression is enabled).
         o + 16 + 32 + R_bytes_length + 16, // Where to write the encrypted output bytes into: this is offset so that the order of the ciphertext prefix IV + Salt + Ephemeral Key + Tag is skipped.
         16,                                // Length of the authentication tag.
-        o + 16 + 32 + R_bytes_length       // Where to insert the tag bytes inside the output ciphertext.
+        o + R_bytes_length + 16            // Where to insert the tag bytes inside the output ciphertext.
     );
 
     if (ret != 0)
