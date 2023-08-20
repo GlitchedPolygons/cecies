@@ -62,6 +62,9 @@ extern "C" {
  */
 #define CECIES_X448_KEY_SIZE 56
 
+#define SECP256K1_PRIV_KEY_SIZE 32
+#define SECP256K1_PUB_KEY_SIZE  65
+
 /*
  * Some error codes:
  */

@@ -53,6 +53,8 @@ CECIES_API int cecies_generate_curve25519_keypair(cecies_curve25519_keypair* out
  */
 CECIES_API int cecies_generate_curve448_keypair(cecies_curve448_keypair* output, const uint8_t* additional_entropy, size_t additional_entropy_length);
 
+CECIES_API int cecies_generate_secp256k1_keypair(cecies_SECP256K1_keypair * output, const uint8_t* additional_entropy, size_t additional_entropy_length);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
