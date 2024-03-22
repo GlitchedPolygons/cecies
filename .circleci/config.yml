@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   build-x64:
     machine:
-      image: ubuntu-2004:202101-01
+      image: default
     resource_class: medium
     steps:
       - checkout
@@ -26,7 +26,7 @@ jobs:
           path: build/out
   build-arm64:
     machine:
-      image: ubuntu-2004:202101-01
+      image: default
     resource_class: arm.medium
     steps:
       - checkout
