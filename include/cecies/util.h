@@ -46,6 +46,23 @@ extern "C" {
  */
 #define CECIES_MAX(x, y) (((x) > (y)) ? (x) : (y))
 
+#define CECIES_IV_LEN 16
+#define CECIES_TAG_LEN 16
+
+#if (CONFIG_CECIES_USE_SALT)
+#define CECIES_SALT_LEN 32
+#else
+#define CECIES_SALT_LEN 0
+#endif // CONFIG_CECIES_USE_SALT
+
+#define CECIES_ENCRYPTED_OUTPUT_START 0
+
+#define CECIES_EPH_POS(eph_len) CECIES_ENCRYPTED_OUTPUT_START
+#define CECIES_IV_POS(eph_len) (eph_len)
+#define CECIES_TAG_POS(eph_len) (CECIES_IV_POS(eph_len) + CECIES_IV_LEN)
+#define CECIES_SALT_POS(eph_len) (CECIES_TAG_POS(eph_len) + CECIES_TAG_LEN)
+#define CECIES_CIPHER_TEXT_POS(eph_len) (CECIES_SALT_POS(eph_len) + CECIES_SALT_LEN)
+
 /**
  * Calculates the length of an AES-CBC ciphertext given a specific plaintext data length (in bytes).
  * @param plaintext_length The amount of bytes to encrypt.
@@ -74,8 +91,8 @@ static inline size_t cecies_calc_compression_bound(const size_t data_length)
  */
 static inline size_t cecies_calc_output_buffer_needed_size(const size_t input_buffer_length, const size_t key_size)
 {
-    //     1    2    3          4    5
-    return 16 + 32 + key_size + 16 + input_buffer_length;
+    //          1                2               3          4                5
+    return CECIES_IV_LEN + CECIES_SALT_LEN + key_size + CECIES_TAG_LEN + input_buffer_length;
 
     // 1:  IV (AES initialization vector)
     // 2:  Salt (for HKDF)
@@ -122,7 +139,8 @@ static inline size_t cecies_calc_base64_length(const size_t data_length)
  * @param output Where to write the converted binary data into.
  * @param output_size Size of the output buffer (make sure to allocate at least <c>(hexstr_length / 2) + 1</c> bytes!).
  * @param output_length [OPTIONAL] Where to write the output array length into. This is always gonna be <c>hexstr_length / 2</c>, but you can still choose to write it out just to be sure. If you want to omit this: no problem.. just pass <c>NULL</c>!
- * @return <c>0</c> if conversion succeeded. <c>1</c> if one or more required arguments were <c>NULL</c> or invalid. <c>2</c> if the hexadecimal string is in an invalid format (e.g. not divisible by 2). <c>3</c> if output buffer size was insufficient (needs to be at least <c>(hexstr_length / 2) + 1</c> bytes).
+ * @return <c>0</c> if conversion succeeded. <c>1</c> if one or more required arguments were <c>NULL</c> or invalid. <c>2</c> if the hexadecimal string is in an invalid format (e.g. not divisible by 2). <c>3</c> if output buffer size was insufficient
+ * (needs to be at least <c>(hexstr_length / 2) + 1</c> bytes).
  */
 CECIES_API int cecies_hexstr2bin(const char* hexstr, size_t hexstr_length, uint8_t* output, size_t output_size, size_t* output_length);
 

@@ -55,6 +55,8 @@ CECIES_API int cecies_curve25519_decrypt(const uint8_t* encrypted_data, size_t e
  */
 CECIES_API int cecies_curve448_decrypt(const uint8_t* encrypted_data, size_t encrypted_data_length, int encrypted_data_base64, cecies_curve448_key private_key, uint8_t** output, size_t* output_length);
 
+CECIES_API int cecies_secp256k1_decrypt(const uint8_t* encrypted_data, size_t encrypted_data_length, int encrypted_data_base64, cecies_SECP256K1_priv_key private_key, uint8_t** output, size_t* output_length);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
