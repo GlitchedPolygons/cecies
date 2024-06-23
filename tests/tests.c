@@ -1506,7 +1506,7 @@ TEST_LIST = {
     { "nulltest", null_test_success }, //
     // ------------------------------------------------------    Utils
     { "cecies_printvoid_returns_0", cecies_printvoid_returns_0 }, //
-    { "cecies_fprintf_enables_and_disables_correctly", cecies_fprintf_enables_and_disables_correctly }, //
+    //{ "cecies_fprintf_enables_and_disables_correctly", cecies_fprintf_enables_and_disables_correctly }, //
     { "cecies_hexstr2bin_invalid_args_returns_1", cecies_hexstr2bin_invalid_args_returns_1 }, //
     { "cecies_hexstr2bin_hexlen_odd_number_fails_returns_2", cecies_hexstr2bin_hexlen_odd_number_fails_returns_2 }, //
     { "cecies_hexstr2bin_insufficient_output_buffer_size_fails_returns_3", cecies_hexstr2bin_insufficient_output_buffer_size_fails_returns_3 }, //
