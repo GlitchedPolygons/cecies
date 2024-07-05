@@ -37,6 +37,8 @@ extern "C" {
 #define CECIES_API
 #endif
 
+
+
 /**
  * Contains a Curve25519 key, encoded as a NUL-terminated hex-string.
  */
@@ -49,6 +51,30 @@ typedef struct cecies_curve25519_key
      */
     char hexstring[64 + 1];
 } cecies_curve25519_key;
+
+/**
+ * Contains a Curve key, encoded as a NUL-terminated hex-string.
+ */
+typedef struct cecies_SECP256K1_priv_key
+{
+    /**
+     * Hex-encoded string of a 32-byte SECP256K1 key. <p>
+     * The 65th character is the NUL-terminator.
+     */
+    char hexstring[64 + 1];
+} cecies_SECP256K1_priv_key;
+
+/**
+ * Contains a Curve key, encoded as a NUL-terminated hex-string.
+ */
+typedef struct cecies_SECP256K1_pub_key
+{
+    /**
+     * Hex-encoded string of a 65-byte SECP256K1 key. <p>
+     * The 65th character is the NUL-terminator.
+     */
+    char hexstring[130 + 1];
+} cecies_SECP256K1_pub_key;
 
 /**
  * Contains a stack-allocated cecies_curve25519_key keypair.
@@ -67,6 +93,24 @@ typedef struct cecies_curve25519_keypair
      */
     cecies_curve25519_key private_key;
 } cecies_curve25519_keypair;
+
+/**
+ * Contains a stack-allocated cecies_curve25519_key keypair.
+ */
+typedef struct cecies_SECP256K1_keypair
+{
+    /**
+     * The public key (formatted as a hex string). <p>
+     * 130 bytes of hex string + 1 NUL-terminator.
+     */
+    cecies_SECP256K1_pub_key public_key;
+
+    /**
+     * The private key (formatted as a hex string). <p>
+     * 64 bytes of hex string + 1 NUL-terminator.
+     */
+    cecies_SECP256K1_priv_key private_key;
+} cecies_SECP256K1_keypair;
 
 /**
  * Contains a Curve448 key, encoded as a NUL-terminated hex-string.

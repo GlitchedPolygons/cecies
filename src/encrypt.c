@@ -62,7 +62,20 @@ static int cecies_encrypt(const uint8_t* data, const size_t data_length, const i
 
     int ret = 1;
 
-    const size_t key_length = curve == 0 ? CECIES_X25519_KEY_SIZE : CECIES_X448_KEY_SIZE;
+    size_t key_length;
+
+    if (curve == 0)
+    {
+        key_length = CECIES_X25519_KEY_SIZE;
+    }
+    else if (curve == 1)
+    {
+        key_length = CECIES_X448_KEY_SIZE;
+    }
+    else if (curve == 2)
+    {
+        key_length = SECP256K1_PUB_KEY_SIZE;
+    }
 
     uint8_t* input_data = NULL;
     size_t input_data_length = 0;
@@ -116,7 +129,22 @@ static int cecies_encrypt(const uint8_t* data, const size_t data_length, const i
         goto exit;
     }
 
-    ret = mbedtls_ecp_group_load(&ecp_group, curve == 0 ? MBEDTLS_ECP_DP_CURVE25519 : MBEDTLS_ECP_DP_CURVE448);
+    mbedtls_ecp_group_id id;
+
+    if (curve == 0)
+    {
+        id = MBEDTLS_ECP_DP_CURVE25519;
+    }
+    else if (curve == 1)
+    {
+        id = MBEDTLS_ECP_DP_CURVE448;
+    }
+    else if (curve == 2)
+    {
+        id = MBEDTLS_ECP_DP_SECP256K1;
+    }
+
+    ret = mbedtls_ecp_group_load(&ecp_group, id);
     if (ret != 0)
     {
         cecies_fprintf(stderr, "CECIES: MbedTLS ECP group setup failed! mbedtls_ecp_group_load returned %d\n", ret);
@@ -145,7 +173,7 @@ static int cecies_encrypt(const uint8_t* data, const size_t data_length, const i
     }
 
     size_t public_key_bytes_length;
-    uint8_t public_key_bytes[64] = { 0x00 };
+    uint8_t public_key_bytes[128] = { 0x00 }; //! Allocate large enough buffer for hex to bin conversion.
 
     ret = cecies_hexstr2bin(public_key, key_length * 2, public_key_bytes, sizeof(public_key_bytes), &public_key_bytes_length);
     if (ret != 0 || public_key_bytes_length != key_length)
@@ -210,7 +238,7 @@ static int cecies_encrypt(const uint8_t* data, const size_t data_length, const i
         goto exit;
     }
 
-    ret = mbedtls_hkdf(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512), salt, 32, S_bytes, S_bytes_length, NULL, 0, aes_key, 32);
+    ret = mbedtls_hkdf(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512), salt, CECIES_SALT_LEN, S_bytes, S_bytes_length, NULL, 0, aes_key, 32);
     if (ret != 0 || memcmp(aes_key, empty32, 32) == 0)
     {
         cecies_fprintf(stderr, "CECIES: HKDF failed! mbedtls_hkdf returned %d\n", ret);
@@ -233,22 +261,22 @@ static int cecies_encrypt(const uint8_t* data, const size_t data_length, const i
         goto exit;
     }
 
-    memcpy(o, iv, 16);
-    memcpy(o + 16, salt, 32);
-    memcpy(o + 16 + 32, R_bytes, R_bytes_length);
+    memcpy(o, R_bytes, R_bytes_length);
+    memcpy(o + CECIES_IV_POS(R_bytes_length), iv, CECIES_IV_LEN);
+    memcpy(o + CECIES_SALT_POS(R_bytes_length), salt, CECIES_SALT_LEN);
 
-    ret = mbedtls_gcm_crypt_and_tag(       //
-        &aes_ctx,                          // MbedTLS AES context pointer.
-        MBEDTLS_GCM_ENCRYPT,               // Encryption mode.
-        input_data_length,                 // Input data length (or compressed input data length if compression is enabled).
-        iv,                                // The initialization vector.
-        16,                                // Length of the IV.
-        NULL,                              // No additional data.
-        0,                                 // ^
-        input_data,                        // The input data to encrypt (or compressed input data if compression is enabled).
-        o + 16 + 32 + R_bytes_length + 16, // Where to write the encrypted output bytes into: this is offset so that the order of the ciphertext prefix IV + Salt + Ephemeral Key + Tag is skipped.
-        16,                                // Length of the authentication tag.
-        o + 16 + 32 + R_bytes_length       // Where to insert the tag bytes inside the output ciphertext.
+    ret = mbedtls_gcm_crypt_and_tag(                //
+        &aes_ctx,                                   // MbedTLS AES context pointer.
+        MBEDTLS_GCM_ENCRYPT,                        // Encryption mode.
+        input_data_length,                          // Input data length (or compressed input data length if compression is enabled).
+        iv,                                         // The initialization vector.
+        CECIES_IV_LEN,                              // Length of the IV.
+        NULL,                                       // No additional data.
+        0,                                          // ^
+        input_data,                                 // The input data to encrypt (or compressed input data if compression is enabled).
+        o + CECIES_CIPHER_TEXT_POS(R_bytes_length), // Where to write the encrypted output bytes into: this is offset so that the order of the ciphertext prefix IV + Salt + Ephemeral Key + Tag is skipped.
+        CECIES_TAG_LEN,                             // Length of the authentication tag.
+        o + CECIES_TAG_POS(R_bytes_length)          // Where to insert the tag bytes inside the output ciphertext.
     );
 
     if (ret != 0)
@@ -324,4 +352,9 @@ int cecies_curve25519_encrypt(const uint8_t* data, const size_t data_length, con
 int cecies_curve448_encrypt(const uint8_t* data, const size_t data_length, const int compress, const cecies_curve448_key public_key, uint8_t** output, size_t* output_length, const int output_base64)
 {
     return cecies_encrypt(data, data_length, compress, public_key.hexstring, output, output_length, output_base64, 1);
+}
+
+int cecies_secp256k1_encrypt(const uint8_t* data, const size_t data_length, const int compress, const cecies_SECP256K1_pub_key public_key, uint8_t** output, size_t* output_length, const int output_base64)
+{
+    return cecies_encrypt(data, data_length, compress, public_key.hexstring, output, output_length, output_base64, 2);
 }

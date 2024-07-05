@@ -40,7 +40,25 @@
 static int cecies_decrypt(const uint8_t* encrypted_data, const size_t encrypted_data_length, const int encrypted_data_base64, char* private_key, uint8_t** output, size_t* output_length, const int curve)
 {
     const size_t min_data_len = curve == 0 ? 97 : 121;
-    const size_t key_length = curve == 0 ? CECIES_X25519_KEY_SIZE : CECIES_X448_KEY_SIZE;
+
+    size_t pub_key_length;
+    size_t priv_key_length;
+
+    if (curve == 0)
+    {
+        pub_key_length = CECIES_X25519_KEY_SIZE;
+        priv_key_length = CECIES_X25519_KEY_SIZE;
+    }
+    else if (curve == 1)
+    {
+        pub_key_length = CECIES_X448_KEY_SIZE;
+        priv_key_length = CECIES_X448_KEY_SIZE;
+    }
+    else if (curve == 2)
+    {
+        pub_key_length = SECP256K1_PUB_KEY_SIZE;
+        priv_key_length = SECP256K1_PRIV_KEY_SIZE;
+    }
 
     if (encrypted_data == NULL || output == NULL || output_length == NULL || private_key == NULL)
     {
@@ -81,14 +99,14 @@ static int cecies_decrypt(const uint8_t* encrypted_data, const size_t encrypted_
         }
     }
 
-    size_t olen = input_length - 16 - 32 - key_length - 16;
+    size_t olen = input_length - CECIES_IV_LEN - CECIES_SALT_LEN - pub_key_length - CECIES_TAG_LEN;
 
     uint8_t iv[16] = { 0x00 };
     uint8_t tag[16] = { 0x00 };
     uint8_t salt[32] = { 0x00 };
     uint8_t aes_key[32] = { 0x00 };
-    uint8_t R_bytes[64] = { 0x00 };
-    uint8_t S_bytes[64] = { 0x00 };
+    uint8_t R_bytes[128] = { 0x00 };
+    uint8_t S_bytes[128] = { 0x00 };
     uint8_t private_key_bytes[64] = { 0x00 };
 
     size_t private_key_bytes_length = 0, S_bytes_length = 0;
@@ -113,7 +131,22 @@ static int cecies_decrypt(const uint8_t* encrypted_data, const size_t encrypted_
     mbedtls_ecp_point_init(&R);
     mbedtls_ecp_point_init(&S);
 
-    ret = mbedtls_ecp_group_load(&ecp_group, curve == 0 ? MBEDTLS_ECP_DP_CURVE25519 : MBEDTLS_ECP_DP_CURVE448);
+    mbedtls_ecp_group_id id;
+
+    if (curve == 0)
+    {
+        id = MBEDTLS_ECP_DP_CURVE25519;
+    }
+    else if (curve == 1)
+    {
+        id = MBEDTLS_ECP_DP_CURVE448;
+    }
+    else if (curve == 2)
+    {
+        id = MBEDTLS_ECP_DP_SECP256K1;
+    }
+
+    ret = mbedtls_ecp_group_load(&ecp_group, id);
     if (ret != 0)
     {
         cecies_fprintf(stderr, "CECIES: MbedTLS ECP group setup failed! mbedtls_ecp_group_load returned %d\n", ret);
@@ -132,13 +165,13 @@ static int cecies_decrypt(const uint8_t* encrypted_data, const size_t encrypted_
         goto exit;
     }
 
-    memcpy(iv, input, 16);
-    memcpy(salt, input + 16, 32);
-    memcpy(R_bytes, input + 16 + 32, key_length);
-    memcpy(tag, input + 16 + 32 + key_length, 16);
+    memcpy(R_bytes, input + CECIES_EPH_POS(pub_key_length), pub_key_length);
+    memcpy(iv, input + CECIES_IV_POS(pub_key_length), CECIES_IV_LEN);
+    memcpy(tag, input + CECIES_TAG_POS(pub_key_length), CECIES_TAG_LEN);
+    memcpy(salt, input + CECIES_SALT_POS(pub_key_length), CECIES_SALT_LEN);
 
-    ret = cecies_hexstr2bin(private_key, key_length * 2, private_key_bytes, sizeof(private_key_bytes), &private_key_bytes_length);
-    if (ret != 0 || private_key_bytes_length != key_length)
+    ret = cecies_hexstr2bin(private_key, priv_key_length * 2, private_key_bytes, sizeof(private_key_bytes), &private_key_bytes_length);
+    if (ret != 0 || private_key_bytes_length != priv_key_length)
     {
         cecies_fprintf(stderr, "CECIES: Parsing decryption private key failed! Invalid hex string format or invalid key length... cecies_hexstr2bin returned %d\n", ret);
         ret = CECIES_DECRYPT_ERROR_CODE_INVALID_ARG;
@@ -159,7 +192,7 @@ static int cecies_decrypt(const uint8_t* encrypted_data, const size_t encrypted_
         goto exit;
     }
 
-    ret = mbedtls_ecp_point_read_binary(&ecp_group, &R, R_bytes, key_length);
+    ret = mbedtls_ecp_point_read_binary(&ecp_group, &R, R_bytes, pub_key_length);
     if (ret != 0)
     {
         cecies_fprintf(stderr, "CECIES: Parsing ephemeral public key failed! mbedtls_ecp_point_read_binary returned %d\n", ret);
@@ -180,8 +213,8 @@ static int cecies_decrypt(const uint8_t* encrypted_data, const size_t encrypted_
         goto exit;
     }
 
-    ret = mbedtls_ecp_point_write_binary(&ecp_group, &S, MBEDTLS_ECP_PF_UNCOMPRESSED, &S_bytes_length, S_bytes, key_length);
-    if (ret != 0 || S_bytes_length != key_length)
+    ret = mbedtls_ecp_point_write_binary(&ecp_group, &S, MBEDTLS_ECP_PF_UNCOMPRESSED, &S_bytes_length, S_bytes, pub_key_length);
+    if (ret != 0 || S_bytes_length != pub_key_length)
     {
         cecies_fprintf(stderr, "CECIES: decryption failed! Invalid ECP point; mbedtls_ecp_point_write_binary returned %d\n", ret);
         goto exit;
@@ -194,7 +227,7 @@ static int cecies_decrypt(const uint8_t* encrypted_data, const size_t encrypted_
         goto exit;
     }
 
-    ret = mbedtls_hkdf(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512), salt, 32, S_bytes, S_bytes_length, NULL, 0, aes_key, 32);
+    ret = mbedtls_hkdf(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512), salt, CECIES_SALT_LEN, S_bytes, S_bytes_length, NULL, 0, aes_key, 32);
     if (ret != 0 || memcmp(aes_key, empty32, 32) == 0)
     {
         cecies_fprintf(stderr, "CECIES: HKDF failed! mbedtls_hkdf returned %d\n", ret);
@@ -215,17 +248,17 @@ static int cecies_decrypt(const uint8_t* encrypted_data, const size_t encrypted_
         goto exit;
     }
 
-    ret = mbedtls_gcm_auth_decrypt(          //
-        &aes_ctx,                            // The MbedTLS AES context pointer.
-        olen,                                // Length of the data blob to decrypt.
-        iv,                                  // Initialization vector which was extracted from the ciphertext.
-        16,                                  // Length of the IV is always 16 bytes.
-        NULL,                                // No additional data.
-        0,                                   // ^
-        tag,                                 // The GCM auth tag.
-        16,                                  // Length of the tag.
-        input + (16 + 32 + key_length + 16), // From where to start on reading the data to decrypt (skip the ciphertext prefix of IV, Salt, Ephemeral key and auth tag).
-        decrypted                            // Where to write the decrypted data into.
+    ret = mbedtls_gcm_auth_decrypt(                     //
+        &aes_ctx,                                       // The MbedTLS AES context pointer.
+        olen,                                           // Length of the data blob to decrypt.
+        iv,                                             // Initialization vector which was extracted from the ciphertext.
+        CECIES_IV_LEN,                                  // Length of the IV is always 16 bytes.
+        NULL,                                           // No additional data.
+        0,                                              // ^
+        tag,                                            // The GCM auth tag.
+        CECIES_TAG_LEN,                                 // Length of the tag.
+        input + CECIES_CIPHER_TEXT_POS(pub_key_length), // From where to start on reading the data to decrypt (skip the ciphertext prefix of IV, Salt, Ephemeral key and auth tag).
+        decrypted                                       // Where to write the decrypted data into.
     );
 
     if (ret != 0)
@@ -310,4 +343,9 @@ int cecies_curve25519_decrypt(const uint8_t* encrypted_data, const size_t encryp
 int cecies_curve448_decrypt(const uint8_t* encrypted_data, const size_t encrypted_data_length, const int encrypted_data_base64, cecies_curve448_key private_key, uint8_t** output, size_t* output_length)
 {
     return cecies_decrypt(encrypted_data, encrypted_data_length, encrypted_data_base64, private_key.hexstring, output, output_length, 1);
+}
+
+int cecies_secp256k1_decrypt(const uint8_t* encrypted_data, size_t encrypted_data_length, int encrypted_data_base64, cecies_SECP256K1_priv_key private_key, uint8_t** output, size_t* output_length)
+{
+    return cecies_decrypt(encrypted_data, encrypted_data_length, encrypted_data_base64, private_key.hexstring, output, output_length, 2);
 }
