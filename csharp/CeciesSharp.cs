@@ -4,6 +4,7 @@ using System.Text;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Runtime.InteropServices;
+// ReSharper disable UnusedMember.Local
 
 namespace GlitchedPolygons.CeciesSharp
 {
@@ -294,7 +295,7 @@ namespace GlitchedPolygons.CeciesSharp
                     _ => throw new PlatformNotSupportedException("CPU Architecture not supported!")
                 };
 
-                string path = Path.Combine(Path.GetFullPath(Path.GetDirectoryName(Assembly.GetCallingAssembly().Location) ?? "."), "lib", cpu, os);
+                string path = Path.Combine(Path.GetFullPath(Path.GetDirectoryName(AppContext.BaseDirectory) ?? "."), "lib", cpu, os);
 
                 if (!Directory.Exists(path))
                 {
@@ -504,9 +505,8 @@ namespace GlitchedPolygons.CeciesSharp
         {
             if (string.IsNullOrEmpty(additionalEntropy))
             {
-                using RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
                 Span<byte> rnd = stackalloc byte[32];
-                rng.GetBytes(rnd);
+                RandomNumberGenerator.Fill(rnd);
                 additionalEntropy = Encoding.UTF8.GetString(rnd) + Guid.NewGuid().ToString("B");
             }
 
@@ -567,9 +567,8 @@ namespace GlitchedPolygons.CeciesSharp
         {
             if (string.IsNullOrEmpty(additionalEntropy))
             {
-                using RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
                 Span<byte> rnd = stackalloc byte[32];
-                rng.GetBytes(rnd);
+                RandomNumberGenerator.Fill(rnd);
                 additionalEntropy = Encoding.UTF8.GetString(rnd) + Guid.NewGuid().ToString("B");
             }
 
