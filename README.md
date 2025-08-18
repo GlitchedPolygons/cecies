@@ -1,10 +1,19 @@
+> [!IMPORTANT]
+>
+> # **NOTICE:**
+>
+> ## Development of this project has been migrated to: https://codeberg.org/GlitchedPolygons/cecies
+>
+> ## All pull requests and issues on GitHub will be ignored from the 16th of August, 2025 onwards.
+
 # CECIES
+
 ## ECIES implementation in C using MbedTLS
 
 [![Build status](https://ci.appveyor.com/api/projects/status/l6y23d4ij5ilfvm8/branch/master?svg=true)](https://ci.appveyor.com/project/GlitchedPolygons/cecies/branch/master)
 [![CircleCI](https://circleci.com/gh/GlitchedPolygons/cecies/tree/master.svg?style=shield)](https://circleci.com/gh/GlitchedPolygons/cecies/tree/master)
 [![Codecov](https://codecov.io/gh/GlitchedPolygons/cecies/branch/master/graph/badge.svg)](https://codecov.io/gh/GlitchedPolygons/cecies)
-[![License Shield](https://img.shields.io/badge/license-Apache--2.0-orange)](https://github.com/GlitchedPolygons/cecies/blob/master/LICENSE)
+[![License Shield](https://img.shields.io/badge/license-Apache--2.0-orange)](https://codeberg.org/GlitchedPolygons/cecies/src/branch/master/LICENSE)
 [![API Docs](https://img.shields.io/badge/api-docs-informational.svg)](https://glitchedpolygons.github.io/cecies/files.html)
 
 This is a super easy and straightforward C implementation of the Elliptic Curve Integrated Encryption Scheme as defined in [SECG SEC-1 **(Section 5.1)**](http://www.secg.org/sec1-v2.pdf), [ISO/IEC 18033-2](https://www.shoup.net/iso/std4.pdf), [ANSI X9.63](ftp://ftp.iks-jena.de/mitarb/lutz/standards/ansi/X9/x963-7-5-98.pdf), etc...
@@ -15,14 +24,14 @@ More useful information also accessible [here](https://asecuritysite.com/encrypt
 
 ### How to clone
 
-`git clone --recursive https://github.com/GlitchedPolygons/cecies.git`
+`git clone --recursive https://codeberg.org/GlitchedPolygons/cecies.git`
 
 ### How to use
 
 Just add CECIES as a git submodule to your project (e.g. into some `lib/` or `deps/` folder inside your project's repo; `{repo_root}/lib/` is used here in the following example).
 
 ```
-git submodule add https://github.com/GlitchedPolygons/cecies.git lib/cecies
+git submodule add https://codeberg.org/GlitchedPolygons/cecies.git lib/cecies
 git submodule update --init --recursive
 ```
 
@@ -32,7 +41,7 @@ If you don't want to use git submodules, you can also start vendoring a specific
 
 ### Compiling
 
-There are pre-built binaries for every major platform for you to download inside the [GitHub Releases page](https://github.com/GlitchedPolygons/cecies/releases). Thanks for downloading, and I hope you enjoy!
+There are pre-built binaries for every major platform for you to download inside the [Releases page](https://codeberg.org/GlitchedPolygons/cecies/releases). Thanks for downloading, and I hope you enjoy!
 
 Oh, you're still here :) You really want to compile it yourself, huh. 
 Cool. 
@@ -70,7 +79,7 @@ This is equivalent to static linking by default, but much more pleasant than the
 
 **Note:** the default configuration for building CECIES as a shared library compiles the MbedTLS dependency targets as [position-independent code](https://en.wikipedia.org/wiki/Position-independent_code) directly into the CECIES shared library, so that you only need to include one `cecies.dll` file (or `.so`/`.dylib` file, whatever) with your application.
 
-If this is not what you want, you are free to manually compile [MbedTLS](https://github.com/ARMmbed/mbedtls) as a DLL too and modify the [CMakeLists.txt](https://github.com/GlitchedPolygons/cecies/blob/master/CMakeLists.txt) file accordingly.
+If this is not what you want, you are free to manually compile [MbedTLS](https://github.com/ARMmbed/mbedtls) as a DLL too and modify the [CMakeLists.txt](https://codeberg.org/GlitchedPolygons/cecies/src/branch/master/CMakeLists.txt) file accordingly.
 
 #### Static linking
 
@@ -79,7 +88,7 @@ yourself and link statically against it, you need to remember to also link your 
 
 ### Examples
 
-To find out how to use the encrypt and decrypt functions, [check out the docs](https://glitchedpolygons.github.io/cecies/files.html) or [the provided example .c files.](https://github.com/GlitchedPolygons/cecies/tree/master/examples).
+To find out how to use the encrypt and decrypt functions, [check out the docs](https://glitchedpolygons.github.io/cecies/files.html) or [the provided example .c files.](https://codeberg.org/GlitchedPolygons/cecies/src/branch/master/examples).
 
 ## GUI
 
